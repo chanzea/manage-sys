@@ -1,0 +1,151 @@
+[
+  {
+    "id": 1,
+    "name": "用户管理",
+    "icon": "",
+    "url": "/user"
+  },
+  {
+    "id": 11,
+    "name": "用户数据",
+    "icon": "gear-b",
+    "url": "/user/data",
+    "parentId": 1
+  },{
+    "id": 12,
+    "name": "新增用户",
+    "icon": "gear-b",
+    "url": "",
+    "parentId": 1
+  },{
+    "id": 13,
+    "name": "组织管理",
+    "icon": "gear-b",
+    "url": "",
+    "parentId": 1
+  },
+  {
+    "id": 2,
+    "name": "源数据管理",
+    "icon": "",
+    "url": "/example/formDynamic"
+  },
+  {
+    "id": 21,
+    "name": "源数据",
+    "icon": "",
+    "url": "/res",
+    "parentId": 2
+  },
+  {
+    "id": 22,
+    "name": "上传源数据",
+    "icon": "help-buoy",
+    "url": "/res",
+    "parentId": 2
+  },
+  {
+    "id": 3,
+    "name": "任务管理",
+    "icon": "",
+    "url": "/example/crudView"
+  },
+  {
+    "id": 31,
+    "name": "任务数据",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },{
+    "id": 32,
+    "name": "题库列表",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },{
+    "id": 33,
+    "name": "新建任务",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },{
+    "id": 34,
+    "name": "任务大厅",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },{
+    "id": 35,
+    "name": "审核大厅",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },{
+    "id": 35,
+    "name": "任务监控",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },{
+    "id": 36,
+    "name": "任务模版",
+    "icon": "",
+    "url": "/example/crudTable",
+    "parentId": 3
+  },
+  {
+    "id": 4,
+    "name": "标注数据管理",
+    "icon": "",
+    "url": "/role"
+  },
+  {
+    "id": 41,
+    "name": "标注数据",
+    "icon": "",
+    "url": "/example/crudTreeView",
+    "parentId": 4
+  },
+  {
+    "id": 42,
+    "name": "退回任务",
+    "icon": "",
+    "url": "/dict",
+    "parentId": 4
+  },
+  {
+    "id": 5,
+    "name": "系统配置",
+    "icon": "",
+    "url": "/example/crudTree"
+  },{
+    "id": 51,
+    "name": "系统设置",
+    "icon": "",
+    "url": "/example/crudTree",
+    "parentId": 5
+  },{
+    "id": 52,
+    "name": "角色管理",
+    "icon": "",
+    "url": "/example/crudTree",
+    "parentId": 5
+  },{
+    "id": 53,
+    "name": "权限配置",
+    "icon": "",
+    "url": "/example/crudTree",
+    "parentId": 5
+  },
+  {
+    "id": 6,
+    "name": "统计分析",
+    "icon": "",
+    "url": "/example/dataSelect"
+  },
+  {
+    "id": 7,
+    "name": "系统日志",
+    "url": "/sysLog"
+  }
+]
