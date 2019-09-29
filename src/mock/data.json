@@ -15,7 +15,7 @@
     "id": 12,
     "name": "新增用户",
     "icon": "gear-b",
-    "url": "",
+    "url": "/user/add",
     "parentId": 1
   },{
     "id": 13,

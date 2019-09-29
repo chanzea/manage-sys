@@ -3,10 +3,15 @@
     margin: 15px 15px 5px 15px;
     min-height: calc(100vh - 130px);
     overflow-y: yes;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f7f9;
   }
 
   .layout-content-main {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 </style>
 

@@ -2,10 +2,10 @@
 import { api } from './config.js';
 
 /**
- * 用户登录
- * @param {Obiect} params 用户名，密码，验证码
+ * 获取树型数据
+ * @param {Obiect} params 
  */
-export async function login(params) {
-  const data = await api(`/user/login`, 'post', params)
+export async function getListTree(params) {
+  const data = await api(`/organization/listTree`, 'get', params)
   return data
 }

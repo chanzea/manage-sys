@@ -13,11 +13,10 @@ export const api = (url, method, data) => {
   return new Promise((resolve, reject) => {
     axios(obj).then(res => {
       console.log('res', res)
-      resolve(res)
-      // if (res.status === 200) {
-      //   const { data } = res
-      //   resolve(data)
-      // }
+      const { data } = res
+      if(data.code === 'SUCCESS') {
+        resolve(data.data)
+      }
     }).catch(err => {
       console.log('err', err)
       reject(err)

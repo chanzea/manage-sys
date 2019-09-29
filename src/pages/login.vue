@@ -121,7 +121,7 @@
   import http from '../utils/HttpUtils';
   import {
     login
-  } from 'api/user';
+  } from 'api/login';
   export default {
     data () {
       return {
@@ -198,6 +198,7 @@
       }
       login(param).then(res => {
         console.log('res', res)
+        localStorage.setItem('token', 'b17bcf52d6db45149085bb61f534b00f')
       }).catch(err => {
         console.error('err', err)
       })

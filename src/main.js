@@ -18,7 +18,7 @@ import 'nprogress/nprogress.css';
 import './styles/index.scss';
 import config from './config';
 import http from './utils/HttpUtils';
-import './styles/index.less';
+// import './styles/index.less';
 // import mock from './mock/index.js';
 
 iView.Message.config({duration: 2});
