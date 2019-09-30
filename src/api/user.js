@@ -9,3 +9,14 @@ export async function getListTree(params) {
   const data = await api(`/organization/listTree`, 'get', params)
   return data
 }
+
+/**
+ * 获取角色列表
+ * @param {Obiect} params 
+ */
+export async function getRoleList(params) {
+  const data = await api(`/role/list`, 'post', params)
+  return data
+}
+
+

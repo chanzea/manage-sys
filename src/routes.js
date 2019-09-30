@@ -10,6 +10,7 @@ const DictPage = resolve => require(['pages/sys/dict'], resolve);
 const UserPage = resolve => require(['pages/sys/user/user'], resolve);
 const UserData = resolve => require(['pages/sys/user/UserData'], resolve);
 const UserAdd = resolve => require(['pages/sys/user/UserAdd'], resolve);
+const UserGroup = resolve => require(['pages/sys/user/UserGroup'], resolve);
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
 const SysLogPage = resolve => require(['pages/sys/sysLog'], resolve);
@@ -55,6 +56,10 @@ const routes = [
           },{
             path: 'add',
             component: UserAdd,
+            name: '新增用户'
+          },{
+            path: 'group',
+            component: UserGroup,
             name: '新增用户'
           },
         ]

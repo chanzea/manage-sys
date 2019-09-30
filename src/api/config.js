@@ -1,8 +1,14 @@
 import axios from 'axios';
-const BASEURL = 'http://118.24.124.177:8099' //api地址
+export const BASEURL = 'http://118.24.124.177:8099' //api地址
 
-export const api = (url, method, data) => {
+export const api = (url, method, data = {}) => {
+  const tokenId = localStorage.getItem('tokenId')
+  // token失效，应回到登录页
+  if (!tokenId) {
+    return;
+  }
   url = BASEURL + url
+  data.tokenId = tokenId
   const query = method === 'get' ? 'params' : 'data'
   const obj = {
     url,

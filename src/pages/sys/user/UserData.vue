@@ -8,16 +8,18 @@
           <Button>新增组用户</Button>
         </div>
         <div class="content-header-search">
-          <Input search enter-button placeholder="Enter something..." />
+          <Input search enter-button="搜索" placeholder="Enter something..." />
         </div>
       </div>
       <div class="content-middle">
-        <div class="content-middle-left">
-          树形
-        </div>
-        <div class="content-middle-right">
-          内容
-        </div>
+        <Split v-model="split" min="200px">
+          <div  slot="left" class="content-middle-left">
+            <Tree :data="treeOrganization"></Tree>
+          </div>
+          <div  slot="right" class="content-middle-right">
+            内容
+          </div>
+        </Split>
       </div>
     </div>
   </div>
@@ -29,6 +31,12 @@
   } from 'api/user';
 export default {
   name: 'UserData',
+  data () {
+    return {
+      split: 0.15,
+      treeOrganization: [],
+    }
+  },
   created () {
     this.getListTree()
   },
@@ -36,10 +44,26 @@ export default {
     getListTree () {
       getListTree({
         layerNumber: 5,
-        tokenId: localStorage.getItem('token')
       }).then(res => {
-        console.log('getListTree ===> ', res)
+        const { organization } = res
+        console.log('getListTree ===> ', organization)
+        this.treeOrganization = this.formatTreeData(organization)
+        console.log('treeOrganization', this.treeOrganization)
       })
+    },
+    // 格式化数据
+    formatTreeData (item) {
+      if (!item.childs) {
+        item.title = item.organizationName
+        return [item]
+      }
+      item.title = item.organizationName
+      item.children = item.childs
+      item.expand = !!item.childs
+      item.childs.forEach(subItem => {
+        this.formatTreeData(subItem)
+      })
+      return [item]
     }
   }
 }
@@ -63,17 +87,22 @@ export default {
     .content-middle {
       flex: 1;
       display: flex;
+      flex-direction: column;
+      .ivu-split-wrapper {
+        flex: 1;
+      }
       &-left {
-        margin-right: 6px;
-        min-width: 200px;
         background-color: #fff;
         border: 1px solid #f7f7f7;
         box-sizing: border-box;
+        height: 100%;
+        padding: 10px 8px;
       }
       &-right {
-        flex: 1;
         background-color: #fff;
         border: 1px solid #f7f7f7;
+        height: 100%;
+        padding: 8px;
       }
     }
   }

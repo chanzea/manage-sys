@@ -21,7 +21,7 @@
     "id": 13,
     "name": "组织管理",
     "icon": "gear-b",
-    "url": "",
+    "url": "/user/group",
     "parentId": 1
   },
   {

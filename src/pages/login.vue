@@ -117,11 +117,12 @@
   </div>
 </template>
 <script>
+  import axios from 'axios';
   import config from '@/config';
   import http from '../utils/HttpUtils';
   import {
-    login
-  } from 'api/login';
+    BASEURL
+  } from 'api/config'
   export default {
     data () {
       return {
@@ -191,16 +192,31 @@
       //     this.handleSubmit('formLogin');
       //   }
       // });
-      const param = {
+      const data = {
         "loginName": "admin",
-        "loginPassword": "test1234",
+        "loginPassword": "admin1234",
         "verifyCode": "nd74",
       }
-      login(param).then(res => {
+      // login(param).then(res => {
+      //   console.log('res', res)
+      //   localStorage.setItem('token', 'b17bcf52d6db45149085bb61f534b00f')
+      // }).catch(err => {
+      //   console.error('err', err)
+      // })
+      axios({
+        url: `${BASEURL}/user/login`,
+        method: 'post',
+        data, 
+        headers: {'Content-Type': 'application/json;charset=UTF-8'}
+      }).then(res => {
         console.log('res', res)
-        localStorage.setItem('token', 'b17bcf52d6db45149085bb61f534b00f')
+        const { data } = res
+        if(data.code === 'SUCCESS') {
+          localStorage.setItem('tokenId', data.data.tokenId)
+          localStorage.setItem('userId', data.data.userId)
+        }
       }).catch(err => {
-        console.error('err', err)
+        console.log('err', err)
       })
     },
     components: {}

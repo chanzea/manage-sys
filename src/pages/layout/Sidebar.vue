@@ -24,7 +24,6 @@
 
   import common from '@/utils/common';
   import data from 'src/mock/data.json'
-  console.log('data', data)
   export default {
     name: 'sidebar',
     props: ['menuSmall'],
@@ -39,7 +38,7 @@
     created: function () {
       // this.menuData = common.constructTree(OperatorUtils.getMenuData(), 'name');
       this.menuData = common.constructTree(data, 'name');
-      console.log('menuData', this.menuData)
+      // console.log('menuData', this.menuData)
       this.updateCurMenu();
     },
     computed: {},
@@ -51,7 +50,7 @@
       },
       getMenu (path) {
         let menu = data;
-        console.log('menu', menu)
+        // console.log('menu', menu)
         for (let i = 0; i <= menu.length; i++) {
           if (menu[i] != null && menu[i].url == path) {
             return menu[i];
