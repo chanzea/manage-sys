@@ -1,12 +1,11 @@
 <template>
   <div class="component-form">
-    {{formProp}}
-    <Form :model="formItem" :label-width="80">
+    <Form :label-width="80">
       <FormItem :label="item.label" v-for="(item, index) in formProp" :key="index">
         <Input v-if="item.type === 'input'" v-model="item.value" :placeholder="item.placeholder"></Input>
 
         <Select v-if="item.type === 'select'" v-model="item.value" :placeholder="item.placeholder">
-          <Option :value="item.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
+          <Option :value="subItem.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
         </Select>
 
         <Input v-if="item.type === 'textarea'" v-model="item.value" type="textarea" :placeholder="item.placeholder"></Input>
