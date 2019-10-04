@@ -60,13 +60,13 @@
     "id": 32,
     "name": "题库列表",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/itembank",
     "parentId": 3
   },{
     "id": 33,
     "name": "新建任务",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/add",
     "parentId": 3
   },{
     "id": 34,

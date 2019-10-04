@@ -7,14 +7,17 @@ const IndexPage = resolve => require(['pages/index/index'], resolve);
 const EditPage = resolve => require(['pages/edit'], resolve);
 
 const DictPage = resolve => require(['pages/sys/dict'], resolve);
-
+// 用户管理
 const UserPage = resolve => require(['pages/sys/user/user'], resolve);
 const UserData = resolve => require(['pages/sys/user/UserData'], resolve);
 const UserAdd = resolve => require(['pages/sys/user/UserAdd'], resolve);
 const UserGroup = resolve => require(['pages/sys/user/UserGroup'], resolve);
 
+// 任务管理
 const TaskPage = resolve => require(['pages/sys/task/task'], resolve);
 const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
+const TaskItembank = resolve => require(['pages/sys/task/TaskItembank'], resolve);
+const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
 
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
@@ -78,8 +81,16 @@ const routes = [
           {
             path: 'list',
             component: TaskList,
-            name: '用户数据'
-          }
+            name: '任务数据'
+          },{
+            path: 'itembank',
+            component: TaskItembank,
+            name: '题库列表'
+          },{
+            path: 'add',
+            component: TaskAdd,
+            name: '新建任务'
+          },
         ]
       },
       { path: '/dict', component: DictPage, name: '基础字典' },
