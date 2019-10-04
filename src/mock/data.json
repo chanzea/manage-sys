@@ -48,13 +48,13 @@
     "id": 3,
     "name": "任务管理",
     "icon": "",
-    "url": "/example/crudView"
+    "url": "/task"
   },
   {
     "id": 31,
     "name": "任务数据",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/list",
     "parentId": 3
   },{
     "id": 32,

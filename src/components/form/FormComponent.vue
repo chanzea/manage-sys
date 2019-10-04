@@ -4,7 +4,7 @@
       <FormItem :label="item.label" v-for="(item, index) in formProp" :key="index">
         <Input v-if="item.type === 'input'" v-model="item.value" :placeholder="item.placeholder"></Input>
 
-        <Select v-if="item.type === 'select'" v-model="item.value" :placeholder="item.placeholder">
+        <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="item.value" :placeholder="item.placeholder">
           <Option :value="subItem.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
         </Select>
 

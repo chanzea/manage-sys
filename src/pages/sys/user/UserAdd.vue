@@ -26,28 +26,35 @@ export default {
         {
           label: '状态',
           type: 'switch',
-          value: ''
+          value: '',
+          key: 'enable'
         },{
           label: '所在组织',
           type: 'select',
-          value: '',
+          value: [],
           options: [],
-          placeholder: '设置归属组织'
+          placeholder: '设置归属组织',
+          isMultiple: true,
+          key: 'organizationIds'
         },{
           label: '系统角色',
           type: 'select',
-          value: '',
+          value: [],
           options: [],
-          placeholder: '系统角色'
+          isMultiple: true,
+          placeholder: '系统角色',
+          key: 'roleIds'
         },{
           label: '姓名',
           type: 'input',
           value: '',
-          placeholder: '输入用户名'
+          placeholder: '输入用户名',
+          key: 'userName'
         },{
           label: '性别',
           type: 'radio',
           value: '',
+          key: 'sex',
           options: [{
             label: '男'
           },{
@@ -57,53 +64,63 @@ export default {
           label: '登录账号',
           type: 'input',
           value: '',
-          placeholder: '登录名'
+          placeholder: '登录名',
+          key: 'loginName'
         },{
           label: '登录密码',
           type: 'input',
           value: '',
-          placeholder: '登录密码'
+          placeholder: '登录密码',
+          key: 'loginPassword'
         },{
           label: '手机号码',
           type: 'input',
           value: '',
-          placeholder: '常用联系手机号码'
+          placeholder: '常用联系手机号码',
+          key: 'phoneNum'
         },{
           label: '证件类型',
           type: 'select',
           value: '',
-          options: []
+          options: [],
+          key: 'certificateType'
         },{
           label: '证件号码',
           type: 'input',
           value: '',
-          placeholder: '有效的证件号码'
+          placeholder: '有效的证件号码',
+          key: 'certificateId'
         },{
           label: '生日',
           type: 'datePicker',
           value: '',
-          placeholder: '选择生日日期'
+          placeholder: '选择生日日期',
+          key: 'birthday'
         },{
           label: 'QQ号',
           type: 'input',
           value: '',
-          placeholder: '常用联系QQ'
+          placeholder: '常用联系QQ',
+          key: 'qq'
         },{
           label: '邮箱',
           type: 'input',
           value: '',
-          placeholder: '常用联系邮箱'
+          placeholder: '常用联系邮箱',
+          key: 'email',
         },{
           label: '婚姻状况',
           type: 'select',
           value: '',
           options: [],
-          placeholder: '选择婚姻状况'
+          placeholder: '选择婚姻状况',
+          key: 'martitalStatus'
         },{
           label: '地址',
           type: 'textarea',
           value: '',
-          placeholder: '输入详细的地址，精确到门牌号码...'
+          placeholder: '输入详细的地址，精确到门牌号码...',
+          key: 'address'
         }
       ]   
     }
@@ -115,8 +132,14 @@ export default {
     this.getRoleList()
   },
   methods: {
+    // 获取提交参数
     getFormData () {
       console.log('this.form', this.formProp)
+      const params = {}
+      this.formProp.forEach(item => {
+        params[item.key] = item.value
+      })
+      console.log('params',params)
     },
     // 获取角色列表
     getRoleList () {
