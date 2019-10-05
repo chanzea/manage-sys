@@ -18,6 +18,9 @@ const TaskPage = resolve => require(['pages/sys/task/task'], resolve);
 const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
 const TaskItembank = resolve => require(['pages/sys/task/TaskItembank'], resolve);
 const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
+const TaskMission = resolve => require(['pages/sys/task/TaskMission'], resolve);
+const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
+const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve);
 
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
@@ -90,6 +93,18 @@ const routes = [
             path: 'add',
             component: TaskAdd,
             name: '新建任务'
+          },{
+            path: 'mission',
+            component: TaskMission,
+            name: '任务大厅'
+          },{
+            path: 'auth',
+            component: TaskAuth,
+            name: '审核大厅'
+          },{
+            path: 'template',
+            component: TaskTemplate,
+            name: '任务模版'
           },
         ]
       },

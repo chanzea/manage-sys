@@ -33,7 +33,7 @@
   {
     "id": 21,
     "name": "源数据",
-    "icon": "",
+    "icon": "help-buoy",
     "url": "/res",
     "parentId": 2
   },
@@ -72,25 +72,25 @@
     "id": 34,
     "name": "任务大厅",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/mission",
     "parentId": 3
   },{
     "id": 35,
     "name": "审核大厅",
     "icon": "",
-    "url": "/example/crudTable",
-    "parentId": 3
-  },{
-    "id": 35,
-    "name": "任务监控",
-    "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/auth",
     "parentId": 3
   },{
     "id": 36,
+    "name": "任务监控",
+    "icon": "",
+    "url": "/task/monitor",
+    "parentId": 3
+  },{
+    "id": 37,
     "name": "任务模版",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/template",
     "parentId": 3
   },
   {
