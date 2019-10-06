@@ -117,24 +117,24 @@
     "id": 5,
     "name": "系统配置",
     "icon": "",
-    "url": "/example/crudTree"
+    "url": "/config"
   },{
     "id": 51,
     "name": "系统设置",
     "icon": "",
-    "url": "/example/crudTree",
+    "url": "/config/index",
     "parentId": 5
   },{
     "id": 52,
     "name": "角色管理",
     "icon": "",
-    "url": "/example/crudTree",
+    "url": "/config/role",
     "parentId": 5
   },{
     "id": 53,
     "name": "权限配置",
     "icon": "",
-    "url": "/example/crudTree",
+    "url": "/config/menu",
     "parentId": 5
   },
   {

@@ -32,6 +32,12 @@ const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
 const TagList = resolve => require(['pages/sys/tag/TagList'], resolve);
 const TagAdd = resolve => require(['pages/sys/tag/TagAdd'], resolve);
 
+// 系统配置
+const ConfigPage = resolve => require(['pages/sys/config/config'], resolve);
+const ConfigIndex = resolve => require(['pages/sys/config/ConfigIndex'], resolve);
+const ConfigRole = resolve => require(['pages/sys/config/ConfigRole'], resolve);
+const ConfigMenu = resolve => require(['pages/sys/config/ConfigMenu'], resolve);
+
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
 const SysLogPage = resolve => require(['pages/sys/sysLog'], resolve);
@@ -134,17 +140,35 @@ const routes = [
       },{
         path: 'tag',
         component: TagPage,
-        name: '源数据管理',
+        name: '标注数据管理',
         redirect: '/tag/list',
         children: [{
           path: 'list',
           component: TagList,
-          name: '源数据'
+          name: '标注数据'
         },{
           path: 'add',
           component: TagAdd,
-          name: '上传源数据'
+          name: '退回任务'
         }]
+      },{
+        path: 'config',
+        component: ConfigPage,
+        name: '源数据管理',
+        redirect: '/config/index',
+        children: [{
+          path: 'index',
+          component: ConfigIndex,
+          name: '系统配置'
+        },{
+          path: 'role',
+          component: ConfigRole,
+          name: '角色管理'
+        },{
+          path: 'menu',
+          component: ConfigMenu,
+          name: '权限配置'
+        },]
       },
 
 
