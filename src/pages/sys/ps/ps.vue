@@ -1,12 +1,11 @@
 <template>
   <div class="ps-draw">
-    <ul>
-      <li @click="drawRect('Rect')">画矩形</li>
-      <li @click="lasso('Path')">套索</li>
-      <li @click="polyline('Polyline')">定点</li>
-      <li @click="recall">撤销</li>
-      <li ref="undoButton" @click="undo">撤销上次</li>
-      <li ref="redoButton" @click="redo">重做</li>
+    <ul @click.capture="setCurrentTab($event)" class="tabs">
+      <li data-attr="Rect" @click="drawRect('Rect')">画矩形</li>
+      <li data-attr="Path" @click="lasso('Path')">套索</li>
+      <!-- <li @click="polyline('Polyline')">定点</li> -->
+      <li data-attr="select" @click="selectObject('select')">选中</li>
+      <li data-attr="Rect" @click="recall">撤销</li>
     </ul>
     <canvas id="canvas" width="350" height="200"></canvas>
   </div>
@@ -25,15 +24,9 @@ export default {
       isDrawing: false,
       isSelected: false,
       currentTab: "Rect",
-      config: {
-        canvasState: [],
-        currentStateIndex: -1,
-        redoStatus: false, //撤销状态
-        undoStatus: false, // 重做状态
-        undoFinishedStatus: 1,
-        redoFinishedStatus: 1,
-        undoButton: this.$refs.undo, //得不到  在 mounted 得到
-        redoButton: this.$refs.redo
+      rectConfig: {
+          origX: 0,
+          origY: 0
       }
     };
   },
@@ -64,51 +57,79 @@ export default {
     canvas.on("selection:created", e => {
       // 选中图层事件触发时，动态更新赋值
       this.selectedObj = e.target;
-      this.selectedObj.hasControls = true;
-      this.canvas.renderAll();
       console.log(this.selectedObj);
+      //   this.selectedObj.hasControls = true;
+      //   this.selectedObj.hasBorders = true;
+    //   this.canvas.renderAll();
     });
 
     this.canvas = canvas;
     // this.canvasDataChange();
+    this.addObjectEvent();
   },
 
   methods: {
+    //冒泡
+    setCurrentTab: function(e) {
+      let target = e.target;
+      this.currentTab = e.target.dataset.attr;
+      this.clearEvent();
+    },
+
     addObjectEvent: function() {
+      let _self = this;
       this.canvas.on("mouse:down", o => {
         this.isDrawing = true;
+        switch (this.currentTab) {
+            case "Rect":
+                this.drawRectStart(o);
+                break;
+        
+            default:
+                break;
+        }
       });
       this.canvas.on("mouse:up", o => {
         this.isDrawing = false;
-      });
-      this.canvas.on("mouse:move", o => {
-        if (!this.isDrawing) {
-          return;
+        switch (this.currentTab) {
+            case "Rect":
+                this.drawRectMove(o);
+                break;
+        
+            default:
+                break;
         }
       });
       this.canvas.on("mouse:move", o => {
         if (!this.isDrawing) {
           return;
         }
+        switch (this.currentTab) {
+            case "Rect":
+                this.drawRectMove(o);
+                break;
+        
+            default:
+                break;
+        }
+      });
+
+      this.canvas.on("object:moving", o => {
+        this.isDrawing = false;
       });
     },
 
     clearEvent: function() {
-      //   canvas.selection = false;
-      this.canvas.remove("mouse:down");
-      this.canvas.remove("mouse:move");
-      this.canvas.remove("mouse:up");
+      this.canvas.isDrawingMode = false;
+      this.canvas.renderAll();
     },
-    //画矩形
-    drawRect: function() {
-      this.currentTab = "Rect"
-      let origX, origY;
-      this.canvas.on("mouse:down", o => {
-        if(this.currentTab != "Rect") return;
-        this.isDrawing = true;
-        var pointer = this.canvas.getPointer(o.e);
-        origX = pointer.x;
-        origY = pointer.y;
+
+    //drawRectStart
+    drawRectStart: function(object) {
+        var pointer = this.canvas.getPointer(object.e);
+        this.rectConfig.origX = pointer.x;
+        this.rectConfig.origY = pointer.y;
+        let {origX, origY} = this.rectConfig;
         var rect = new fabric.Rect({
           left: origX,
           top: origY,
@@ -117,26 +138,23 @@ export default {
           width: pointer.x - origX,
           height: pointer.y - origY,
           angle: 0,
+          cornerSize: 5,
           stroke: "red",
-          strokeWidth: 2,
           fill: "transparent",
+          strokeWidth: 1,
           transparentCorners: false,
           hasBorders: false,
+          hasControls: false
         });
-        // rect.on("selected", function() {
-        // //   this.isDrawing = false;
-        //   console.log("selected a rectangle");
-        // //   rect.hasControls = true;
-        // });
         this.canvas.add(rect).setActiveObject(rect);
-      });
+    },
 
-      this.canvas.on("mouse:move", o => {
-        if(this.currentTab != "Rect") return;
-        if (!this.isDrawing) {
+    drawRectMove: function (object) {
+        if (!this.isDrawing ) {
           return;
         }
-        var pointer = this.canvas.getPointer(o.e);
+        let {origX, origY} = this.rectConfig;
+        var pointer = this.canvas.getPointer(object.e);
         var activeObj = this.canvas.getActiveObject();
         if (origX > pointer.x) {
           activeObj.set({ left: Math.abs(pointer.x) });
@@ -144,168 +162,69 @@ export default {
         if (origY > pointer.y) {
           activeObj.set({ top: Math.abs(pointer.y) });
         }
+        // activeObj.setCoords();
         activeObj.set({ width: Math.abs(origX - pointer.x) });
         activeObj.set({ height: Math.abs(origY - pointer.y) });
-        // activeObj.setCoords();
-        // console.log("getCoords",activeObj.getCoords())
         this.canvas.renderAll();
-      });
-      this.canvas.on("mouse:up", o => {
-        if(this.currentTab != "Rect") return;
+    },
+
+    drawRectUp: function() {
+        if (this.currentTab != "Rect") return;
         this.isDrawing = false;
         var pointer = this.canvas.getPointer(o.e);
         var activeObj = this.canvas.getActiveObject();
-        activeObj && activeObj.setCoords();
+        // this.canvas.renderAll();
         if (origX == pointer.x && origY == pointer.y) {
           this.canvas.remove(activeObj);
+          return;
         }
-      });
-      this.canvas.on("object:moving", o => {
-        if(this.currentTab != "Rect") return;
-        this.isDrawing = false;
-      });
     },
 
     //套索工具
     lasso: function() {
       console.log("?/");
-      this.currentTab = "Path";
+      //   this.currentTab = "Path";
       this.clearEvent();
+      this.freeDrawConfig({
+        isDrawingMode: true,
+        color: "red",
+        drawWidth: 1
+      });
     },
 
+    freeDrawConfig(options) {
+      options = Object.assign({ color: "#b2b2b2", drawWidth: 2 }, options);
+      this.canvas.isDrawingMode = options.isDrawingMode;
+      this.canvas.freeDrawingBrush.color = options.color; // 设置自由绘颜色
+      this.canvas.freeDrawingBrush.width = options.drawWidth;
+      this.canvas.renderAll();
+    },
+
+    //选中对象
+    selectObject: function(dd) {
+      var objs = this.canvas.getObjects().map(function(o) {
+        o.aCoords && o.set("hasBorders", true);
+        o.aCoords && o.set("hasControls", true);
+        if(o.aCoords){
+            o.set("hasBorders", true);
+            o.set("hasControls", true);
+            o.setCoords();
+        }
+        return o;
+      });
+      console.log("选中", objs)
+      this.canvas.renderAll();
+    },
     //撤销
     recall: function() {
       let lastObject = this.canvas.getObjects().pop();
       this.canvas.remove(lastObject);
     },
-
-    canvasDataChange() {
-      let _self = this;
-      this.canvas.on("object:modified", function() {
-        _self.updateCanvasState();
-      });
-      this.canvas.on("object:added", function() {
-        _self.updateCanvasState();
-      });
-      this.canvas.on("object:removed", function() {
-        _self.updateCanvasState();
-      });
-      this.canvas.on("object:rotating", function() {
-        _self.updateCanvasState();
-      });
-    },
-
-    undo() {
-      let _self = this;
-      if (this.config.undoFinishedStatus) {
-        if (this.config.currentStateIndex == -1) {
-          this.config.undoStatus = false;
-        } else {
-          if (this.config.canvasState.length >= 1) {
-            this.config.undoFinishedStatus = 0;
-            if (this.config.currentStateIndex != 0) {
-              this.config.undoStatus = true;
-              this.canvas.loadFromJSON(
-                this.config.canvasState[this.config.currentStateIndex - 1],
-                function() {
-                  var jsonData = JSON.parse(
-                    _self.config.canvasState[_self.config.currentStateIndex - 1]
-                  );
-                  _self.canvas.renderAll();
-                  _self.config.undoStatus = false;
-                  _self.config.currentStateIndex -= 1;
-                  // _self.config.undoButton.removeAttribute("disabled");
-                  // _self.config.undoButton.disabled = false;
-                  if (
-                    _self.config.currentStateIndex !==
-                    _self.config.canvasState.length - 1
-                  ) {
-                    // _self.config.redoButton.removeAttribute('disabled');
-                    // _self.config.redoButton.disabled = false;
-                  }
-                  _self.config.undoFinishedStatus = 1;
-                }
-              );
-            } else if (_self.config.currentStateIndex == 0) {
-              _self.canvas.clear();
-              _self.config.undoFinishedStatus = 1;
-              // _self.config.undoButton.disabled= "disabled";
-              // _self.config.redoButton.removeAttribute('disabled');
-              // _self.config.redoButton.disabled = false;
-              _self.config.currentStateIndex -= 1;
-            }
-          }
-        }
-      }
-    },
-    redo() {
-      let _self = this;
-      if (this.config.redoFinishedStatus) {
-        if (
-          this.config.currentStateIndex == this.config.canvasState.length - 1 &&
-          this.config.currentStateIndex != -1
-        ) {
-          // this.config.redoButton.disabled= true;
-        } else {
-          if (
-            this.config.canvasState.length > this.config.currentStateIndex &&
-            this.config.canvasState.length != 0
-          ) {
-            this.config.redoFinishedStatus = 0;
-            this.config.redoStatus = true;
-            this.canvas.loadFromJSON(
-              this.config.canvasState[this.config.currentStateIndex + 1],
-              function() {
-                var jsonData = JSON.parse(
-                  _self.config.canvasState[_self.config.currentStateIndex + 1]
-                );
-                _self.canvas.renderAll();
-                _self.config.redoStatus = false;
-                _self.config.currentStateIndex += 1;
-                if (_self.config.currentStateIndex != -1) {
-                  //    _self.config.redoButton.disabled = false;
-                }
-                _self.config.redoFinishedStatus = 1;
-                if (
-                  _self.config.currentStateIndex ==
-                    _self.config.canvasState.length - 1 &&
-                  _self.config.currentStateIndex != -1
-                ) {
-                  // _self.config.redoButton.disabled= true;
-                }
-              }
-            );
-          }
-        }
-      }
-    },
-    updateCanvasState() {
-      var _self = this;
-      if (
-        _self.config.undoStatus == false &&
-        _self.config.redoStatus == false
-      ) {
-        var jsonData = _self.$store.state.fabricObj.canvas.toJSON();
-        var canvasAsJson = JSON.stringify(jsonData);
-        if (
-          _self.config.currentStateIndex <
-          _self.config.canvasState.length - 1
-        ) {
-          var indexToBeInserted = _self.config.currentStateIndex + 1;
-          _self.config.canvasState[indexToBeInserted] = canvasAsJson;
-          var numberOfElementsToRetain = indexToBeInserted + 1;
-          _self.config.canvasState = _self.config.canvasState.splice(
-            0,
-            numberOfElementsToRetain
-          );
-        } else {
-          _self.config.canvasState.push(canvasAsJson);
-        }
-        _self.config.currentStateIndex = _self.config.canvasState.length - 1;
-      }
-    }
   }
 };
 </script>
 <style lang="scss" scoped>
+    .tabs li{
+        cursor: pointer;
+    }
 </style>
