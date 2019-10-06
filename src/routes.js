@@ -16,6 +16,9 @@ const UserGroup = resolve => require(['pages/sys/user/UserGroup'], resolve);
 const TaskPage = resolve => require(['pages/sys/task/task'], resolve);
 const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
 
+//ps模块
+const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
+
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
 const SysLogPage = resolve => require(['pages/sys/sysLog'], resolve);
@@ -81,6 +84,11 @@ const routes = [
             name: '用户数据'
           }
         ]
+      },
+      { 
+        path: 'psdraw',
+        component: PsDraw,
+        name: '标记',
       },
       { path: '/dict', component: DictPage, name: '基础字典' },
       { path: '/sysLog', component: SysLogPage, name: '系统日志' },

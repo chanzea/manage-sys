@@ -81,13 +81,13 @@
     "url": "/example/crudTable",
     "parentId": 3
   },{
-    "id": 35,
+    "id": 36,
     "name": "任务监控",
     "icon": "",
     "url": "/example/crudTable",
     "parentId": 3
   },{
-    "id": 36,
+    "id": 37,
     "name": "任务模版",
     "icon": "",
     "url": "/example/crudTable",
@@ -147,5 +147,17 @@
     "id": 7,
     "name": "系统日志",
     "url": "/sysLog"
+  },
+  {
+    "id": 8,
+    "name": "画图工具",
+    "url": "/psdraw"
+  },
+  {
+    "id": 100,
+    "name": "画图",
+    "icon": "",
+    "url": "/psdraw",
+    "parentId": 8
   }
 ]
