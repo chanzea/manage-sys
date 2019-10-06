@@ -3,22 +3,16 @@
     <div class="task-mission-content">
       <Tabs :value="currentTab">
         <TabPane v-for="(item, index) in tabLists" :key="index" :label="item.label" :name="item.name">
-          <div class="content-header">
-            <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
-            <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-            <ButtonGroup>
-              <Button type="primary">查询</Button>
-              <Button>重置</Button>
-            </ButtonGroup>
-          </div>
-          <div class="content-middle">
-            <div class="content-middle-table">
-              <Table border :columns="columns" :data="data"></Table>
+          <table-page :columns="columns" :data="data">
+            <div class="content-header" slot='form'>
+              <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
+              <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
+              <ButtonGroup>
+                <Button type="primary">查询</Button>
+                <Button>重置</Button>
+              </ButtonGroup>
             </div>
-            <div class="content-middle-pages">
-              <Page :total="100" />
-            </div>
-          </div>
+          </table-page>
         </TabPane>
       </Tabs>
     </div>
@@ -26,8 +20,12 @@
 </template>
 
 <script>
+import TablePage from 'components/tablePage.vue';
 export default {
   name: 'TaskMission',
+  components: {
+    TablePage
+  },
   data () {
     return {
       searchData: {

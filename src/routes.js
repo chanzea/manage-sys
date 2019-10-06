@@ -13,6 +13,11 @@ const UserData = resolve => require(['pages/sys/user/UserData'], resolve);
 const UserAdd = resolve => require(['pages/sys/user/UserAdd'], resolve);
 const UserGroup = resolve => require(['pages/sys/user/UserGroup'], resolve);
 
+// 源数据
+const DataPage = resolve => require(['pages/sys/data/data'], resolve);
+const DataList = resolve => require(['pages/sys/data/DataList'], resolve);
+const DataAdd = resolve => require(['pages/sys/data/DataAdd'], resolve);
+
 // 任务管理
 const TaskPage = resolve => require(['pages/sys/task/task'], resolve);
 const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
@@ -21,6 +26,11 @@ const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
 const TaskMission = resolve => require(['pages/sys/task/TaskMission'], resolve);
 const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
 const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve);
+
+// 标注数据管理
+const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
+const TagList = resolve => require(['pages/sys/tag/TagList'], resolve);
+const TagAdd = resolve => require(['pages/sys/tag/TagAdd'], resolve);
 
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
@@ -74,6 +84,20 @@ const routes = [
             name: '新增用户'
           },
         ]
+      },{
+        path: 'data',
+        component: DataPage,
+        name: '源数据管理',
+        redirect: '/data/list',
+        children: [{
+          path: 'list',
+          component: DataList,
+          name: '源数据'
+        },{
+          path: 'add',
+          component: DataAdd,
+          name: '上传源数据'
+        }]
       },
       { 
         path: 'task',
@@ -107,7 +131,24 @@ const routes = [
             name: '任务模版'
           },
         ]
+      },{
+        path: 'tag',
+        component: TagPage,
+        name: '源数据管理',
+        redirect: '/tag/list',
+        children: [{
+          path: 'list',
+          component: TagList,
+          name: '源数据'
+        },{
+          path: 'add',
+          component: TagAdd,
+          name: '上传源数据'
+        }]
       },
+
+
+
       { path: '/dict', component: DictPage, name: '基础字典' },
       { path: '/sysLog', component: SysLogPage, name: '系统日志' },
       { path: '/attach', component: AttachPage, name: '附件管理' },

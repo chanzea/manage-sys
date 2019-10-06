@@ -1,7 +1,7 @@
 <template>
   <div class="page-task-list">
-    <div class="task-list-content">
-      <div class="content-header">
+    <table-page :columns="columns" :data="data">
+      <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
         <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
@@ -11,28 +11,24 @@
           <Button type="primary">查询</Button>
           <Button>重置</Button>
         </ButtonGroup>
-      </div>
-      <div class="content-middle">
-        <ButtonGroup class="content-middle-btns">
+        <ButtonGroup class="btns">
           <Button type="primary">新建</Button>
           <Button type="primary">删除</Button>
           <Button type="primary">上线</Button>
           <Button type="primary">下线</Button>
         </ButtonGroup>
-        <div class="content-middle-table">
-          <Table border :columns="columns" :data="data"></Table>
-        </div>
-        <div class="content-middle-pages">
-          <Page :total="100" />
-        </div>
       </div>
-    </div>
+    </table-page>
   </div>
 </template>
 
 <script>
+import TablePage from 'components/tablePage.vue';
 export default {
   name: 'TaskList',
+  components: {
+    TablePage
+  },
   data () {
     return {
       searchValue: '',
@@ -167,22 +163,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .page-task-list {
-  .task-list-content {
-    .content-header {
-      margin-bottom: 20px;
-      .form-item {
-        margin-right: 12px;
-      }
-    }
-    .content-middle {
-      margin-bottom: 12px;
-      &-btns {
-        margin-bottom: 12px;
-      }
-      &-table {
-        margin-bottom: 12px;
-      }
-    }
+  .btns {
+    margin-top: 12px;
   }
 }
 </style>

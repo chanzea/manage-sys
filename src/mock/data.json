@@ -28,20 +28,20 @@
     "id": 2,
     "name": "源数据管理",
     "icon": "",
-    "url": "/example/formDynamic"
+    "url": "/data"
   },
   {
     "id": 21,
     "name": "源数据",
     "icon": "help-buoy",
-    "url": "/res",
+    "url": "/data/list",
     "parentId": 2
   },
   {
     "id": 22,
     "name": "上传源数据",
     "icon": "help-buoy",
-    "url": "/res",
+    "url": "/data/add",
     "parentId": 2
   },
   {
@@ -97,20 +97,20 @@
     "id": 4,
     "name": "标注数据管理",
     "icon": "",
-    "url": "/role"
+    "url": "/tag"
   },
   {
     "id": 41,
     "name": "标注数据",
     "icon": "",
-    "url": "/example/crudTreeView",
+    "url": "/tag/list",
     "parentId": 4
   },
   {
     "id": 42,
     "name": "退回任务",
     "icon": "",
-    "url": "/dict",
+    "url": "/tag/add",
     "parentId": 4
   },
   {
