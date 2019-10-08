@@ -11,6 +11,15 @@ export async function getListTree(params) {
 }
 
 /**
+ * 获取用户数据
+ * @param {Obiect} params 
+ */
+export async function getUserList(params) {
+  const data = await api(`/user/list`, 'post', params)
+  return data
+}
+
+/**
  * 获取角色列表
  * @param {Obiect} params 
  */

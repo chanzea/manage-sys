@@ -14,7 +14,7 @@ export default {
   name: 'UserGroup',
   data () {
     return {
-      treeOrganization: []
+      treeOrganization: [],
     }
   },
   created () {
@@ -72,7 +72,20 @@ export default {
         }, [
           h('Button', {
             props: Object.assign({}, this.buttonProps, {
-              icon: 'ios-add'
+              icon: 'ios-create-outline',
+              size: 'small'
+            }),
+            style: {
+              marginRight: '8px'
+            },
+            on: {
+              click: () => { this.edit(root, node, data) }
+            }
+          }),
+          h('Button', {
+            props: Object.assign({}, this.buttonProps, {
+              icon: 'ios-add',
+              size: 'small'
             }),
             style: {
               marginRight: '8px'
@@ -83,20 +96,66 @@ export default {
           }),
           h('Button', {
             props: Object.assign({}, this.buttonProps, {
-              icon: 'ios-remove'
+              icon: 'ios-remove',
+              size: 'small'
             }),
             on: {
               click: () => { this.remove(root, node, data) }
             }
-          })
+          }),
         ])
       ]);
     },
+    edit (root, node, data) {
+      console.log('root',root)
+      console.log('node',node)
+      console.log('data',data)
+    },
     append (data) {
+      console.log('data', data)
       const children = data.children || [];
       children.push({
-        title: 'appended node',
-        expand: true
+        expand: true,
+        render: (h, { subData }) => {
+          return h('div', {
+              style: {
+                display: 'inline-block',
+                width: '300px'
+              }
+          }, [
+              h('Input', {
+                props: {
+                  placeholder: '组织名称',
+                  type: 'text',
+                  value: ''
+                },
+                style: {
+                  marginRight: '8px'
+                }
+              }),
+              h('Button', {
+                  props: Object.assign({}, this.buttonProps, {
+                    icon: 'ios-checkmark',
+                    type: 'default'
+                  }),
+                  style: {
+                    marginRight: '8px'
+                  },
+                  on: {
+                      click: () => { this.confirm(subData) }
+                  }
+              }),
+              h('Button', {
+                  props: Object.assign({}, this.buttonProps, {
+                    icon: 'ios-close',
+                    type: 'default'
+                  }),
+                  on: {
+                      click: () => { this.append(data) }
+                  }
+              })
+          ]);
+      },
       });
       this.$set(data, 'children', children);
     },
@@ -105,6 +164,10 @@ export default {
       const parent = root.find(el => el.nodeKey === parentKey).node;
       const index = parent.children.indexOf(data);
       parent.children.splice(index, 1);
+    },
+
+    confirm (subData) {
+      console.log('subData', subData)
     }
   }
 }

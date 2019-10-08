@@ -18,7 +18,6 @@ export const api = (url, method, data = {}) => {
   obj[query] = data
   return new Promise((resolve, reject) => {
     axios(obj).then(res => {
-      console.log('res', res)
       const { data } = res
       if(data.code === 'SUCCESS') {
         resolve(data.data)
