@@ -23,7 +23,6 @@ export default {
       height: 200,
       canvas: null,
       isDrawing: false,
-      isDrawingLine: false,
       isSelected: false,
       currentTab: "Rect",
       rectConfig: {
@@ -61,13 +60,26 @@ export default {
     // card.on
     canvas.on("selection:created", e => {
       // 选中图层事件触发时，动态更新赋值
-      console.log(e.target);
+      this.clearSelectStyle(); //清除所有选中
+      console.log(e);
       this.selectedObj = e.target;
-      this.canvas.setActiveObject(this.selectedObj);
+      this.selectedObj.set({ stroke: "blue" });
       this.canvas.renderAll();
     });
 
     canvas.on("selection:cleared", e => {
+      //   console.log(e);
+      //   if (e.deselected) {
+      //     let deselectedList = e.deselected;
+      //     deselectedList &&
+      //       deselectedList.forEach(item => {
+      //         item.set({ stroke: "red" });
+      //       });
+      //   } else {
+      //     e.target.set({ stroke: "red" });
+      //   }
+      //   this.clearSelectStyle();
+      //   this.selectedObj.stroke = "red";
       this.canvas.renderAll();
     });
 
@@ -97,8 +109,17 @@ export default {
           return o;
         });
         this.canvas.renderAll();
+        console.log("不选选中", objs);
       }
+      console.log(this.canvas.hoverCursor);
       this.clearEvent();
+    },
+
+    //clearSelect
+    clearSelectStyle: function() {
+      this.canvas.getObjects().map(function(o) {
+        o.stroke = "red";
+      });
     },
 
     addObjectEvent: function() {
@@ -142,6 +163,7 @@ export default {
           case "Rect":
             this.isDrawing = false;
             break;
+
           default:
             break;
         }
@@ -170,10 +192,6 @@ export default {
         angle: 0,
         cornerSize: 5,
         stroke: "red",
-        borderColor: "blue",
-        cornerColor: "blue",
-        borderOpacityWhenMoving: 1,
-        borderScaleFactor: 2,
         fill: "transparent",
         strokeWidth: 1,
         transparentCorners: false,
@@ -219,104 +237,57 @@ export default {
     drawPolylineStart: function(object) {
       // console.log(this.currentTab, this.canvas)
       console.log(this.isDrawing);
+      if (this.isDrawing) {
+        return;
+      } else {
+
+      }
+      this.isDrawing = true;
       var pointer = this.canvas.getPointer(object.e);
       this.polylinePoints.push({ x: pointer.x, y: pointer.y });
-      let isRoof = this.polylinePoints[0] || [];
-      console.log(isRoof, this.polylinePoints);
-      if (
-        this.polylinePoints.length > 1 &&
-        Math.abs(isRoof.x - pointer.x) <= 3 &&
-        Math.abs(isRoof.y - pointer.y) <= 3
-      ) {
-        this.isDrawing = false;
-    
-        let lines = this.canvas.getObjects().filter(item => {
-          return item.type == "line";
-        });
-        lines.forEach((value, index, ar) => {
-          this.canvas.remove(value);
-        });
-        
-        
-        console.log(this.polylinePoints,isRoof)
-        let polylinePosition = {...isRoof};
-
-        this.polylinePoints.forEach( item => {
-            if(polylinePosition.x > item.x  ){
-                polylinePosition.x = item.x
-            }
-            if(polylinePosition.y > item.y  ){
-                polylinePosition.y = item.y
-            }
-        })
-        console.log(this.polylinePoints,isRoof);
-        this.polylinePoints.slice(0, this.polylinePoints.length - 1).push(isRoof)
-
-        var polyline = new fabric.Polyline(this.polylinePoints, {
-          left: Math.abs(polylinePosition["x"]),
-          top: Math.abs(polylinePosition["y"]),
-          strokeWidth: 1,
-          dirty: true,
-          stroke: "red",
-          strokeLineCap: "round",
-          strokeLineJoin: "round",
-          borderColor: "blue",
-          cornerColor: "blue",
-          fill: null,
-          hasBorders: true,
-          hasControls: true
-        });
-        this.canvas.selection = false;
-        this.canvas.add(polyline);
-        polyline.setCoords();
-        this.polylinePoints = [];
-        return;
-        alert("终点啦");
-      } else {
-        this.isDrawing = true;
-        this.canvas.selection = false;
-        let { x, y } = pointer;
-        let line = new fabric.Line([x, y, x, y], {
-          strokeWidth: 1,
-          selectable: false,
-          stroke: "red",
-          hasControls: false,
-          hasBorders: false
-        });
-        this.canvas.add(line).setActiveObject(line);
-      }
+      let points = this.polylinePoints;
+      var line = new fabric.Polyline(points, {
+        left: points["x"],
+        top: points["y"],
+        strokeWidth: 2,
+        stroke: "red",
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
+        fill: null
+      });
+      this.canvas.add(line).setActiveObject(line);
     },
 
     drawPolylineMove: function(o) {
-      //   console.log("this.isDrawing", this.isDrawing);
+      console.log(this.isDrawing, "结果");
       if (!this.isDrawing) {
         return;
       }
       var pointer = this.canvas.getPointer(o.e);
-      //   this.polylinePoints.push({ x: pointer.x, y: pointer.y });
-      let line = this.canvas.getActiveObject();
-      //   console.log(line);
-      line.set({ x2: pointer.x, y2: pointer.y });
-      line.setCoords();
-      this.canvas.renderAll();
+        this.polylinePoints.push({ x: pointer.x, y: pointer.y })
+        
+        console.log(this.canvas.getActiveObject());
     },
 
     drawPolylineUp: function(o) {
       //   this.isDrawing = false;
       //   this.polylinePoints = [];
+      var pointer = this.canvas.getPointer(o.e);
+      this.polylinePoints.push({ x: pointer.x, y: pointer.y });
+      let points = this.polylinePoints;
       if (this.isDrawing) {
         return;
       }
-      this.canvas.selection = true;
-      //   var line = new fabric.Polyline(points, {
-      //     left: points["x"],
-      //     top: points["y"],
-      //     strokeWidth: 2,
-      //     stroke: "red",
-      //     strokeLineCap: "round",
-      //     strokeLineJoin: "round",
-      //     fill: null
-      //   });
+      var line = new fabric.Polyline(points, {
+        left: points["x"],
+        top: points["y"],
+        strokeWidth: 2,
+        stroke: "red",
+        strokeLineCap: "round",
+        strokeLineJoin: "round",
+        fill: null
+      });
+      this.canvas.add(line);
     },
 
     //套索工具
@@ -345,10 +316,19 @@ export default {
       var objs = this.canvas.getObjects().map(function(o) {
         o.aCoords && o.set("hasBorders", true);
         o.aCoords && o.set("hasControls", true);
-        o.setCoords();
+        if (o.aCoords && _self.currentTab == "Rect") {
+          o.selectable = true;
+          o.set("hasBorders", true);
+          o.set("hasControls", true);
+          o.setCoords();
+        }
         return o;
       });
-      this.canvas.selection = true;
+      if (objs.length > 0) {
+        console.log(objs);
+        objs[objs.length - 1].stroke = "blue";
+      }
+      console.log("选中", objs);
       this.canvas.renderAll();
     },
 
