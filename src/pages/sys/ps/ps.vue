@@ -249,7 +249,7 @@ export default {
                 polylinePosition.y = item.y
             }
         })
-        console.log(this.polylinePoints,isRoof);
+        // console.log(this.polylinePoints,isRoof);
         this.polylinePoints.slice(0, this.polylinePoints.length - 1).push(isRoof)
 
         var polyline = new fabric.Polyline(this.polylinePoints, {
