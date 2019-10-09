@@ -29,3 +29,29 @@ export async function getRoleList(params) {
 }
 
 
+/**
+ * 更新结构名称
+ * @param {Obiect} params 
+ */
+export async function organizationUpdate(params) {
+  const data = await api(`/organization/update`, 'post', params)
+  return data
+}
+
+/**
+ * 添加新组织
+ * @param {Obiect} params 
+ */
+export async function organizationAdd(params) {
+  const data = await api(`/organization/add`, 'post', params)
+  return data
+}
+
+/**
+ * 删除组织
+ * @param {Obiect} params 
+ */
+export async function organizationDelete(params) {
+  const data = await api(`/organization/delete`, 'post', params)
+  return data
+}

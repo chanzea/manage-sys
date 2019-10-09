@@ -14,13 +14,13 @@
           </Button>
         </div>
         <div class="content-header-search">
-          <Input search enter-button="搜索" v-model="userName" placeholder="关键字" />
+          <Input search enter-button="搜索" v-model="userName" @on-search="getUserList(1)" placeholder="关键字" />
         </div>
       </div>
       <div class="content-middle">
         <Split v-model="split" min="200px">
           <div  slot="left" class="content-middle-left">
-            <Tree :data="treeOrganization"></Tree>
+            <Tree :data="treeOrganization" @on-select-change="selectNode"></Tree>
           </div>
           <div  slot="right" class="content-middle-right">
             <Table border :columns="columns" :data="data"></Table>
@@ -108,38 +108,27 @@ export default {
           }
         }
       ],
-      data: [
-        // {
-        //   userName: 'John Brown',
-        //   loginName: 'admin',
-        //   phone: '12345678978',
-        //   roleName: '组织管理员',
-        //   organization: '未分组',
-        //   createtime: ''
-        // },
-      ]
+      data: []
     }
   },
   created () {
     this.getListTree()
-    this.getUserList()
   },
   methods: {
     // 获取组织树结构数据
     getListTree () {
-      getListTree({
-        layerNumber: 5,
-      }).then(res => {
+      getListTree().then(res => {
         const { organization } = res
-        console.log('getListTree ===> ', organization)
         this.treeOrganization = this.formatTreeData(organization)
-        console.log('treeOrganization', this.treeOrganization)
+        this.organizationId = this.treeOrganization[0].id
+        this.getUserList()
       })
     }, 
     // 获取表格数据
-    getUserList () {
+    getUserList (enable = 1) {
       getUserList({
-        enable:this.enable,
+        enable,
+        searchTag: this.userName.trim() !== '' ? true : '',
         userName: this.userName,
         organizationId: this.organizationId
       }).then(res => {
@@ -177,6 +166,13 @@ export default {
 
     remove(params) {
       console.log('params', params)
+    },
+
+    selectNode (data, node) {
+      console.log('data', data)
+      console.log('node', node)
+      this.organizationId = node.id
+      this.getUserList()
     }
   }
 }

@@ -8,13 +8,16 @@
 
 <script>
 import {
-  getListTree
+  getListTree,
+  organizationAdd,
+  organizationDelete
 } from 'api/user';
 export default {
   name: 'UserGroup',
   data () {
     return {
       treeOrganization: [],
+      organizationName: ''
     }
   },
   created () {
@@ -22,13 +25,14 @@ export default {
   },
   methods: {
     getListTree () {
-      getListTree({
-        layerNumber: 5,
-      }).then(res => {
-        console.log('getListTree ===> ', res)
-        const { organization } = res
-        this.treeOrganization = this.formatTreeData(organization)
-        console.log('treeOrganization', this.treeOrganization)
+      return new Promise((resolve) => {
+        getListTree().then(res => {
+          console.log('getListTree ===> ', res)
+          const { organization } = res
+          this.treeOrganization = this.formatTreeData(organization)
+          console.log('treeOrganization', this.treeOrganization)
+          resolve()
+        })
       })
     },
     // 格式化数据
@@ -112,11 +116,10 @@ export default {
       console.log('data',data)
     },
     append (data) {
-      console.log('data', data)
       const children = data.children || [];
       children.push({
         expand: true,
-        render: (h, { subData }) => {
+        render: (h, { data, node, root}) => {
           return h('div', {
               style: {
                 display: 'inline-block',
@@ -126,11 +129,15 @@ export default {
               h('Input', {
                 props: {
                   placeholder: '组织名称',
-                  type: 'text',
-                  value: ''
+                  type: 'text'
                 },
                 style: {
                   marginRight: '8px'
+                },
+                on: {
+                  'on-blur': (val) => {
+                    this.organizationName = val.target.value
+                  }
                 }
               }),
               h('Button', {
@@ -142,7 +149,7 @@ export default {
                     marginRight: '8px'
                   },
                   on: {
-                      click: () => { this.confirm(subData) }
+                    click: () => { this.confirm( node, root) }
                   }
               }),
               h('Button', {
@@ -151,7 +158,7 @@ export default {
                     type: 'default'
                   }),
                   on: {
-                      click: () => { this.append(data) }
+                      click: () => { this.delete(data, node, root) }
                   }
               })
           ]);
@@ -160,14 +167,46 @@ export default {
       this.$set(data, 'children', children);
     },
     remove (root, node, data) {
-      const parentKey = root.find(el => el === node).parent;
-      const parent = root.find(el => el.nodeKey === parentKey).node;
-      const index = parent.children.indexOf(data);
-      parent.children.splice(index, 1);
+      organizationDelete({
+        deleted: true,
+        organizationId: data.id
+      }).then(res => {
+        const parentKey = root.find(el => el === node).parent;
+        const parent = root.find(el => el.nodeKey === parentKey).node;
+        const index = parent.children.indexOf(data);
+        parent.children.splice(index, 1);
+      })
     },
 
-    confirm (subData) {
-      console.log('subData', subData)
+    // 获取父节点ID
+    getParentId (node, root) {
+      let item = root.find(item => {
+        return item.nodeKey === node.parent
+      })
+      return item && item.node.id
+    },
+    confirm (node, root) {
+      let parentId = this.getParentId(node, root)
+      console.log('parentId', parentId)
+      organizationAdd({
+        organizationName: this.organizationName,
+        parentId
+      }).then(res => {
+        this.getListTree().then(() => {
+          this.$Message.success('添加成功');
+        })
+      })
+    },
+
+    delete (data, node, root) {
+      const children = root || [];
+      console.log('data', data)
+      console.log('node', node)
+      console.log('root', root)
+      children.splice(node.nodeKey, 1)
+      this.$set(data, 'children', children);
+      console.log('delete ===> root', data)
+
     }
   }
 }
