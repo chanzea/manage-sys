@@ -38,6 +38,9 @@ const ConfigIndex = resolve => require(['pages/sys/config/ConfigIndex'], resolve
 const ConfigRole = resolve => require(['pages/sys/config/ConfigRole'], resolve);
 const ConfigMenu = resolve => require(['pages/sys/config/ConfigMenu'], resolve);
 
+//ps模块
+const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
+
 const RolePage = resolve => require(['pages/sys/role'], resolve);
 const ResPage = resolve => require(['pages/sys/res'], resolve);
 const SysLogPage = resolve => require(['pages/sys/sysLog'], resolve);
@@ -170,9 +173,11 @@ const routes = [
           name: '权限配置'
         },]
       },
-
-
-
+      { 
+        path: 'psdraw',
+        component: PsDraw,
+        name: '标记',
+      },
       { path: '/dict', component: DictPage, name: '基础字典' },
       { path: '/sysLog', component: SysLogPage, name: '系统日志' },
       { path: '/attach', component: AttachPage, name: '附件管理' },
