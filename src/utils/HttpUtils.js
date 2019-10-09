@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Message} from 'iview';
+import {Message} from 'iView';
 import querystring from 'querystring';
 import config from '../config';
 
