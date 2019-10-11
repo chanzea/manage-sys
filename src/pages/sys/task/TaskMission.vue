@@ -1,48 +1,75 @@
 <template>
-  <div class="page-task-list">
-    <table-page :columns="columns" :data="data">
-      <div class="content-header" slot="form">
-        <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
-        <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-        <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
-          <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        <ButtonGroup>
-          <Button type="primary">查询</Button>
-          <Button>重置</Button>
-        </ButtonGroup>
-        <ButtonGroup class="btns">
-          <Button type="primary">新建</Button>
-          <Button type="primary">删除</Button>
-          <Button type="primary">上线</Button>
-          <Button type="primary">下线</Button>
-        </ButtonGroup>
-      </div>
-    </table-page>
+  <div class="page-task-mission">
+    <div class="task-mission-content">
+      <Tabs :value="currentTab">
+        <TabPane v-for="(item, index) in tabLists" :key="index" :label="item.label" :name="item.name">
+          <table-page :columns="columns" :data="data">
+            <div class="content-header" slot='form'>
+              <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
+              <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
+              <ButtonGroup>
+                <Button type="primary">查询</Button>
+                <Button>重置</Button>
+              </ButtonGroup>
+            </div>
+          </table-page>
+        </TabPane>
+      </Tabs>
+    </div>
   </div>
 </template>
 
 <script>
 import TablePage from 'components/tablePage.vue';
 export default {
-  name: 'TaskList',
+  name: 'TaskMission',
   components: {
     TablePage
   },
   data () {
     return {
-      searchValue: '',
-      status: '',
-      options: [{
-        label: '草稿',
-        value: 0
+      searchData: {
+        inputValue: '',
+        dateValue: ''
+      },
+      currentTab: 'taskMission',
+      tabLists: [{
+        label: (h) => {
+          return h('div', [
+            h('span', '任务大厅'),
+            h('Badge', {
+              props: {
+                count: 3
+              }
+            })
+          ])
+        },
+        name: 'taskMission'
       },{
-        label: '上线',
-        value: 1
+        label: (h) => {
+          return h('div', [
+            h('span', '返工任务'),
+            h('Badge', {
+              props: {
+                count: 3
+              }
+            })
+          ])
+        },
+        name: 'taskRework'
       },{
-        label: '下线',
-        value: 2
-      },],
+        label: (h) => {
+          return h('div', [
+            h('span', '已完成任务'),
+            h('Badge', {
+              props: {
+                count: 3
+              }
+            })
+          ])
+        },
+        name: 'taskComplete'
+      }],
       columns: [
         {
           type: 'selection',
@@ -162,9 +189,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.page-task-list {
-  .btns {
-    margin-top: 12px;
+.page-task-mission {
+  .content-header {
+    margin-bottom: 20px;
+    .form-item {
+      margin-right: 12px;
+    }
+  }
+  .content-middle {
+    margin-bottom: 12px;
+    &-table {
+      margin-bottom: 12px;
+    }
   }
 }
 </style>

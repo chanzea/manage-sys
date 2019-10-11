@@ -1,4 +1,6 @@
+import Vue from 'vue'
 import axios from 'axios';
+// import iView from 'iview';
 export const BASEURL = 'http://118.24.124.177:8099' //api地址
 
 export const api = (url, method, data = {}) => {
@@ -18,13 +20,15 @@ export const api = (url, method, data = {}) => {
   obj[query] = data
   return new Promise((resolve, reject) => {
     axios(obj).then(res => {
-      console.log('res', res)
       const { data } = res
       if(data.code === 'SUCCESS') {
         resolve(data.data)
       }
     }).catch(err => {
       console.log('err', err)
+      // iView.Modal.warning({
+      //   title: '经过'
+      // })
       reject(err)
     })
   })

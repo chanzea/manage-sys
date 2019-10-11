@@ -3,18 +3,24 @@
     <div class="user-data-content">
       <div class="content-header">
         <div class="content-header-btn-lists">
-          <Button>新增组</Button>
-          <Button>新增用户</Button>
-          <Button>新增组用户</Button>
+          <Button>
+            <router-link to="/user/group">新增组</router-link>
+          </Button>
+          <Button>
+            <router-link to="/user/add">新增用户</router-link>
+          </Button>
+          <Button>
+            <router-link to="/user/add">新增组用户</router-link>
+          </Button>
         </div>
         <div class="content-header-search">
-          <Input search enter-button="搜索" placeholder="Enter something..." />
+          <Input search enter-button="搜索" v-model="userName" @on-search="getUserList(1)" placeholder="关键字" />
         </div>
       </div>
       <div class="content-middle">
         <Split v-model="split" min="200px">
           <div  slot="left" class="content-middle-left">
-            <Tree :data="treeOrganization"></Tree>
+            <Tree :data="treeOrganization" @on-select-change="selectNode"></Tree>
           </div>
           <div  slot="right" class="content-middle-right">
             <Table border :columns="columns" :data="data"></Table>
@@ -27,7 +33,8 @@
 
 <script>
   import {
-    getListTree
+    getListTree,
+    getUserList
   } from 'api/user';
 export default {
   name: 'UserData',
@@ -35,6 +42,9 @@ export default {
     return {
       split: 0.15,
       treeOrganization: [],
+      userName: '',
+      enable: 1,
+      organizationId: 0,
       columns: [
         {
           type: 'selection',
@@ -43,12 +53,12 @@ export default {
         },
         {
           title: '姓名',
-          key: 'name',
+          key: 'userName',
           sortable: true
         },
         {
           title: '登录名',
-          key: 'username'
+          key: 'loginName'
         },
         {
           title: '手机',
@@ -57,7 +67,7 @@ export default {
         },
         {
           title: '权限',
-          key: 'permission'
+          key: 'roleName'
         },
         {
           title: '所在组织',
@@ -98,30 +108,41 @@ export default {
           }
         }
       ],
-      data: [
-        {
-          name: 'John Brown',
-          username: 'admin',
-          phone: '12345678978',
-          permission: '组织管理员',
-          organization: '未分组',
-          createtime: ''
-        },
-      ]
+      data: []
     }
   },
   created () {
     this.getListTree()
   },
   methods: {
+    // 获取组织树结构数据
     getListTree () {
-      getListTree({
-        layerNumber: 5,
-      }).then(res => {
+      getListTree().then(res => {
         const { organization } = res
-        console.log('getListTree ===> ', organization)
         this.treeOrganization = this.formatTreeData(organization)
-        console.log('treeOrganization', this.treeOrganization)
+        this.organizationId = this.treeOrganization[0].id
+        this.getUserList()
+      })
+    }, 
+    // 获取表格数据
+    getUserList (enable = 1) {
+      getUserList({
+        enable,
+        searchTag: this.userName.trim() !== '' ? true : '',
+        userName: this.userName,
+        organizationId: this.organizationId
+      }).then(res => {
+        const {organizationList,roleList,userList} = res
+        this.data = userList.map(item => {
+          item.roleName = item.roleIds && item.roleIds.map(item => {
+            return roleList[item].roleName
+          }).join(',')
+          item.organization = item.organizationIds ? item.organizationIds.map(item => {
+            return organizationList[item].organizationName
+          }).join(',') : '未分组'
+          return item
+        })
+
       })
     },
     // 格式化数据
@@ -145,6 +166,13 @@ export default {
 
     remove(params) {
       console.log('params', params)
+    },
+
+    selectNode (data, node) {
+      console.log('data', data)
+      console.log('node', node)
+      this.organizationId = node.id
+      this.getUserList()
     }
   }
 }

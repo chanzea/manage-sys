@@ -28,20 +28,20 @@
     "id": 2,
     "name": "源数据管理",
     "icon": "",
-    "url": "/example/formDynamic"
+    "url": "/data"
   },
   {
     "id": 21,
     "name": "源数据",
-    "icon": "",
-    "url": "/res",
+    "icon": "help-buoy",
+    "url": "/data/list",
     "parentId": 2
   },
   {
     "id": 22,
     "name": "上传源数据",
     "icon": "help-buoy",
-    "url": "/res",
+    "url": "/data/add",
     "parentId": 2
   },
   {
@@ -60,81 +60,81 @@
     "id": 32,
     "name": "题库列表",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/itembank",
     "parentId": 3
   },{
     "id": 33,
     "name": "新建任务",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/add",
     "parentId": 3
   },{
     "id": 34,
     "name": "任务大厅",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/mission",
     "parentId": 3
   },{
     "id": 35,
     "name": "审核大厅",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/auth",
     "parentId": 3
   },{
     "id": 36,
     "name": "任务监控",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/monitor",
     "parentId": 3
   },{
     "id": 37,
     "name": "任务模版",
     "icon": "",
-    "url": "/example/crudTable",
+    "url": "/task/template",
     "parentId": 3
   },
   {
     "id": 4,
     "name": "标注数据管理",
     "icon": "",
-    "url": "/role"
+    "url": "/tag"
   },
   {
     "id": 41,
     "name": "标注数据",
     "icon": "",
-    "url": "/example/crudTreeView",
+    "url": "/tag/list",
     "parentId": 4
   },
   {
     "id": 42,
     "name": "退回任务",
     "icon": "",
-    "url": "/dict",
+    "url": "/tag/add",
     "parentId": 4
   },
   {
     "id": 5,
     "name": "系统配置",
     "icon": "",
-    "url": "/example/crudTree"
+    "url": "/config"
   },{
     "id": 51,
     "name": "系统设置",
     "icon": "",
-    "url": "/example/crudTree",
+    "url": "/config/index",
     "parentId": 5
   },{
     "id": 52,
     "name": "角色管理",
     "icon": "",
-    "url": "/example/crudTree",
+    "url": "/config/role",
     "parentId": 5
   },{
     "id": 53,
     "name": "权限配置",
     "icon": "",
-    "url": "/example/crudTree",
+    "url": "/config/menu",
     "parentId": 5
   },
   {

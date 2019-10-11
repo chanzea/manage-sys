@@ -11,6 +11,15 @@ export async function getListTree(params) {
 }
 
 /**
+ * 获取用户数据
+ * @param {Obiect} params 
+ */
+export async function getUserList(params) {
+  const data = await api(`/user/list`, 'post', params)
+  return data
+}
+
+/**
  * 获取角色列表
  * @param {Obiect} params 
  */
@@ -20,3 +29,29 @@ export async function getRoleList(params) {
 }
 
 
+/**
+ * 更新结构名称
+ * @param {Obiect} params 
+ */
+export async function organizationUpdate(params) {
+  const data = await api(`/organization/update`, 'post', params)
+  return data
+}
+
+/**
+ * 添加新组织
+ * @param {Obiect} params 
+ */
+export async function organizationAdd(params) {
+  const data = await api(`/organization/add`, 'post', params)
+  return data
+}
+
+/**
+ * 删除组织
+ * @param {Obiect} params 
+ */
+export async function organizationDelete(params) {
+  const data = await api(`/organization/delete`, 'post', params)
+  return data
+}

@@ -242,7 +242,7 @@ export default {
         this.polylinePoints
           .slice(0, this.polylinePoints.length - 1)
           .push(isRoof);
-
+          
         var polyline = new fabric.Polygon(this.polylinePoints, {
           left: Math.abs(polylinePosition["x"]),
           top: Math.abs(polylinePosition["y"]),

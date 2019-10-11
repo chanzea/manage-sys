@@ -1,5 +1,5 @@
 <template>
-  <div class="page-task-list">
+  <div class="page-task-ltembank">
     <table-page :columns="columns" :data="data">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
@@ -10,12 +10,6 @@
         <ButtonGroup>
           <Button type="primary">查询</Button>
           <Button>重置</Button>
-        </ButtonGroup>
-        <ButtonGroup class="btns">
-          <Button type="primary">新建</Button>
-          <Button type="primary">删除</Button>
-          <Button type="primary">上线</Button>
-          <Button type="primary">下线</Button>
         </ButtonGroup>
       </div>
     </table-page>
@@ -50,39 +44,34 @@ export default {
           align: 'center'
         },
         {
-          title: '任务编号',
-          key: 'taskId',
+          title: '图片编号',
+          key: 'picId',
           sortable: true
         },
         {
+          title: '图片名称',
+          key: 'picName'
+        },
+        {
+          title: '任务编号',
+          key: 'taskId'
+        },{
           title: '任务名称',
           key: 'taskName'
         },
         {
-          title: '创建人',
-          key: 'creator'
-        },
-        {
-          title: '创建时间',
-          key: 'createtime'
-        },
-        {
-          title: '数量',
-          key: 'count'
-        },
-        {
-          title: '待标注',
-          key: 'mark'
+          title: '标注人员',
+          key: 'marker'
         },{
-          title: '待审核',
-          key: 'verify'
+          title: '审核人员',
+          key: 'auditor'
         },{
           title: '状态',
           key: 'status'
         },{
           title: '操作',
           key: 'action',
-          width: 260,
+          width: 150,
           align: 'center',
           render: (h, params) => {
             return h('div', [
@@ -107,54 +96,20 @@ export default {
                     this.remove(params)
                   }
                 }
-              }, '题库'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '编辑'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '删除'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '下线')
+              }, '详情')
             ]);
           }
         }
       ],
       data: [
         {
+          picId: 'QD0001',
+          picName: '任务拉框',
           taskId: 'QD0001',
-          taskName: '任务拉框',
-          creator: '张三',
-          createtime: '2019-09-15',
-          count: '1000',
-          mark: '500',
-          verify: '800',
-          status: '草稿'
+          taskName: '任务001',
+          marker: '张三',
+          auditor: '王二',
+          status: '完成'
         },
       ]
     }
@@ -162,9 +117,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.page-task-list {
-  .btns {
-    margin-top: 12px;
+.page-task-ltembank {
+  .task-ltembank-content {
+    .content-header {
+      margin-bottom: 20px;
+      .form-item {
+        margin-right: 12px;
+      }
+    }
+    .content-middle {
+      margin-bottom: 12px;
+      &-table {
+        margin-bottom: 12px;
+      }
+    }
   }
 }
 </style>

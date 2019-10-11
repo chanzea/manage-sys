@@ -8,13 +8,16 @@
 
 <script>
 import {
-  getListTree
+  getListTree,
+  organizationAdd,
+  organizationDelete
 } from 'api/user';
 export default {
   name: 'UserGroup',
   data () {
     return {
-      treeOrganization: []
+      treeOrganization: [],
+      organizationName: ''
     }
   },
   created () {
@@ -22,13 +25,14 @@ export default {
   },
   methods: {
     getListTree () {
-      getListTree({
-        layerNumber: 5,
-      }).then(res => {
-        console.log('getListTree ===> ', res)
-        const { organization } = res
-        this.treeOrganization = this.formatTreeData(organization)
-        console.log('treeOrganization', this.treeOrganization)
+      return new Promise((resolve) => {
+        getListTree().then(res => {
+          console.log('getListTree ===> ', res)
+          const { organization } = res
+          this.treeOrganization = this.formatTreeData(organization)
+          console.log('treeOrganization', this.treeOrganization)
+          resolve()
+        })
       })
     },
     // 格式化数据
@@ -72,7 +76,20 @@ export default {
         }, [
           h('Button', {
             props: Object.assign({}, this.buttonProps, {
-              icon: 'ios-add'
+              icon: 'ios-create-outline',
+              size: 'small'
+            }),
+            style: {
+              marginRight: '8px'
+            },
+            on: {
+              click: () => { this.edit(root, node, data) }
+            }
+          }),
+          h('Button', {
+            props: Object.assign({}, this.buttonProps, {
+              icon: 'ios-add',
+              size: 'small'
             }),
             style: {
               marginRight: '8px'
@@ -83,28 +100,111 @@ export default {
           }),
           h('Button', {
             props: Object.assign({}, this.buttonProps, {
-              icon: 'ios-remove'
+              icon: 'ios-remove',
+              size: 'small'
             }),
             on: {
               click: () => { this.remove(root, node, data) }
             }
-          })
+          }),
         ])
       ]);
+    },
+    // 编辑节点
+    edit (root, node, data) {
+      console.log('root',root)
+      console.log('node',node)
+      console.log('data',data)
     },
     append (data) {
       const children = data.children || [];
       children.push({
-        title: 'appended node',
-        expand: true
+        expand: true,
+        render: (h, { data, node, root}) => {
+          return h('div', {
+              style: {
+                display: 'inline-block',
+                width: '300px'
+              }
+          }, [
+              h('Input', {
+                props: {
+                  placeholder: '组织名称',
+                  type: 'text'
+                },
+                style: {
+                  marginRight: '8px'
+                },
+                on: {
+                  'on-blur': (val) => {
+                    this.organizationName = val.target.value
+                  }
+                }
+              }),
+              h('Button', {
+                  props: Object.assign({}, this.buttonProps, {
+                    icon: 'ios-checkmark',
+                    type: 'default'
+                  }),
+                  style: {
+                    marginRight: '8px'
+                  },
+                  on: {
+                    click: () => { this.confirm( node, root) }
+                  }
+              }),
+              h('Button', {
+                  props: Object.assign({}, this.buttonProps, {
+                    icon: 'ios-close',
+                    type: 'default'
+                  }),
+                  on: {
+                      click: () => { this.delete(data, node, root) }
+                  }
+              })
+          ]);
+      },
       });
       this.$set(data, 'children', children);
     },
     remove (root, node, data) {
+      organizationDelete({
+        deleted: true,
+        organizationId: data.id
+      }).then(res => {
+        const parentKey = root.find(el => el === node).parent;
+        const parent = root.find(el => el.nodeKey === parentKey).node;
+        const index = parent.children.indexOf(data);
+        parent.children.splice(index, 1);
+      })
+    },
+
+    // 获取父节点ID
+    getParentId (node, root) {
+      let item = root.find(item => {
+        return item.nodeKey === node.parent
+      })
+      return item && item.node.id
+    },
+    confirm (node, root) {
+      let parentId = this.getParentId(node, root)
+      console.log('parentId', parentId)
+      organizationAdd({
+        organizationName: this.organizationName,
+        parentId
+      }).then(res => {
+        this.getListTree().then(() => {
+          this.$Message.success('添加成功');
+        })
+      })
+    },
+
+    delete (data, node, root) {
       const parentKey = root.find(el => el === node).parent;
       const parent = root.find(el => el.nodeKey === parentKey).node;
       const index = parent.children.indexOf(data);
       parent.children.splice(index, 1);
+
     }
   }
 }

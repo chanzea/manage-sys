@@ -7,14 +7,36 @@ const IndexPage = resolve => require(['pages/index/index'], resolve);
 const EditPage = resolve => require(['pages/edit'], resolve);
 
 const DictPage = resolve => require(['pages/sys/dict'], resolve);
-
+// 用户管理
 const UserPage = resolve => require(['pages/sys/user/user'], resolve);
 const UserData = resolve => require(['pages/sys/user/UserData'], resolve);
 const UserAdd = resolve => require(['pages/sys/user/UserAdd'], resolve);
 const UserGroup = resolve => require(['pages/sys/user/UserGroup'], resolve);
 
+// 源数据
+const DataPage = resolve => require(['pages/sys/data/data'], resolve);
+const DataList = resolve => require(['pages/sys/data/DataList'], resolve);
+const DataAdd = resolve => require(['pages/sys/data/DataAdd'], resolve);
+
+// 任务管理
 const TaskPage = resolve => require(['pages/sys/task/task'], resolve);
 const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
+const TaskItembank = resolve => require(['pages/sys/task/TaskItembank'], resolve);
+const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
+const TaskMission = resolve => require(['pages/sys/task/TaskMission'], resolve);
+const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
+const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve);
+
+// 标注数据管理
+const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
+const TagList = resolve => require(['pages/sys/tag/TagList'], resolve);
+const TagAdd = resolve => require(['pages/sys/tag/TagAdd'], resolve);
+
+// 系统配置
+const ConfigPage = resolve => require(['pages/sys/config/config'], resolve);
+const ConfigIndex = resolve => require(['pages/sys/config/ConfigIndex'], resolve);
+const ConfigRole = resolve => require(['pages/sys/config/ConfigRole'], resolve);
+const ConfigMenu = resolve => require(['pages/sys/config/ConfigMenu'], resolve);
 
 //ps模块
 const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
@@ -71,6 +93,20 @@ const routes = [
             name: '新增用户'
           },
         ]
+      },{
+        path: 'data',
+        component: DataPage,
+        name: '源数据管理',
+        redirect: '/data/list',
+        children: [{
+          path: 'list',
+          component: DataList,
+          name: '源数据'
+        },{
+          path: 'add',
+          component: DataAdd,
+          name: '上传源数据'
+        }]
       },
       { 
         path: 'task',
@@ -81,9 +117,61 @@ const routes = [
           {
             path: 'list',
             component: TaskList,
-            name: '用户数据'
-          }
+            name: '任务数据'
+          },{
+            path: 'itembank',
+            component: TaskItembank,
+            name: '题库列表'
+          },{
+            path: 'add',
+            component: TaskAdd,
+            name: '新建任务'
+          },{
+            path: 'mission',
+            component: TaskMission,
+            name: '任务大厅'
+          },{
+            path: 'auth',
+            component: TaskAuth,
+            name: '审核大厅'
+          },{
+            path: 'template',
+            component: TaskTemplate,
+            name: '任务模版'
+          },
         ]
+      },{
+        path: 'tag',
+        component: TagPage,
+        name: '标注数据管理',
+        redirect: '/tag/list',
+        children: [{
+          path: 'list',
+          component: TagList,
+          name: '标注数据'
+        },{
+          path: 'add',
+          component: TagAdd,
+          name: '退回任务'
+        }]
+      },{
+        path: 'config',
+        component: ConfigPage,
+        name: '源数据管理',
+        redirect: '/config/index',
+        children: [{
+          path: 'index',
+          component: ConfigIndex,
+          name: '系统配置'
+        },{
+          path: 'role',
+          component: ConfigRole,
+          name: '角色管理'
+        },{
+          path: 'menu',
+          component: ConfigMenu,
+          name: '权限配置'
+        },]
       },
       { 
         path: 'psdraw',
