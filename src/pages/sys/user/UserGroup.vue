@@ -110,6 +110,7 @@ export default {
         ])
       ]);
     },
+    // 编辑节点
     edit (root, node, data) {
       console.log('root',root)
       console.log('node',node)
@@ -199,13 +200,10 @@ export default {
     },
 
     delete (data, node, root) {
-      const children = root || [];
-      console.log('data', data)
-      console.log('node', node)
-      console.log('root', root)
-      children.splice(node.nodeKey, 1)
-      this.$set(data, 'children', children);
-      console.log('delete ===> root', data)
+      const parentKey = root.find(el => el === node).parent;
+      const parent = root.find(el => el.nodeKey === parentKey).node;
+      const index = parent.children.indexOf(data);
+      parent.children.splice(index, 1);
 
     }
   }

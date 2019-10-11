@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios';
-import iView from 'iview';
+// import iView from 'iview';
 export const BASEURL = 'http://118.24.124.177:8099' //api地址
 
 export const api = (url, method, data = {}) => {

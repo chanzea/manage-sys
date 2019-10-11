@@ -159,6 +159,7 @@ export default {
 <style lang="scss" scoped>
 .page-user-add {
   .user-add-content {
+    width: 510px;
     padding: 8px;
     .btn-list {
       padding-left: 80px;

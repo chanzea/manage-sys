@@ -8,7 +8,7 @@
         <Table border :columns="columns" :data="data"></Table>
       </div>
       <div class="content-middle-pages">
-        <Page :total="total" />
+        <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
       </div>
     </div>
   </div>
@@ -33,6 +33,14 @@ export default {
     total: {
       type: Number,
       default: 100
+    }
+  },
+  methods: {
+    changePage (page) {
+      this.$emit('on-change-page', page)
+    },
+    changePageSize (pageSize) {
+      this.$emit('on-change-pageSize', pageSize)
     }
   }
 }
