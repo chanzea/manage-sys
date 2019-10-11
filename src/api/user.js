@@ -20,6 +20,16 @@ export async function getUserList(params) {
 }
 
 /**
+ * 获取用户数据详情
+ * @param {Obiect} params 
+ */
+export async function getUserInfo(params) {
+  const data = await api(`/user/get`, 'get', params)
+  return data
+}
+
+
+/**
  * 获取角色列表
  * @param {Obiect} params 
  */

@@ -86,7 +86,8 @@ export default {
               h('span', {
                 style: {
                   color: '#2d8cf0',
-                  marginRight: '12px'
+                  marginRight: '12px',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {
@@ -94,16 +95,24 @@ export default {
                   }
                 }
               }, '查看'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0'
+              h({
+                template: `<Poptip
+                  popper-class="delete-pop"
+                  confirm
+                  placement="right"
+                  @on-ok="deleteData"
+                >
+                  <div slot="title">
+                    <span>您确定要删除该用户吗</span>
+                  </div>
+                  <span class="opt-item">删除</span>
+                </Poptip>`,
+                methods: {
+                  deleteData: () => {
+                    this.deleteData(params)
+                  },
                 },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '删除')
+              }),
             ]);
           }
         }
@@ -126,6 +135,7 @@ export default {
     }, 
     // 获取表格数据
     getUserList (enable = 1) {
+      this.data = []
       getUserList({
         enable,
         searchTag: this.userName.trim() !== '' ? true : '',
@@ -161,10 +171,15 @@ export default {
     },
 
     show (params) {
-      console.log('params', params)
+      this.$router.push({
+        path: '/user/add',
+        query: {
+          userId: params.row.id
+        }
+      })
     },
 
-    remove(params) {
+    deleteData(params) {
       console.log('params', params)
     },
 
@@ -178,6 +193,9 @@ export default {
 }
 </script>
 
+<style lang="scss">
+  @import './../../../styles/pop.scss';
+</style>
 <style lang="scss" scoped>
 .page-user-data {
   display: flex;

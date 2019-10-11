@@ -39,7 +39,7 @@
       // this.menuData = common.constructTree(OperatorUtils.getMenuData(), 'name');
       this.menuData = common.constructTree(data, 'name');
       // console.log('menuData', this.menuData)
-      // this.updateCurMenu();
+      this.updateCurMenu();
     },
     computed: {},
     methods: {

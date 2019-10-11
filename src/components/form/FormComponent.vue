@@ -2,16 +2,14 @@
   <div class="component-form">
     <Form :label-width="80">
       <FormItem :label="item.label" v-for="(item, index) in formProp" :key="index">
-        <Input v-if="item.type === 'input'" v-model="item.value" :placeholder="item.placeholder"></Input>
+        <Input v-if="['text', 'textarea', 'password'].includes(item.type)" :type="item.type" v-model="item.value" :placeholder="item.placeholder"></Input>
 
         <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="item.value" :placeholder="item.placeholder">
           <Option :value="subItem.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
         </Select>
 
-        <Input v-if="item.type === 'textarea'" v-model="item.value" type="textarea" :placeholder="item.placeholder"></Input>
-
         <RadioGroup v-if="item.type === 'radio'" v-model="item.value">
-          <Radio :label="subItem.label" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Radio>
+          <Radio :label="subItem.label" v-for="(subItem, index) in item.options" :key="index">{{subItem.text}}</Radio>
         </RadioGroup>
 
         <DatePicker v-if="item.type === 'datePicker'" type="date" :placeholder="item.placeholder" v-model="item.value"></DatePicker>

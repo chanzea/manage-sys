@@ -81,25 +81,22 @@ export default {
                 }
               }, '编辑'),
               h({
-                template: 
-                `<Poptip placement="right">
-                  <div class="pop-content" slot="content">
-                    <span class="pop-content-title"><Icon type="ios-help-circle" />你确定要删除吗</span>
-                    <div class="pop-content-footer">
-                      <span class="cancel">取消</span>
-                      <Button class="btn-confirm" type="primary" size="small">确定</Button>
-                    </div>
+                template: `<Poptip
+                  popper-class="delete-pop"
+                  confirm
+                  placement="right"
+                  @on-ok="deleteData"
+                >
+                  <div slot="title">
+                    <span>你确定要删除吗</span>
                   </div>
                   <span class="opt-item">删除</span>
                 </Poptip>`,
-                style: {
-                  color: '#2d8cf0',
+                methods: {
+                  deleteData: () => {
+                    this.deleteData(params)
+                  },
                 },
-                on: {
-                  click: () => {
-                      this.delete(params)
-                  }
-                }
               }),
             ]);
           }
@@ -147,10 +144,18 @@ export default {
       console.log('pageSize', pageSize)
       this.page.pageSize = pageSize
       this.getDatasetList()
+    },
+
+    deleteData (params) {
+      console.log('params', params)
     }
   }
 }
 </script>
+
+<style lang="scss">
+  @import './../../../styles/pop.scss';
+</style>
 
 <style lang="scss" scoped>
 .page-data-list {
@@ -180,28 +185,4 @@ export default {
     }
   }
 }
-</style>
-
-<style lang="scss">
-  .pop-content {
-    &-title {
-      margin-bottom: 20px;
-      i {
-        color: #f90;
-      }
-    }
-    &-footer {
-      display: flex;
-      justify-content: flex-end;
-      .cancel {
-        color: #2d8cf0;
-      }
-      .btn-confirm {
-        margin-left: 12px;
-      }
-    }
-  }
-  .opt-item {
-    color: #2d8cf0;
-  }
 </style>
