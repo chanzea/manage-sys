@@ -23,7 +23,12 @@
             <Tree :data="treeOrganization" @on-select-change="selectNode"></Tree>
           </div>
           <div  slot="right" class="content-middle-right">
-            <Table border :columns="columns" :data="data"></Table>
+            <div class="content-middle-right-table">
+              <Table border :columns="columns" :data="data"></Table>
+            </div>
+            <div class="content-middle-right-pages">
+              <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
+            </div>
           </div>
         </Split>
       </div>
@@ -117,7 +122,12 @@ export default {
           }
         }
       ],
-      data: []
+      data: [],
+      page: {
+        pageNum: 1,
+        pageSize: 20
+      },
+      total: null
     }
   },
   created () {
@@ -140,9 +150,13 @@ export default {
         enable,
         searchTag: this.userName.trim() !== '' ? true : '',
         userName: this.userName,
-        organizationId: this.organizationId
+        organizationId: this.organizationId,
+        page: {
+          pageNum: this.page.pageNum,
+          pageSize: this.page.pageSize,
+        }
       }).then(res => {
-        const {organizationList,roleList,userList} = res
+        const {organizationList,roleList,userList,count} = res
         this.data = userList.map(item => {
           item.roleName = item.roleIds && item.roleIds.map(item => {
             return roleList[item].roleName
@@ -152,7 +166,7 @@ export default {
           }).join(',') : '未分组'
           return item
         })
-
+        this.total = count
       })
     },
     // 格式化数据
@@ -184,11 +198,21 @@ export default {
     },
 
     selectNode (data, node) {
-      console.log('data', data)
-      console.log('node', node)
       this.organizationId = node.id
       this.getUserList()
-    }
+    },
+    // 改变页码
+    changePage (page) {
+      console.log('page', page)
+      this.page.pageNum = page
+      this.getUserList()
+    },
+    // 改变页面条数
+    changePageSize (pageSize) {
+      console.log('pageSize', pageSize)
+      this.page.pageSize = pageSize
+      this.getUserList()
+    },
   }
 }
 </script>
@@ -230,6 +254,9 @@ export default {
         border: 1px solid #f7f7f7;
         height: 100%;
         padding: 8px;
+        &-table {
+          margin-bottom: 12px;
+        }
       }
     }
   }

@@ -162,6 +162,7 @@
         this.$emit('on-change', this.selected);
       },
       checkChange (checked) {
+        console.log('checked', checked)
         if (checked == null || checked.length <= 0) {
           this.selected = null;
           this.selectedText = '';
@@ -177,6 +178,7 @@
           }
           this.selectedText = textArr.join(',');
           this.selected = checked;
+          console.log('valArr', valArr)
           this.$emit('input', valArr);
         }
         this.$emit('on-change', this.selected);

@@ -25,13 +25,14 @@ Vue.use(Fabric);
 // import mock from './mock/index.js';
 
 iView.Message.config({duration: 2});
-iView.Notice.config({top: 55});
+// iView.Notice.config({top: 55});
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.use(iView);
 Vue.use(http);
+window.copyIview = iView
 
 window.OperatorUtils = OperatorUtils;
 const router = new VueRouter({

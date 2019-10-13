@@ -11,6 +11,9 @@
       </div>
       <Modal v-model="isShowModal" fullscreen :title="modalContent.title">
         <div>{{modalContent.content}}</div>
+        <div>
+          <Tree :data="data" show-checkbox></Tree>
+        </div>
       </Modal>
     </div>
   </div>

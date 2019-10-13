@@ -1,15 +1,14 @@
 <template>
   <div class="page-user-add">
     <div class="user-add-content">
-      <form-component :formProp="formProp"></form-component>
+      <form-component ref="formProp" :formProp="formProp"></form-component>
       <div class="btn-list" v-if="!!userId">
-        <Button class="btn-list-item" type="primary">保存</Button>
+        <Button class="btn-list-item" type="primary" @click="UserUpdate">保存</Button>
         <Button class="btn-list-item">返回</Button>
       </div>
       <div class="btn-list" v-else>
-        <Button class="btn-list-item" type="primary" @click="getFormData">确定</Button>
-        <Button class="btn-list-item" type="primary">确定并继续添加</Button>
-        <Button class="btn-list-item">取消</Button>
+        <Button class="btn-list-item" type="primary" @click="UserRegister">确定</Button>
+        <Button class="btn-list-item" type="primary"  @click="UserRegister(true)">确定并继续添加</Button>
       </div>
     </div>
   </div>
@@ -19,8 +18,11 @@
 
 import FormComponent from 'components/form/FormComponent.vue'
 import {
+  getListTree,
   getRoleList,
-  getUserInfo
+  getUserInfo,
+  UserRegister,
+  UserUpdate
 } from 'api/user'
 
 export default {
@@ -32,15 +34,17 @@ export default {
         {
           label: '状态',
           type: 'switch',
-          value: null,
+          value: false,
           key: 'enable'
         },{
           label: '所在组织',
-          type: 'select',
-          value: [],
+          type: 'treeSelect',
+          value: '',
           options: [],
           placeholder: '设置归属组织',
           isMultiple: true,
+          showCheckbox: true,
+          ref: 'organization',
           key: 'organizationIds'
         },{
           label: '系统角色',
@@ -78,7 +82,7 @@ export default {
           label: '登录密码',
           type: 'password',
           value: '',
-          placeholder: '登录密码',
+          placeholder: '登录密码,要求至少8位数字加英文',
           key: 'loginPassword'
         },{
           label: '手机号码',
@@ -148,6 +152,7 @@ export default {
   created () {
     this.userId = this.$route.query.userId || ''
     this.getRoleList()
+    this.getListTree()
     console.log('this.$route.query', this.$route.query)
     if (this.userId) {
       this.getUserInfo()
@@ -171,26 +176,87 @@ export default {
         })
       })
     },
+    // 重置表单
+    ResetFormData () {
+      this.formProp.map(item => {
+        if (item.ref) {
+          this.$refs['formProp'].$refs[item.ref][0].selectedText = ''
+          this.$refs['formProp'].$refs[item.ref][0].selected = null
+        } else {
+          if (item.type === 'switch') {
+            item.value = false
+          } else {
+            item.value = ''
+          }
+        }
+        return item
+      })
+    },
     // 获取提交参数
-    getFormData () {
-      console.log('this.form', this.formProp)
+    UserRegister (isReset = false) {
       const params = {}
       this.formProp.forEach(item => {
-        params[item.key] = item.value
+        if (item.type === 'switch') {
+          params[item.key] = item.value ? 1 : 0
+        } else {
+          params[item.key] = item.value
+        }
       })
-      console.log('params',params)
+      UserRegister(params).then(res => {
+        if(isReset) {
+          this.ResetFormData()
+        }
+        this.$Message.success('用户已成功注册');
+      })
+    },
+
+    UserUpdate () {
+      const params = {}
+      this.formProp.forEach(item => {
+        if (item.type === 'switch') {
+          params[item.key] = item.value ? 1 : 0
+        } else {
+          params[item.key] = item.value
+        }
+      })
+      UserUpdate(params).then(res => {
+        this.$Message.success('用户信息更新成功');
+      })
     },
     // 获取角色列表
     getRoleList () {
       getRoleList().then(res => {
-        console.log('getRoleList', res)
         this.formProp[2].options = res.list.map(item => {
           item.value = item.id
           item.label = item.roleName
           return item
         })
       })
-    }
+    },
+
+    // 获取组织树
+    getListTree () {
+      getListTree().then(res => {
+        const { organization } = res
+        this.formProp[1].options = this.formatTreeData(organization)
+      })
+    },
+
+    // 格式化数据
+    formatTreeData (item) {
+      if (!item.childs) {
+        item.title = item.organizationName
+        item.name = item.organizationName
+        return [item]
+      }
+      item.name = item.organizationName
+      item.title = item.organizationName
+      item.children = item.childs
+      item.childs.forEach(subItem => {
+        this.formatTreeData(subItem)
+      })
+      return [item]
+    },
   }
 }
 </script>

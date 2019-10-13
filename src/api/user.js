@@ -28,6 +28,24 @@ export async function getUserInfo(params) {
   return data
 }
 
+/**
+ * 用户注册
+ * @param {Obiect} params 
+ */
+export async function UserRegister(params) {
+  const data = await api(`/user/register`, 'POST', params)
+  return data
+}
+
+/**
+ * 用户数据更新
+ * @param {Obiect} params 
+ */
+export async function UserUpdate(params) {
+  const data = await api(`/user/update`, 'POST', params)
+  return data
+}
+
 
 /**
  * 获取角色列表

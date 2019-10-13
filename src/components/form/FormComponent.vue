@@ -4,6 +4,13 @@
       <FormItem :label="item.label" v-for="(item, index) in formProp" :key="index">
         <Input v-if="['text', 'textarea', 'password'].includes(item.type)" :type="item.type" v-model="item.value" :placeholder="item.placeholder"></Input>
 
+        <TreeSelect v-if="item.type==='treeSelect'" :ref="item.ref" v-model="item.value"
+          :data="item.options"
+          :multiple="item.isMultiple"
+          :showCheckbox="item.showCheckbox"
+          @on-change="(val)=>{if(item.onChange!=null){item.onChange(val,data,fromData,mData)}}">
+        </TreeSelect>
+
         <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="item.value" :placeholder="item.placeholder">
           <Option :value="subItem.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
         </Select>
@@ -24,6 +31,7 @@
 </template>
 
 <script>
+import TreeSelect from './TreeSelect'
 export default {
   name: 'ComponentForm',
   props: {
@@ -36,18 +44,10 @@ export default {
   },
   data () {
     return {
-      formItem: {
-        // input: '',
-        // select: '',
-        // radio: 'male',
-        // checkbox: [],
-        // switch: true,
-        // date: '',
-        // time: '',
-        // slider: [20, 50],
-        // textarea: ''
-      }
     }
+  },
+  components: {
+    TreeSelect
   }
 }
 </script>

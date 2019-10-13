@@ -1,6 +1,6 @@
 <template>
   <div class="page-data-list">
-    <table-page :columns="columns" :data="data" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+    <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -106,7 +106,8 @@ export default {
       page: {
         pageNum: 1,
         pageSize: 20
-      }
+      },
+      total: null
     }
   },
   created () {
@@ -122,8 +123,7 @@ export default {
           pageSize: this.page.pageSize,
         }
       }).then(res => {
-        console.log('res', res)
-        const {organizationList,dataSetList,userList} = res
+        const {organizationList,dataSetList,userList,count} = res
         this.data = dataSetList.map(item => {
           item.userName = userList[item.creatorId].userName
           item.dataPath = item.organizationIds ? item.organizationIds.map(item => {
@@ -131,17 +131,16 @@ export default {
           }).join(',') : '未分组'
           return item
         })
+        this.total = count
       })
     },
 
     changePage (page) {
-      console.log('page', page)
       this.page.pageNum = page
       this.getDatasetList()
     },
 
     changePageSize (pageSize) {
-      console.log('pageSize', pageSize)
       this.page.pageSize = pageSize
       this.getDatasetList()
     },

@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import iView from 'iview';
 export const BASEURL = 'http://118.24.124.177:8099' //api地址
 
 export const api = (url, method, data = {}) => {
@@ -9,25 +8,35 @@ export const api = (url, method, data = {}) => {
     return;
   }
   url = BASEURL + url
-  data.tokenId = tokenId
   const query = method === 'get' ? 'params' : 'data'
   const obj = {
     url,
     method,
-    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'tokenId': tokenId
+    }
   }
   obj[query] = data
   return new Promise((resolve, reject) => {
     axios(obj).then(res => {
       const { data } = res
-      if(data.code === 'SUCCESS') {
+      if (data.code === 'SUCCESS') {
         resolve(data.data)
+      } else {
+        copyIview.Modal.warning({
+          title: '提示',
+          content: data.message || '系统错误',
+          okText: '确定'
+        })
       }
     }).catch(err => {
       console.log('err', err)
-      // iView.Modal.warning({
-      //   title: '经过'
-      // })
+      copyIview.Modal.warning({
+        title: '提示',
+        content: '系统错误',
+        okText: '确定'
+      })
       reject(err)
     })
   })

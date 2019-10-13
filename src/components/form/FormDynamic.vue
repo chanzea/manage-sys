@@ -200,6 +200,16 @@
                           :dataUrl="item.dataUrl"
                           @on-change="(val)=>{if(item.onChange!=null){item.onChange(val,data,fromData,mData)}}">
               </TreeSelect>
+              <div>
+                {{item}}
+              </div>
+              <hr />
+              <div>
+                {{fromData}}
+              </div>
+              <div>
+                {{fromData[item.name]}}
+              </div>
             </template>
             <!--图片上传-->
             <template v-else-if="item.type==='imgUpload'">
@@ -287,6 +297,9 @@
     created () {
       this.initForm(this.data);
       this.reset();
+      setTimeout(() => {
+        console.log(this.fromData)
+      }, 2000);
     },
     mounted () {
     },

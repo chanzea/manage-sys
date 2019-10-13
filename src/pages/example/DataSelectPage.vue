@@ -19,7 +19,7 @@
                   clearable
                   v-model='val1'/>
     </row>
-
+    {{val1}}
     <row style="padding-top: 50px">
       绑定数据源
       </br>
