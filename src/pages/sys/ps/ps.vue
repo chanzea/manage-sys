@@ -70,12 +70,7 @@ export default {
     canvas.on("selection:cleared", e => {
       this.canvas.renderAll();
     });
-
-    canvas.hoverCursor = "auto";
-
     this.canvas = canvas;
-    // this.loadObject();
-    // this.canvasDataChange();
     this.addObjectEvent();
   },
 
@@ -88,7 +83,7 @@ export default {
       console.log("当前工具", this.currentTab);
       if (this.currentTab == "Rect") {
         var objs = this.canvas.getObjects().map(function(o) {
-          if (o.aCoords && _self.currentTab == "Rect") {
+          if (o.aCoords) {
             o.set("hasBorders", false);
             o.set("hasControls", false);
             o.selectable = false;
@@ -170,15 +165,17 @@ export default {
         angle: 0,
         cornerSize: 5,
         stroke: "red",
-        borderColor: "blue",
+        selectionBorderColor: "blue",
         cornerColor: "blue",
         borderOpacityWhenMoving: 1,
+        selectionDashArray: [5, 5],
         borderScaleFactor: 2,
         fill: "transparent",
         strokeWidth: 1,
         transparentCorners: false,
         hasBorders: false,
-        hasControls: false
+        hasControls: false,
+        // perPixelTargetFind:true
       });
       this.canvas.add(rect).setActiveObject(rect);
     },
@@ -222,35 +219,31 @@ export default {
       var pointer = this.canvas.getPointer(object.e);
       this.polylinePoints.push({ x: pointer.x, y: pointer.y });
       let isRoof = this.polylinePoints[0] || [];
-      console.log(isRoof, this.polylinePoints);
       if (
         this.polylinePoints.length > 1 &&
         Math.abs(isRoof.x - pointer.x) <= 3 &&
         Math.abs(isRoof.y - pointer.y) <= 3
       ) {
         this.isDrawing = false;
-    
         let lines = this.canvas.getObjects().filter(item => {
           return item.type == "line";
         });
         lines.forEach((value, index, ar) => {
           this.canvas.remove(value);
         });
-        
-        
-        console.log(this.polylinePoints,isRoof)
-        let polylinePosition = {...isRoof};
-
-        this.polylinePoints.forEach( item => {
-            if(polylinePosition.x > item.x  ){
-                polylinePosition.x = item.x
-            }
-            if(polylinePosition.y > item.y  ){
-                polylinePosition.y = item.y
-            }
-        })
-        // console.log(this.polylinePoints,isRoof);
-        this.polylinePoints.slice(0, this.polylinePoints.length - 1).push(isRoof)
+        let polylinePosition = { ...isRoof };
+        this.polylinePoints.forEach(item => {
+          if (polylinePosition.x > item.x) {
+            polylinePosition.x = item.x;
+          }
+          if (polylinePosition.y > item.y) {
+            polylinePosition.y = item.y;
+          }
+        });
+        console.log(this.polylinePoints, isRoof);
+        this.polylinePoints
+          .slice(0, this.polylinePoints.length - 1)
+          .push(isRoof);
 
         var polyline = new fabric.Polyline(this.polylinePoints, {
           left: Math.abs(polylinePosition["x"]),
@@ -262,13 +255,21 @@ export default {
           strokeLineJoin: "round",
           borderColor: "blue",
           cornerColor: "blue",
-          fill: null,
+          cornerStrokeColor: 'blue',
+          cornerSize: 5,
+          borderOpacityWhenMoving: 1,
+          borderScaleFactor: 2,
+          "stroke-dasharray": 3,
+          tool: 3,
+          fill: "transparent",
+          transparentCorners: false,
           hasBorders: true,
-          hasControls: true
+          hasControls: true,
+        //   perPixelTargetFind: true
         });
         this.canvas.selection = false;
         this.canvas.add(polyline);
-        polyline.setCoords();
+        
         this.polylinePoints = [];
         return;
         alert("终点啦");
@@ -343,8 +344,8 @@ export default {
     selectObject: function(dd) {
       let _self = this;
       var objs = this.canvas.getObjects().map(function(o) {
-        o.aCoords && o.set("hasBorders", true);
-        o.aCoords && o.set("hasControls", true);
+        o.set("hasBorders", true);
+        o.set("hasControls", true);
         o.setCoords();
         return o;
       });
