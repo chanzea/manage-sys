@@ -23,7 +23,8 @@
 <script>
 
   import common from '@/utils/common';
-  import data from 'src/mock/data.json'
+  // import data from 'src/mock/data.json'
+  import data from '@/mock/side.js'
   export default {
     name: 'sidebar',
     props: ['menuSmall'],
@@ -37,8 +38,9 @@
     },
     created: function () {
       // this.menuData = common.constructTree(OperatorUtils.getMenuData(), 'name');
-      this.menuData = common.constructTree(data, 'name');
-      // console.log('menuData', this.menuData)
+      // this.menuData = common.constructTree(data, 'name');
+      this.menuData = data;
+      console.log('menuData', JSON.stringify(this.menuData))
       // this.updateCurMenu();
     },
     computed: {},

@@ -165,15 +165,17 @@ export default {
         angle: 0,
         cornerSize: 5,
         stroke: "red",
-        borderColor: "blue",
+        selectionBorderColor: "blue",
         cornerColor: "blue",
         borderOpacityWhenMoving: 1,
+        selectionDashArray: [5, 5],
         borderScaleFactor: 2,
         fill: "transparent",
         strokeWidth: 1,
         transparentCorners: false,
         hasBorders: false,
-        hasControls: false
+        hasControls: false,
+        // perPixelTargetFind:true
       });
       this.canvas.add(rect).setActiveObject(rect);
     },
@@ -242,8 +244,8 @@ export default {
         this.polylinePoints
           .slice(0, this.polylinePoints.length - 1)
           .push(isRoof);
-          
-        var polyline = new fabric.Polygon(this.polylinePoints, {
+
+        var polyline = new fabric.Polyline(this.polylinePoints, {
           left: Math.abs(polylinePosition["x"]),
           top: Math.abs(polylinePosition["y"]),
           strokeWidth: 1,
@@ -253,6 +255,7 @@ export default {
           strokeLineJoin: "round",
           borderColor: "blue",
           cornerColor: "blue",
+          cornerStrokeColor: 'blue',
           cornerSize: 5,
           borderOpacityWhenMoving: 1,
           borderScaleFactor: 2,
@@ -261,7 +264,8 @@ export default {
           fill: "transparent",
           transparentCorners: false,
           hasBorders: true,
-          hasControls: true
+          hasControls: true,
+        //   perPixelTargetFind: true
         });
         this.canvas.selection = false;
         this.canvas.add(polyline);
