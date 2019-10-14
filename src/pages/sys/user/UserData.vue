@@ -186,7 +186,7 @@ export default {
       console.log('params', params)
       deleteUser({
         userId: params.row.id,
-        organizationId: params.row.organizationIds.join(',')
+        organizationId: this.organizationId
       }).then(res => {
         this.getUserList()
       })
