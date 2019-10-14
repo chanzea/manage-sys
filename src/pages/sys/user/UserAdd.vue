@@ -1,7 +1,7 @@
 <template>
   <div class="page-user-add">
     <div class="user-add-content">
-      <form-component ref="formProp" :formProp="formProp"></form-component>
+      <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
       <div class="btn-list" v-if="!!userId">
         <Button class="btn-list-item" type="primary" @click="UserUpdate">保存</Button>
         <Button class="btn-list-item">返回</Button>
@@ -24,7 +24,7 @@ import {
   UserRegister,
   UserUpdate
 } from 'api/user'
-
+const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
 export default {
   name: 'UserAdd',
   data() {
@@ -143,7 +143,22 @@ export default {
           placeholder: '输入详细的地址，精确到门牌号码...',
           key: 'address'
         }
-      ]   
+      ],
+      // 验证规则
+      ruleCustom: {
+        loginPassword: [
+          { 
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              if (!reg.test(value)) {
+                callback(new Error('要求至少8位数字加英文'))
+              } else {
+                callback()
+              }
+          }}
+        ]
+      },
+      formCustom: {}
     }
   },
   components: {
@@ -153,7 +168,6 @@ export default {
     this.userId = this.$route.query.userId || ''
     this.getRoleList()
     this.getListTree()
-    console.log('this.$route.query', this.$route.query)
     if (this.userId) {
       this.getUserInfo()
     }
@@ -165,13 +179,12 @@ export default {
       getUserInfo({
         userId
       }).then(res => {
-        console.log('res', res)
         const {user, organizationList, roleList} = res
         // 页面渲染
         this.formProp.forEach(item => {
-          item.value = user[item.key]
+          this.formCustom[item.key] = user[item.key]
           if (item.type === 'switch') {
-            item.value = !!user[item.key]
+            this.formCustom[item.key] = !!user[item.key]
           }
         })
       })
@@ -194,33 +207,36 @@ export default {
     },
     // 获取提交参数
     UserRegister (isReset = false) {
-      const params = {}
-      this.formProp.forEach(item => {
-        if (item.type === 'switch') {
-          params[item.key] = item.value ? 1 : 0
-        } else {
-          params[item.key] = item.value
+      // 测试参数
+      // const params = {"birthday":"2019-10-16T16:00:00.000Z","loginName":"abaaa","enable":1,"organizationIds":[21,40,41],"roleIds":[11,12],"userName":"aaaaa","sex":1,"loginPassword":"asdfqbwe123","phoneNum":"15912313212","certificateType":"ID_CARD","certificateId":"445124159123132129","qq":"159123132","email":"159123132@qq.com","maritalStatus":0,"address":"sss"}
+      this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
+        if (valid) {
+          this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
+          const params = Object.assign({}, this.formCustom, {
+            enable: this.formCustom.enable ? 1 : 0
+          })
+          console.log('提交参数', params)
+          UserRegister(params).then(res => {
+            if(isReset) {
+              this.$refs['formProp'].$refs['basicForm'].resetFields()
+            }
+            this.$Message.success('用户已成功注册');
+          })
         }
-      })
-      UserRegister(params).then(res => {
-        if(isReset) {
-          this.ResetFormData()
-        }
-        this.$Message.success('用户已成功注册');
       })
     },
 
     UserUpdate () {
-      const params = {}
-      this.formProp.forEach(item => {
-        if (item.type === 'switch') {
-          params[item.key] = item.value ? 1 : 0
-        } else {
-          params[item.key] = item.value
+      this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
+        if (valid) {
+          this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
+          const params = Object.assign({}, this.formCustom, {
+            enable: this.formCustom.enable ? 1 : 0
+          })
+          UserUpdate(params).then(res => {
+            this.$Message.success('用户信息更新成功');
+          })
         }
-      })
-      UserUpdate(params).then(res => {
-        this.$Message.success('用户信息更新成功');
       })
     },
     // 获取角色列表

@@ -16,6 +16,10 @@ import TablePage from 'components/tablePage.vue';
 import {
   getDatasetList
 } from 'api/data.js';
+import {
+  renderDeletePop
+} from 'utils/tool.js'
+console.log('renderDeletePop', renderDeletePop)
 export default {
   name: 'DataList',
   components: {
@@ -61,7 +65,8 @@ export default {
               h('span', {
                 style: {
                   color: '#2d8cf0',
-                  marginRight: '12px'
+                  marginRight: '12px',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {
@@ -72,7 +77,8 @@ export default {
               h('span', {
                 style: {
                   color: '#2d8cf0',
-                  marginRight: '12px'
+                  marginRight: '12px',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {
@@ -80,24 +86,9 @@ export default {
                   }
                 }
               }, '编辑'),
-              h({
-                template: `<Poptip
-                  popper-class="delete-pop"
-                  confirm
-                  placement="right"
-                  @on-ok="deleteData"
-                >
-                  <div slot="title">
-                    <span>你确定要删除吗</span>
-                  </div>
-                  <span class="opt-item">删除</span>
-                </Poptip>`,
-                methods: {
-                  deleteData: () => {
-                    this.deleteData(params)
-                  },
-                },
-              }),
+              renderDeletePop(h, params, '您确定要删除吗', {
+                confirmFn: this.deleteData
+              })
             ]);
           }
         }
@@ -145,16 +136,16 @@ export default {
       this.getDatasetList()
     },
 
+    show(params) {
+      console.log('params', params)
+    },
+
     deleteData (params) {
       console.log('params', params)
-    }
+    },
   }
 }
 </script>
-
-<style lang="scss">
-  @import './../../../styles/pop.scss';
-</style>
 
 <style lang="scss" scoped>
 .page-data-list {

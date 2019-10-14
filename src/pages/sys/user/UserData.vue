@@ -41,6 +41,9 @@
     getListTree,
     getUserList
   } from 'api/user';
+  import {
+    renderDeletePop
+  } from 'utils/tool.js'
 export default {
   name: 'UserData',
   data () {
@@ -100,24 +103,9 @@ export default {
                   }
                 }
               }, '查看'),
-              h({
-                template: `<Poptip
-                  popper-class="delete-pop"
-                  confirm
-                  placement="right"
-                  @on-ok="deleteData"
-                >
-                  <div slot="title">
-                    <span>您确定要删除该用户吗</span>
-                  </div>
-                  <span class="opt-item">删除</span>
-                </Poptip>`,
-                methods: {
-                  deleteData: () => {
-                    this.deleteData(params)
-                  },
-                },
-              }),
+              renderDeletePop(h, params, '您确定要删除该用户吗', {
+                confirmFn: this.deleteData
+              })
             ]);
           }
         }
@@ -142,7 +130,7 @@ export default {
         this.organizationId = this.treeOrganization[0].id
         this.getUserList()
       })
-    }, 
+    },
     // 获取表格数据
     getUserList (enable = 1) {
       this.data = []
@@ -217,9 +205,6 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  @import './../../../styles/pop.scss';
-</style>
 <style lang="scss" scoped>
 .page-user-data {
   display: flex;

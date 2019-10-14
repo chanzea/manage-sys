@@ -61,3 +61,27 @@
   border-left: #F5F7F9 2px solid;
   min-height: calc(100vh - 120px);
 }
+
+
+.delete-pop {
+  .ivu-poptip-body {
+    position: relative;
+    .ivu-icon {
+      position: absolute;
+      left: 16px;
+    }
+  }
+  .ivu-poptip-footer {
+    padding-bottom: 12px;
+  }
+}
+.opt-item {
+  color: #2d8cf0;
+  cursor: pointer;
+}
+
+.content-middle-right-table, .content-middle-table {
+  .ivu-table-wrapper {
+    overflow: inherit;
+  }
+}
