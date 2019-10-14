@@ -1,6 +1,6 @@
 <template>
   <div class="page-config-index">
-    <Tree :data="data" :render="renderContent"></Tree>
+    <Tree :data="data" :render="renderContent" ></Tree>
   </div>
 </template>
 <script>
