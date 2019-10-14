@@ -5,9 +5,28 @@
         <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
         <Button type="primary">查询</Button>
-        <Button style="float: right" type="primary" icon="md-add">新建数据源</Button>
+        <Button style="float: right" type="primary" icon="md-add" @click="jumpToPage">新建数据源</Button>
       </div>
     </table-page>
+    <Modal
+      v-model="isShowModal"
+      title="修改"
+      @on-ok="confirm"
+      @on-cancel="isShowModal=false">
+      <Form ref="formItem" :rules="ruleValidate" :model="formItem" :label-width="100">
+        <FormItem label="文件夹名称" prop="fileName">
+          <Input v-model="formItem.fileName" placeholder="名称"></Input>
+        </FormItem>
+        <FormItem label="文件夹描述" prop="fileDis">
+          <Input v-model="formItem.fileDis" type="textarea" placeholder="描述"></Input>
+        </FormItem>
+        <FormItem label="归属组织" prop="organizations">
+          <CheckboxGroup v-model="formItem.organizations">
+            <Checkbox v-for="(item, index) in organizationsList" :label="item.id" :key="item.id">{{item.organizationName}}</Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
 
@@ -27,6 +46,29 @@ export default {
   },
   data () {
     return {
+      isShowModal: false,
+      ruleValidate: {
+        fileName: [
+          {
+            required: true,
+            message: '请输入文件名称'
+          }
+        ],
+        fileDis: [
+          {
+            required: true,
+            message: '请输入文件描述'
+          }
+        ],
+        organizations: [
+          {
+            required: true,
+            message: '请选择归属组织'
+          }
+        ],
+      },
+      organizationsList: [],
+      formItem: {},
       searchKey: '',
       columns: [
         {
@@ -105,6 +147,12 @@ export default {
     this.getDatasetList()
   },
   methods: {
+    jumpToPage () {
+      this.$router.push('/data/add')
+    },
+    confirm () {
+
+    },
     getDatasetList () {
       getDatasetList({
         searchKey: this.searchKey,
@@ -138,6 +186,8 @@ export default {
 
     show(params) {
       console.log('params', params)
+      this.currentData = params;
+      this.isShowModal = true
     },
 
     deleteData (params) {

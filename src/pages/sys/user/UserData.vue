@@ -39,7 +39,8 @@
 <script>
   import {
     getListTree,
-    getUserList
+    getUserList,
+    deleteUser
   } from 'api/user';
   import {
     renderDeletePop
@@ -183,6 +184,12 @@ export default {
 
     deleteData(params) {
       console.log('params', params)
+      deleteUser({
+        userId: params.row.id,
+        organizationId: params.row.organizationIds.join(',')
+      }).then(res => {
+        this.getUserList()
+      })
     },
 
     selectNode (data, node) {
@@ -191,13 +198,11 @@ export default {
     },
     // 改变页码
     changePage (page) {
-      console.log('page', page)
       this.page.pageNum = page
       this.getUserList()
     },
     // 改变页面条数
     changePageSize (pageSize) {
-      console.log('pageSize', pageSize)
       this.page.pageSize = pageSize
       this.getUserList()
     },

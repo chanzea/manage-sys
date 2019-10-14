@@ -8,12 +8,10 @@
         <FormItem label="文件夹描述" prop="fileDis">
           <Input v-model="formItem.fileDis" type="textarea" placeholder="描述"></Input>
         </FormItem>
-        <FormItem label="归属组织" prop="organization">
-          <Select v-model="formItem.organization">
-            <Option value="beijing">New York</Option>
-            <Option value="shanghai">London</Option>
-            <Option value="shenzhen">Sydney</Option>
-          </Select>
+        <FormItem label="归属组织" prop="organizations">
+          <CheckboxGroup v-model="formItem.organizations">
+            <Checkbox v-for="(item, index) in organizationsList" :label="item.id" :key="item.id">{{item.organizationName}}</Checkbox>
+          </CheckboxGroup>
         </FormItem>
         <FormItem label="上传文件">
           <div class="file-upload">
@@ -43,6 +41,7 @@ export default {
   name: 'DataAdd',
   data () {
     return {
+      organizationsList: [],
       formItem: {
 
       },
