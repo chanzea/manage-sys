@@ -104,8 +104,8 @@ export default {
                   }
                 }
               }, '查看'),
-              renderDeletePop(h, params, '您确定要删除该用户吗', {
-                confirmFn: this.deleteData
+              renderDeletePop(h, '您确定要删除该用户吗', {
+                confirmFn: this.deleteData(params)
               })
             ]);
           }
@@ -160,14 +160,14 @@ export default {
     },
     // 格式化数据
     formatTreeData (item) {
-      if (!item.childs) {
+      if (!item.children) {
         item.title = item.organizationName
         return [item]
       }
       item.title = item.organizationName
-      item.children = item.childs
-      item.expand = !!item.childs
-      item.childs.forEach(subItem => {
+      item.children = item.children
+      item.expand = !!item.children
+      item.children.forEach(subItem => {
         this.formatTreeData(subItem)
       })
       return [item]

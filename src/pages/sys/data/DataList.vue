@@ -128,8 +128,10 @@ export default {
                   }
                 }
               }, '编辑'),
-              renderDeletePop(h, params, '您确定要删除吗', {
-                confirmFn: this.deleteData
+              renderDeletePop(h, '您确定要删除吗', {
+                confirmFn: function(){
+                  this.deleteData(params)
+                } 
               })
             ]);
           }
