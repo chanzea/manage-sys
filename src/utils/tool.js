@@ -1,4 +1,7 @@
-export function renderDeletePop (h, params, text, {confirmFn}) {
+
+
+ export function renderDeletePop (h, text, {confirmFn}) {
+   console.log(confirmFn)
   return h('Poptip', {
     props: {
       placement: 'right',
@@ -6,7 +9,7 @@ export function renderDeletePop (h, params, text, {confirmFn}) {
       'popper-class': 'delete-pop'
     },
     on: {
-      'on-ok': () => {confirmFn(params)}
+      'on-ok': () => {confirmFn && confirmFn()}
     }
   }, [
     h('div', {

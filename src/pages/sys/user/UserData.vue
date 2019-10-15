@@ -103,8 +103,8 @@ export default {
                   }
                 }
               }, '查看'),
-              renderDeletePop(h, params, '您确定要删除该用户吗', {
-                confirmFn: this.deleteData
+              renderDeletePop(h, '您确定要删除该用户吗', {
+                confirmFn: this.deleteData(params)
               })
             ]);
           }
