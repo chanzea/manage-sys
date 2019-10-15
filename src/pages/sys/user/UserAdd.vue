@@ -260,15 +260,15 @@ export default {
 
     // 格式化数据
     formatTreeData (item) {
-      if (!item.childs) {
+      if (!item.children) {
         item.title = item.organizationName
         item.name = item.organizationName
         return [item]
       }
       item.name = item.organizationName
       item.title = item.organizationName
-      item.children = item.childs
-      item.childs.forEach(subItem => {
+      // item.children = item.children
+      item.children.forEach(subItem => {
         this.formatTreeData(subItem)
       })
       return [item]

@@ -50,14 +50,13 @@ export default {
     },
 
     formatTreeData (item) {
-      if (!item.childs) {
+      if (!item.children) {
         item.isEdit = false;
         item.expand = true;
         return [item]
       }
-      item.children = item.childs
-      item.expand = !!item.childs
-      item.childs.forEach(subItem => {
+      item.expand = !!item.children
+      item.children.forEach(subItem => {
         this.formatTreeData(subItem)
       })
       return [item]

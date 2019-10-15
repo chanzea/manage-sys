@@ -37,14 +37,14 @@ export default {
     },
     // 格式化数据
     formatTreeData (item) {
-      if (!item.childs) {
+      if (!item.children) {
         item.title = item.organizationName
         return [item]
       }
       item.title = item.organizationName
-      item.children = item.childs
-      item.expand = !!item.childs
-      item.childs.forEach(subItem => {
+      item.children = item.children
+      item.expand = !!item.children
+      item.children.forEach(subItem => {
         this.formatTreeData(subItem)
       })
       return [item]
