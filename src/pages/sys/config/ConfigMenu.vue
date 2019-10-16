@@ -1,18 +1,27 @@
 <template>
   <div class="page-config-index">
     <Tree :data="data" :render="renderContent" ></Tree>
+    <DeletePoptip/>  
   </div>
 </template>
 <script>
 // import data from "@/mock/side.js";
 import data from "@/mock/auth.js";
+import DeletePoptip from '@/components/common/DeletePoptip.vue'
+import {
+    renderDeletePop
+  } from 'utils/tool.js'
 import {
   getListTree,
   permissonAdd,
   permissonUpdate,
   permissonDelete
 } from 'api/sysConfig';
+import ConfigRoleVue from './ConfigRole.vue';
 export default {
+  components:{
+    DeletePoptip
+  },
   data() {
     return {
       data: [
@@ -136,17 +145,29 @@ export default {
                   }
                 }
               }),
-              h("Button", {
-                props: Object.assign({}, this.buttonProps, {
-                  icon: "ios-remove",
-                  size: "small"
-                }),
-                on: {
-                  click: () => {
-                    this.remove(root, node, data);
+              h(
+                DeletePoptip,
+                {
+                  props:{
+                    content: "确定删除？",
+                    size: "small", 
+                    icon: 'ios-remove'
+                  },
+                  on: {
+                    onOK: () => {
+                      this.remove(root, node, data);
+                    },
+                    onCancel: () => {
+                      
+                    }
                   }
                 }
-              })
+              )
+              // renderDeletePop(h, '您确定要删除该用户吗', {
+              //   confirmFn: () => {
+              //     this.remove(root, node, data);
+              //   } 
+              // })
             ]
           )
         ]
@@ -167,6 +188,19 @@ export default {
       this.$set(data, "children", children);
     },
     remove(root, node, data) {
+
+      if(data.id){
+        permissonDelete({permissionId: data.id}).then((res)=>{
+          console.log(res);
+          const parentKey = root.find(el => el === node).parent;
+          const parent = root.find(el => el.nodeKey === parentKey).node;
+          const index = parent.children.indexOf(data);
+          parent.children.splice(index, 1);
+        }).catch( e => {
+
+        })
+        return;
+      }
       const parentKey = root.find(el => el === node).parent;
       const parent = root.find(el => el.nodeKey === parentKey).node;
       const index = parent.children.indexOf(data);
