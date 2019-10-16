@@ -104,7 +104,9 @@ export default {
                 }
               }, '查看'),
               renderDeletePop(h, '您确定要删除该用户吗', {
-                confirmFn: this.deleteData(params)
+                confirmFn: () => {
+                  this.deleteData(params)
+                } 
               })
             ]);
           }

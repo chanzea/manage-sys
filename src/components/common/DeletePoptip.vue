@@ -1,6 +1,6 @@
 <template>
   <Poptip 
-  title="删除提示" 
+  title="您确定删除这条记录" 
   :content="content || contentDefault" 
   placement="right" 
   :confirm="true" 
@@ -8,7 +8,7 @@
   @on-ok="ok"
   @on-cancel="cancel"
   >
-    <Button :class="className || classDefault" :icon = "icon || 'ios-remove'" :size="size || ''">
+    <Button :class="className" :icon = "icon" :size="size || ''">
         {{buttonText || ""}}
     </Button>
   </Poptip>
@@ -21,7 +21,6 @@ export default {
     data(){
         return{
             contentDefault: "确定要删除？",
-            classDefault:  "ios-remove",
         }
     },
     methods: {
