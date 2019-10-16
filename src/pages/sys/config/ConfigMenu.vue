@@ -1,18 +1,27 @@
 <template>
   <div class="page-config-index">
     <Tree :data="data" :render="renderContent" ></Tree>
+    <DeletePoptip/>  
   </div>
 </template>
 <script>
 // import data from "@/mock/side.js";
 import data from "@/mock/auth.js";
+import DeletePoptip from '@/components/common/DeletePoptip.vue'
+import {
+    renderDeletePop
+  } from 'utils/tool.js'
 import {
   getListTree,
   permissonAdd,
   permissonUpdate,
   permissonDelete
 } from 'api/sysConfig';
+import ConfigRoleVue from './ConfigRole.vue';
 export default {
+  components:{
+    DeletePoptip
+  },
   data() {
     return {
       data: [
@@ -136,17 +145,35 @@ export default {
                   }
                 }
               }),
-              h("Button", {
-                props: Object.assign({}, this.buttonProps, {
-                  icon: "ios-remove",
-                  size: "small"
-                }),
-                on: {
-                  click: () => {
-                    this.remove(root, node, data);
+              // h("Button", {
+              //   props: Object.assign({}, this.buttonProps, {
+              //     icon: "ios-remove",
+              //     size: "small"
+              //   }),
+              //   on: {
+              //     click: () => {
+              //       this.remove(root, node, data);
+              //     }
+              //   }
+              // })
+              // renderDeletePop()
+              h(
+                DeletePoptip,
+                {
+                  props:{
+                    content: "确定删除？",
+                    size: "small"
+                  },
+                  on: {
+                    onOK: () => {
+                      this.remove(root, node, data);
+                    },
+                    onCancel: () => {
+                      
+                    }
                   }
                 }
-              })
+              )
             ]
           )
         ]
