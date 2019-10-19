@@ -169,23 +169,39 @@ export default {
     this.getRoleList()
     this.getListTree()
     if (this.userId) {
-      this.getUserInfo()
+      Promise.all([this.getUserInfo(), this.getRoleList() ,this.getListTree]).then(res => {
+        // console.log('this.aaa', this.formProp)
+        // console.log('this.bbb', this.formCustom)
+        // organizationIds
+        // this.$refs['formProp'].$refs[item.ref][0].checkChange(this)
+      })
     }
   },
   methods: {
     // 获取用户信息
     getUserInfo () {
       const userId = this.$route.query.userId
-      getUserInfo({
-        userId
-      }).then(res => {
-        const {user, organizationList, roleList} = res
-        // 页面渲染
-        this.formProp.forEach(item => {
-          this.formCustom[item.key] = user[item.key]
-          if (item.type === 'switch') {
-            this.formCustom[item.key] = !!user[item.key]
-          }
+      return new Promise((resolve) => {
+        getUserInfo({
+          userId
+        }).then(res => {
+          const {user, organizationList, roleList} = res
+          // 页面渲染
+          this.formProp.forEach(item => {
+            this.formCustom[item.key] = user[item.key]
+            if (item.type === 'switch') {
+              this.formCustom[item.key] = !!user[item.key]
+            }
+            if (item.ref) {
+              this.$refs['formProp'].$refs[item.ref][0].checkChange(user.organizationIds.map(item => {
+                return {
+                  id: item,
+                  name: organizationList[item].organizationName
+                }
+              }))
+            }
+          })
+          resolve()
         })
       })
     },
@@ -241,20 +257,26 @@ export default {
     },
     // 获取角色列表
     getRoleList () {
-      getRoleList().then(res => {
-        this.formProp[2].options = res.list.map(item => {
-          item.value = item.id
-          item.label = item.roleName
-          return item
+      return new Promise((resolve) => {
+        getRoleList().then(res => {
+          this.formProp[2].options = res.list.map(item => {
+            item.value = item.id
+            item.label = item.roleName
+            return item
+          })
+          resolve()
         })
       })
     },
 
     // 获取组织树
     getListTree () {
-      getListTree().then(res => {
-        const { organization } = res
-        this.formProp[1].options = this.formatTreeData(organization)
+      return new Promise((resolve) => {
+        getListTree().then(res => {
+          const { organization } = res
+          this.formProp[1].options = this.formatTreeData(organization)
+          resolve()
+        })
       })
     },
 

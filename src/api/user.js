@@ -56,6 +56,15 @@ export async function getRoleList(params) {
   return data
 }
 
+/**
+ * 删除用户
+ * @param {Obiect} params 
+ */
+export async function deleteUser(params) {
+  const data = await api(`/organization/deleteUser`, 'post', params)
+  return data
+}
+
 
 /**
  * 更新结构名称
