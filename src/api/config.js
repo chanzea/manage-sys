@@ -1,7 +1,7 @@
 import axios from 'axios';
 export const BASEURL = 'http://118.24.124.177:8099' //api地址
 
-export const api = (url, method, data = {}) => {
+export const api = (url, method, data = {}, contentType = 'application/json;charset=UTF-8') => {
   const tokenId = localStorage.getItem('tokenId')
   // token失效，应回到登录页
   if (!tokenId) {
@@ -13,7 +13,7 @@ export const api = (url, method, data = {}) => {
     url,
     method,
     headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
+      'Content-Type': contentType,
       'tokenId': tokenId
     }
   }
@@ -22,7 +22,7 @@ export const api = (url, method, data = {}) => {
     axios(obj).then(res => {
       const { data } = res
       if (data.code === 'SUCCESS') {
-        resolve(data.data)
+        resolve(data.data ? data.data : data)
       } else {
         copyIview.Modal.warning({
           title: '提示',

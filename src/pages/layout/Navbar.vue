@@ -261,7 +261,12 @@
             }, [h('span', '消 息')])
           ]);
         },
-        userData: OperatorUtils.getUserData(),
+        // userData: OperatorUtils.getUserData(),
+        userData: {
+          main: "[null]",
+          roleName: "[超级管理员]",
+          userName: "admin"
+        },
         tableRefOptions,
         tabIndex: 0,
         DateUtils

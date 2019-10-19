@@ -9,3 +9,31 @@ export async function getDatasetList(params) {
   const data = await api(`/dataSet/list`, 'POST', params)
   return data
 }
+
+
+/**
+ * 上传文件
+ * @param {Obiect} params 
+ */
+export async function fileUploadInfo(params) {
+  const data = await api(`/file/uploadInfo`, 'POST', params)
+  return data
+}
+
+/**
+ * 上传文件
+ * @param {Obiect} params 
+ */
+export async function fileUpload(params) {
+  const data = await api(`/file/upload`, 'POST', params, 'multipart/form-data')
+  return data
+}
+
+/**
+ * 新建源数据
+ * @param {Obiect} params 
+ */
+export async function dataSetCreate(params) {
+  const data = await api(`/dataSet/create`, 'POST', params)
+  return data
+}

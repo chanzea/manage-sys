@@ -119,7 +119,6 @@
 <script>
   import axios from 'axios';
   import config from '@/config';
-  import http from '../utils/HttpUtils';
   import {
     BASEURL
   } from 'api/config'
@@ -154,25 +153,39 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            let data = {
-              username: this.formLogin.username,
-              password: this.formLogin.password,
-              captcha: this.formLogin.captcha
-            };
+            console.log('valid', valid)
+            // let data = {
+            //   username: this.formLogin.username,
+            //   password: this.formLogin.password,
+            //   captcha: this.formLogin.captcha
+            // };
             this.loading = true;
-            this.$http.apiPost(config.api.userLogin, data).then((res) => {
-              this.loading = false;
-              if (!res.success) {
-                this.$http.handleError(res);
-                this.changeCaptcha();
-              } else {
-                console.log(res);
+            const data = {
+              "loginName": "admin",
+              "loginPassword": "admin1234",
+              "verifyCode": "nd74",
+            }
+            axios({
+              url: `${BASEURL}/user/login`,
+              method: 'post',
+              data, 
+              headers: {'Content-Type': 'application/json;charset=UTF-8'}
+            }).then(res => {
+              console.log('res', res)
+              const { data } = res
+              if(data.code === 'SUCCESS') {
                 this.$Message.success('登录成功');
-                OperatorUtils.setBaseData(res.data);
+                localStorage.setItem('tokenId', data.data.tokenId)
+                localStorage.setItem('userId', data.data.userId)
                 this.$router.push({path: '/'});
-//                this.$store.dispatch('setUser', res.data.userData);
+                // this.$store.dispatch('setUser', data.data);
+              } else {
+                this.changeCaptcha(); //更新验证码
               }
-            });
+            }).catch(err => {
+              console.log('err', err)
+              this.changeCaptcha(); //更新验证码
+            })
           } else {
             this.$Message.error('请填写正确再提交!');
           }
@@ -180,44 +193,18 @@
       },
       changeCaptcha () {
         this.formLogin.captcha = '';
-        this.captchaUrl = HOST + config.api.captcha + new Date().getTime();
+        // this.captchaUrl = HOST + config.api.captcha + new Date().getTime();
       },
       toUpperCase (val) {
         console.log(val);
       }
     },
     mounted () {
-      // window.addEventListener('keyup', (e) => {
-      //   if (e.keyCode === 13) {
-      //     this.handleSubmit('formLogin');
-      //   }
-      // });
-      const data = {
-        "loginName": "admin",
-        "loginPassword": "admin1234",
-        "verifyCode": "nd74",
-      }
-      // login(param).then(res => {
-      //   console.log('res', res)
-      //   localStorage.setItem('token', 'b17bcf52d6db45149085bb61f534b00f')
-      // }).catch(err => {
-      //   console.error('err', err)
-      // })
-      axios({
-        url: `${BASEURL}/user/login`,
-        method: 'post',
-        data, 
-        headers: {'Content-Type': 'application/json;charset=UTF-8'}
-      }).then(res => {
-        console.log('res', res)
-        const { data } = res
-        if(data.code === 'SUCCESS') {
-          localStorage.setItem('tokenId', data.data.tokenId)
-          localStorage.setItem('userId', data.data.userId)
+      window.addEventListener('keyup', (e) => {
+        if (e.keyCode === 13) {
+          this.handleSubmit('formLogin');
         }
-      }).catch(err => {
-        console.log('err', err)
-      })
+      });
     },
     components: {}
   };

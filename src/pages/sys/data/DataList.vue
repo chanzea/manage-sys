@@ -38,7 +38,6 @@ import {
 import {
   renderDeletePop
 } from 'utils/tool.js'
-console.log('renderDeletePop', renderDeletePop)
 export default {
   name: 'DataList',
   components: {
