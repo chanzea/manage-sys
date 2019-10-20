@@ -24,8 +24,8 @@
 
 <script>
 import TablePage from "components/tablePage.vue";
-import { getTaskList } from "@/api/task";
-import taskList from "@/mock/task";
+import { getTaskList, taskOffline } from "@/api/task";
+// import taskList from "@/mock/task";
 
 export default {
   name: "TaskList",
@@ -169,7 +169,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.remove(params);
+                      this.offLine(params);
                     }
                   }
                 },
@@ -207,9 +207,9 @@ export default {
   },
 
   created() {
-    // this.getTasklistInfo();
-    this.data = taskList.data.taskList;
-    this.total = taskList.data.count;
+    this.getTasklistInfo();
+    // this.data = taskList.data.taskList;
+    // this.total = taskList.data.count;
   },
 
   methods: {
@@ -217,6 +217,8 @@ export default {
       let page = this.page;
       getTaskList({ page }).then(res => {
         console.log(res);
+        this.data = res.data.taskList;
+        this.total = res.data.count;
       });
     },
 
@@ -231,7 +233,14 @@ export default {
         }
       })
       console.log(raw.id)
+    },
+
+    //下线
+    offLine(params) {
+      let raw = params.row;
+
     }
+
   }
 };
 </script>

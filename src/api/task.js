@@ -21,10 +21,11 @@ export async function taskAdd(params) {
 }
 
 /**
- * 删除任务
+ * 下线任务
  * @param {Obiect} params 
  */
-export async function taskDelete(params) {
-  const data = await api(`/task/delete`, 'post', params)
+export async function taskOffline(params) {
+  const data = await api(`/task/offline`, 'post', params)
   return data
 }
+

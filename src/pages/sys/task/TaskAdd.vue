@@ -6,7 +6,7 @@
           <Input v-model="formItem.taskId" placeholder="编号"></Input>
         </FormItem>
         <FormItem label="任务名称" prop="taskName">
-          <Input v-model="formItem.taskName" placeholder="编号"></Input>
+          <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
         </FormItem>
         <FormItem label="任务用途" prop="taskRemark">
           <Input
@@ -20,9 +20,8 @@
           <!-- <div class="task-mark"> -->
             <span style="margin-right:12px">按</span>
             <Select class="task-mark-select" v-model="formItem.markPointType">
-              <Option value="beijing">New York</Option>
-              <Option value="shanghai">London</Option>
-              <Option value="shenzhen">Sydney</Option>
+              <Option value="1">每一题</Option>
+              <Option value="2">每个标注</Option>
             </Select>
             <span style="margin:0 12px">积分,每次</span>
             <!-- <Input
@@ -55,28 +54,22 @@
         </FormItem>
         <FormItem label="数据源" prop="dataSetId">
           <Select v-model="formItem.dataSetId" placeholder="选择数据源">
-            <Option value="beijing">New York</Option>
-            <Option value="shanghai">London</Option>
-            <Option value="shenzhen">Sydney</Option>
+            <Option  v-for=" item in dataSetList" :key="item.id"  :value="item.id">{{item.folderName}}({{item.folderDesc}})</Option>
           </Select>
         </FormItem>
         <FormItem label="标注人员" prop="markUserIds">
           <Select v-model="formItem.markUserIds" multiple filterable clearable>
-            <Option value="beijing">New York</Option>
-            <Option value="shanghai">London</Option>
-            <Option value="shenzhen">Sydney</Option>
+            <Option :key="item.id" v-for=" (item) in userList" :value="item.id">{{item.userName}}</Option>
           </Select>
         </FormItem>
         <FormItem label="审核人员" prop="reviewUserIds">
           <Select v-model="formItem.reviewUserIds" multiple filterable clearable>
-            <Option value="beijing">New York</Option>
-            <Option value="shanghai">London</Option>
-            <Option value="shenzhen">Sydney</Option>
+            <Option :key="item.id" v-for=" (item) in userList" :value="item.id">{{item.userName}}</Option>
           </Select>
         </FormItem>
       </Form>
       <div class="btn-list">
-        <Button class="btn-list-item" type="primary" @click="getFormData">提交</Button>
+        <Button class="btn-list-item" type="primary" @click="submit">提交</Button>
         <Button class="btn-list-item">取消</Button>
       </div>
     </div>
@@ -86,6 +79,7 @@
 <script>
 import { getUserList } from "@/api/user";
 import { taskAdd } from "@/api/task"
+import {getDatasetList} from "@/api/data"
 // import { }
 
 export default {
@@ -104,6 +98,9 @@ export default {
         markUserIds: [],
         reviewUserIds: []
       },
+
+      dataSetList: [],//数据源
+      userList: [],//用户列表
 
       taskType: {
         "CLASSIFY": {
@@ -143,6 +140,7 @@ export default {
 
   created() {
     this.isUpdate = this.$route.meta.isUpdate;
+    this.getRenderData();
   },
 
   watch: {
@@ -151,22 +149,42 @@ export default {
     }
   },
 
+  computed: {
+    // authorList: function() {
+    //   return this.userList.filter( i => i.)
+    // }
+  },
+
   methods: {
-    getFormData() {
-      console.log(this.formItem);
+    submit() {
       this.$refs["taskForm"].validate(valid => {
-        console.log("dd", valid);
         if (valid) {
-          console.log(valid);
           let params = this.formItem;
+          params = {"taskName":"test","taskRemark":"test","taskType":1,"markPointType":"1","markPoint":"100","reviewPoint":"1000","dataSetId":17,"markUserIds":[7,8],"reviewUserIds":[9,10]};
+          params.tokenId = localStorage.getItem("tokenId")
           taskAdd(params).then(res => {
             this.$Message.success('添加成功');
           })
         }
       });
     },
+    //获取数据源与用户列表，用来渲染筛选项
     getRenderData() {
-      getUserList({}).then(() => {});
+      let list = [
+        getDatasetList(),
+        getUserList()
+      ]
+      let baseData = Promise.all(list).then( (list) => {
+        this.dataSetList = list[0].dataSetList;
+        this.userList = list[1].userList;
+      }).catch( err => {
+        console.log(err)
+      })
+    },
+
+    //获取
+    getTaskInfo() {
+
     }
   }
 };
