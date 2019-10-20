@@ -31,7 +31,7 @@ export default {
    * @param name
    * @returns {Array}
    */
-  constructTree: function (data, name, expand) {
+  constructTree: function (data, name, expand, arr) {
     for (let i in data) {
       if (data[i].parentId > 0) {
         for (let j in data) {
