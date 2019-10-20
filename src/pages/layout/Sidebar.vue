@@ -40,7 +40,7 @@
       // this.menuData = common.constructTree(OperatorUtils.getMenuData(), 'name');
       // this.menuData = common.constructTree(data, 'name');
       this.menuData = data;
-      console.log('menuData', JSON.stringify(this.menuData))
+      // console.log('menuData', JSON.stringify(this.menuData))
       // this.updateCurMenu();
     },
     computed: {},

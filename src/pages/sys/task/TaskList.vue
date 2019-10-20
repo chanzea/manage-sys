@@ -1,6 +1,6 @@
 <template>
   <div class="page-task-list">
-    <table-page :columns="columns" :data="data">
+    <table-page :columns="columns" ref="table" :data="data" :total="total">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -23,143 +23,217 @@
 </template>
 
 <script>
-import TablePage from 'components/tablePage.vue';
+import TablePage from "components/tablePage.vue";
+import { getTaskList } from "@/api/task";
+import taskList from "@/mock/task";
+
 export default {
-  name: 'TaskList',
+  name: "TaskList",
   components: {
     TablePage
   },
-  data () {
+  data() {
     return {
-      searchValue: '',
-      status: '',
-      options: [{
-        label: '草稿',
-        value: 0
-      },{
-        label: '上线',
-        value: 1
-      },{
-        label: '下线',
-        value: 2
-      },],
-      columns: [
+      page: {
+        pageNum: 10,
+        pageSize: 1
+      },
+      searchValue: "",
+      status: "",
+      options: [
         {
-          type: 'selection',
-          width: 60,
-          align: 'center'
+          label: "草稿",
+          value: 0
         },
         {
-          title: '任务编号',
-          key: 'taskId',
+          label: "上线",
+          value: 1
+        },
+        {
+          label: "下线",
+          value: 2
+        }
+      ],
+      columns: [
+        {
+          type: "selection",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "任务编号",
+          key: "id",
           sortable: true
         },
         {
-          title: '任务名称',
-          key: 'taskName'
+          title: "任务名称",
+          key: "taskName"
         },
         {
-          title: '创建人',
-          key: 'creator'
+          title: "创建人",
+          key: "creatorId"
         },
         {
-          title: '创建时间',
-          key: 'createtime'
+          title: "创建时间",
+          key: "createtime"
         },
         {
-          title: '数量',
-          key: 'count'
+          title: "数量",
+          key: "taskItemTotal"
         },
         {
-          title: '待标注',
-          key: 'mark'
-        },{
-          title: '待审核',
-          key: 'verify'
-        },{
-          title: '状态',
-          key: 'status'
-        },{
-          title: '操作',
-          key: 'action',
+          title: "待标注",
+          key: "taskItemUnMarkTotal"
+        },
+        {
+          title: "待审核",
+          key: "taskItemUnReviewTotal"
+        },
+        {
+          title: "状态",
+          key: "taskStatus"
+        },
+        {
+          title: "操作",
+          key: "action",
           width: 260,
-          align: 'center',
+          align: "center",
           render: (h, params) => {
-            return h('div', [
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                      this.show(params)
+            return h("div", [
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.show(params);
+                    }
                   }
-                }
-              }, '查看'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
                 },
-                on: {
-                  click: () => {
-                    this.remove(params)
+                "查看"
+              ),
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params);
+                    }
                   }
-                }
-              }, '题库'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
                 },
-                on: {
-                  click: () => {
-                    this.remove(params)
+                "题库"
+              ),
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params);
+                    }
                   }
-                }
-              }, '编辑'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
                 },
-                on: {
-                  click: () => {
-                    this.remove(params)
+                "编辑"
+              ),
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params);
+                    }
                   }
-                }
-              }, '删除'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
                 },
-                on: {
-                  click: () => {
-                    this.remove(params)
+                "删除"
+              ),
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.remove(params);
+                    }
                   }
-                }
-              }, '下线')
+                },
+                "下线"
+              )
             ]);
           }
         }
       ],
+      total: 0,
       data: [
         {
-          taskId: 'QD0001',
-          taskName: '任务拉框',
-          creator: '张三',
-          createtime: '2019-09-15',
-          count: '1000',
-          mark: '500',
-          verify: '800',
-          status: '草稿'
-        },
+          id: 38,
+          taskName: "task3",
+          taskRemark: "task1-desc",
+          taskType: 1,
+          markPointType: 1,
+          markPoint: 10,
+          reviewPoint: 10,
+          reviewScale: 0,
+          dataSetId: 17,
+          dataSetSnapshotId: 0,
+          markUserIds: [84],
+          reviewUserIds: [8],
+          taskStatus: 1,
+          taskItemTotal: 5,
+          taskItemUnMarkTotal: 5,
+          taskItemUnReviewTotal: 5,
+          taskItemReMarkTotal: 0,
+          taskItemReReviewTotal: 0,
+          creatorId: 8
+        }
       ]
+    };
+  },
+
+  created() {
+    // this.getTasklistInfo();
+    this.data = taskList.data.taskList;
+    this.total = taskList.data.count;
+  },
+
+  methods: {
+    getTasklistInfo() {
+      let page = this.page;
+      getTaskList({ page }).then(res => {
+        console.log(res);
+      });
+    },
+
+    //查看
+    show(params) {
+      let raw = params.row;
+
+      this.$router.push({
+        path: "/task/update",
+        query: {
+          id: raw.id
+        }
+      })
+      console.log(raw.id)
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .page-task-list {
