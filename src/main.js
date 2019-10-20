@@ -43,7 +43,12 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    next()
+    // 如果存在token，通过回退回到登录页，则阻止后退
+    if (to.path === '/login') {
+      next(false)
+    } else {
+      next()
+    }
   }
 });
 
