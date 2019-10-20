@@ -1,21 +1,21 @@
 <template>
   <div class="ease-in-out layout-menu-left" :class="{'layout-menu-left-small': menuSmall && !menuHover}"
        v-on:mouseleave="()=>{setMenuHover(false)}" v-on:mouseenter="()=>{setMenuHover(true)}">
-    <i-menu theme="dark" width="auto" :accordion="true" :active-name="activeName" :open-names="openNames" ref="menu">
+    <Menu theme="dark" width="auto" :accordion="true" :active-name="activeName" :open-names="openNames" ref="menu">
       <div class="layout-logo-left"></div>
       <Submenu v-for="item in menuData" :name="item.id" :key="item.id">
         <template slot="title">
           <Icon :type="item.icon"></Icon>
           <span>{{item.title}}</span>
         </template>
-        <router-link v-for="childrenItem in item.children" :to="childrenItem.url" :key="childrenItem.id">
-          <MenuItem :name="childrenItem.id" :key="childrenItem.id">
+        <div v-for="childrenItem in item.children" :key="childrenItem.id">
+          <MenuItem :name="childrenItem.id" :key="childrenItem.id" @click.native="jumpToPage(item,childrenItem)">
             <Icon :type="childrenItem.icon" v-show="childrenItem.icon"></Icon>
             <span>{{childrenItem.title}}</span>
           </MenuItem>
-        </router-link>
+        </div>
       </Submenu>
-    </i-menu>
+    </Menu>
   </div>
 </template>
 
@@ -23,7 +23,9 @@
 <script>
 
   import common from '@/utils/common';
-  // import data from 'src/mock/data.json'
+  import {
+    mapGetters
+  } from 'vuex'
   import data from '@/mock/side.js'
   export default {
     name: 'sidebar',
@@ -31,51 +33,73 @@
     data () {
       return {
         menuHover: false,
-        menuData: null,
+        menuData: data,
         activeName: '',
         openNames: []
       };
     },
     created: function () {
-      // this.menuData = common.constructTree(OperatorUtils.getMenuData(), 'name');
-      // this.menuData = common.constructTree(data, 'name');
-      this.menuData = data;
-      console.log('menuData', JSON.stringify(this.menuData))
-      // this.updateCurMenu();
+      this.updatePath()
     },
     computed: {},
     methods: {
+      // 获取当前路径信息
+      updatePath () {
+        const sidebarData = [...data, {
+          url: '/myself',
+          name: '我的',
+          children: [{
+            url: '/myself/message',
+            name: '消息中心'
+          },{
+            url: '/myself/info',
+            name: '个人中心'
+          }]
+        }]
+        const currentPath = this.getCurrentPath(sidebarData, this.$route.path)
+        this.$store.dispatch('setCurrentMenu', currentPath)
+        this.activeName = currentPath[1].id
+        this.openNames = [currentPath[0].id]
+      },
+
       setMenuHover (hover) {
         if (this.menuSmall) {
           this.menuHover = hover;
         }
       },
-      getMenu (path) {
-        let menu = data;
-        // console.log('menu', menu)
-        for (let i = 0; i <= menu.length; i++) {
-          if (menu[i] != null && menu[i].url == path) {
-            return menu[i];
-          }
-        }
+
+      jumpToPage (item, subItem) {
+        this.$router.push(subItem.url)
+        this.$store.dispatch('setCurrentMenu', [item, subItem])
       },
-      updateCurMenu () {
-        let curMenu = this.getMenu(this.$router.currentRoute.path);
-        if (curMenu != null) {
-          this.activeName = curMenu.id;
-          this.openNames = [curMenu.parentId];
-          this.$nextTick(() => {
-            this.$refs['menu'].updateOpened();
-          });
-        } else {
-          this.activeName = '';
-        }
+
+      getCurrentPath(data, path) {
+        const obj = data.find(item => {
+          return path.indexOf(item.url) !== -1
+        })
+        const subObj = obj.children.filter(item => {
+          return item.url === path
+        })
+        return [{
+          url: obj.url,
+          title: obj.name,
+          id: obj.id
+        }, {
+          url: subObj.url,
+          title: subObj[0].name,
+          id: subObj[0].id
+        }]
       }
     },
     watch: {
       $route () {
-        this.updateCurMenu();
+        this.updatePath()
       }
+    },
+    computed: {
+      ...mapGetters([
+        'currentMenu'
+      ])
     },
     components: {}
   };

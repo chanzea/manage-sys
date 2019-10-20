@@ -17,8 +17,10 @@
         <FormItem label="上传文件">
           <div class="file-upload">
             <span style="margin-bottom: 10px;">支持扩展名：.zip,.jpg..</span>
-            <div v-if="fileName" style="margin-bottom: 10px;display: flex;align-item: center">
-              <Icon type="ios-paper-outline" /><span style="margin-left: 8px;color: #2d8cf0">{{fileName}}</span>
+            <div v-if="fileName.length !== 0" style="margin-bottom: 10px;display: flex;align-items: center">
+              <div v-for="(item, index) in fileName" :key="index" style="margin-left: 8px;color: #2d8cf0">
+                <Icon type="ios-paper-outline" /><span style="margin-left: 8px;color: #2d8cf0">{{item}}</span>
+              </div>
             </div>
             <Upload
               multiple
@@ -63,7 +65,7 @@ export default {
 
       },
       fileId: '', //文件返回的id
-      fileName: '',
+      fileName: [],
       startChunkNumber: '',
       ruleValidate: {
         folderName: [
@@ -114,48 +116,30 @@ export default {
     beforeUpload (file) {
       const _this = this
       console.log('file', file)
-      // let self = this
-      // function getUploadDataInfo(file, uuid, filemd5, date) {
-      //   let shardSize = self.sizes
-      //   let name = file.name;        //文件名
-      //   let size = file.size;        //总大小
-      //   self.fileSize = size
-      //   let shardCount = Math.ceil(size / shardSize);  //总片数
-      //   // 获取 md5 列表
-      //   self.getMd5List(0, shardCount, file, size, name, uuid, date, filemd5)
-      // }
-      //   let ipport = this.url
-      //   //构造一个表单，FormData是HTML5新增的
-        const form = new FormData();
       
-        browserMD5File(file, function (err, md5) {
-          console.log('md5', md5)
-            form.append('file', file);
-            fileUploadInfo({
-              fileMD5: md5,
-              fileName: file.name,
-              fileSize: file.size
-            }).then(res => {
-              console.log('fileUpload', res)
-              _this.fileId = res.fileId
-              _this.startChunkNumber = res.startChunkNumber
-              form.append('fileId', res.fileId)
-              form.append('chunkNum', res.startChunkNumber)
-              return fileUpload(form)
-              // axios({
-              //   url: `${BASEURL}/file/upload`,
-              //   method: 'post',
-              //   headers: {
-              //     'tokenId': localStorage.getItem('tokenId'),
-              //     'Content-Type': 'multipart/form-data'
-              //   },
-              //   data: form
-              // })
-            }).then(res => {
-              _this.fileName = file.name
-              console.log('/file/upload', res)
-            })
-        });
+      _this.fileName.push(file.name)
+        // const form = new FormData();
+      
+        // browserMD5File(file, function (err, md5) {
+        //   console.log('md5', md5)
+        //     form.append('file', file);
+        //     fileUploadInfo({
+        //       fileMD5: md5,
+        //       fileName: file.name,
+        //       fileSize: file.size
+        //     }).then(res => {
+        //       console.log('fileUpload', res)
+        //       _this.fileId = res.fileId
+        //       _this.formItem.fileIds = [res.fileId]
+        //       _this.startChunkNumber = res.startChunkNumber
+        //       form.append('fileId', res.fileId)
+        //       form.append('chunkNum', res.startChunkNumber)
+        //       return fileUpload(form)
+        //     }).then(res => {
+        //       _this.fileName.push(file.name)
+        //       console.log('/file/upload', res)
+        //     })
+        // });
     },
 
     // 提交源数据

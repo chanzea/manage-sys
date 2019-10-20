@@ -3,8 +3,8 @@
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
-        <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-        <Button type="primary">查询</Button>
+        <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
+        <Button type="primary" @click="getDatasetList">查询</Button>
         <Button style="float: right" type="primary" icon="md-add" @click="jumpToPage">新建数据源</Button>
       </div>
     </table-page>
@@ -14,14 +14,14 @@
       @on-ok="confirm"
       @on-cancel="isShowModal=false">
       <Form ref="formItem" :rules="ruleValidate" :model="formItem" :label-width="100">
-        <FormItem label="文件夹名称" prop="fileName">
-          <Input v-model="formItem.fileName" placeholder="名称"></Input>
+        <FormItem label="文件夹名称" prop="folderName">
+          <Input v-model="formItem.folderName" placeholder="名称"></Input>
         </FormItem>
-        <FormItem label="文件夹描述" prop="fileDis">
-          <Input v-model="formItem.fileDis" type="textarea" placeholder="描述"></Input>
+        <FormItem label="文件夹描述" prop="folderDesc">
+          <Input v-model="formItem.folderDesc" type="textarea" placeholder="描述"></Input>
         </FormItem>
         <FormItem label="归属组织" prop="organizations">
-          <CheckboxGroup v-model="formItem.organizations">
+          <CheckboxGroup v-model="formItem.organizationIds">
             <Checkbox v-for="(item, index) in organizationsList" :label="item.id" :key="item.id">{{item.organizationName}}</Checkbox>
           </CheckboxGroup>
         </FormItem>
@@ -33,8 +33,12 @@
 <script>
 import TablePage from 'components/tablePage.vue';
 import {
-  getDatasetList
+  getDatasetList,
+  dataSetUpdate
 } from 'api/data.js';
+import {
+  getUserInfo
+} from 'api/user'
 import {
   renderDeletePop
 } from 'utils/tool.js'
@@ -47,13 +51,13 @@ export default {
     return {
       isShowModal: false,
       ruleValidate: {
-        fileName: [
+        folderName: [
           {
             required: true,
             message: '请输入文件名称'
           }
         ],
-        fileDis: [
+        folderDesc: [
           {
             required: true,
             message: '请输入文件描述'
@@ -69,6 +73,7 @@ export default {
       organizationsList: [],
       formItem: {},
       searchKey: '',
+      value: '',
       columns: [
         {
           type: 'selection',
@@ -146,18 +151,47 @@ export default {
   },
   created () {
     this.getDatasetList()
+    this.getUserInfo ()
   },
   methods: {
+    // 获取用户详情,所属平台组织
+    getUserInfo () {
+      const userId = localStorage.getItem('userId')
+      getUserInfo({
+        userId
+      }).then(res => {
+        const {organizationList} = res
+        Object.keys(organizationList).forEach(item => {
+          this.organizationsList.push({
+            id: parseInt(item),
+            organizationName: organizationList[item].organizationName
+          })
+        })
+      })
+    },
     jumpToPage () {
       this.$router.push('/data/add')
     },
     confirm () {
-
+      dataSetUpdate({
+        dataSetId: this.formItem.id,
+        folderName: this.formItem.folderName,
+        folderDesc: this.formItem.folderName,
+        organizationIds:this.formItem.organizationIds
+      }).then(res => {
+        this.data.forEach(item => {
+          if (item.id === this.formItem.id) {
+            item.folderName = this.formItem.folderName
+          }
+        })
+        this.$Message.success('信息更新成功');
+      })
     },
     getDatasetList () {
       getDatasetList({
         searchKey: this.searchKey,
-        searchType: '',
+        startTime: this.value.length !== 0 ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
+        endTime: this.value.length !== 0 ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
         page: {
           pageNum: this.page.pageNum,
           pageSize: this.page.pageSize,
@@ -187,7 +221,7 @@ export default {
 
     show(params) {
       console.log('params', params)
-      this.currentData = params;
+      this.$set(this, 'formItem', params.row);
       this.isShowModal = true
     },
 

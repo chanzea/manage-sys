@@ -177,8 +177,7 @@
                 this.$Message.success('登录成功');
                 localStorage.setItem('tokenId', data.data.tokenId)
                 localStorage.setItem('userId', data.data.userId)
-                this.$router.push({path: '/'});
-                // this.$store.dispatch('setUser', data.data);
+                this.$router.push({path: '/user'});
               } else {
                 this.changeCaptcha(); //更新验证码
               }

@@ -62,7 +62,11 @@ const mutations = {
 
   setCurrentMenu (state, menu) {
     state.currentMenu = menu
-  }
+  },
+
+  setUserData (state, userData) {
+    state.userData = userData
+  },
 }
 
 export default mutations

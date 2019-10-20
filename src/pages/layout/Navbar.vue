@@ -24,7 +24,7 @@
     padding-right: 36px;
     color: #5c6b77;
     padding-top: 1px;
-    line-height: 45px;
+    line-height: 60px;
   }
 
   .list-panel:hover {
@@ -113,14 +113,18 @@
         <Icon type="navicon" size="34"></Icon>
       </div>
       <div class="path">
-        当前路径 {{ currentMenu}}
+        <Breadcrumb>
+          <BreadcrumbItem v-for="(item, index) in currentMenu" :key="index" :to="item.url">
+            {{item.title}}
+          </BreadcrumbItem>
+        </Breadcrumb>
       </div>
     </div>
 
     <div class="layout-header-right">
 
 
-      <Poptip class="msg-list list-panel" placement="bottom-end" trigger="hover" @on-popper-show="tabPopperShow">
+      <!-- <Poptip class="msg-list list-panel" placement="bottom-end" trigger="hover" @on-popper-show="tabPopperShow">
         <Badge :dot="isNewMsg">
           <Icon type="ios-bell" size="24"></Icon>
         </Badge>
@@ -175,16 +179,13 @@
               <ul>
 
               </ul>
-              <!--<router-link>-->
-              <!--<Button type="text" long size="large">查看更多</Button>-->
-              <!--</router-link>-->
             </TabPane>
           </Tabs>
         </div>
-      </Poptip>
+      </Poptip> -->
 
 
-      <Dropdown class="user-panel list-panel">
+      <Dropdown class="user-panel list-panel" v-if="userData">
 
 
         <Avatar icon="person" size="small" style="background-color: #5c6b77"/>
@@ -192,7 +193,8 @@
 
 
         <DropdownMenu slot="list">
-          <DropdownItem name="1" @click.native="passwd">修改密码</DropdownItem>
+          <DropdownItem name="1" @click.native="messageCenter">消息中心</DropdownItem>
+          <DropdownItem name="1" @click.native="userInfoCenter">用户中心</DropdownItem>
           <DropdownItem name="2" @click.native="logout">退出登录</DropdownItem>
         </DropdownMenu>
       </Dropdown>
@@ -212,7 +214,9 @@
   import Emitter from '@/utils/mixins/emitter';
   import {PopupEdit} from 'components/';
   import { mapGetters } from 'vuex'
-
+  import {
+    getUserInfo
+  } from 'api/user'
   /**
    * 弹出式表单参数
    */
@@ -261,12 +265,7 @@
             }, [h('span', '消 息')])
           ]);
         },
-        // userData: OperatorUtils.getUserData(),
-        userData: {
-          main: "[null]",
-          roleName: "[超级管理员]",
-          userName: "admin"
-        },
+        userData: '',
         tableRefOptions,
         tabIndex: 0,
         DateUtils
@@ -294,9 +293,18 @@
       ])
     },
     created () {
-
+      const userId = localStorage.getItem('userId')
+      this.getUserInfo(userId)
     },
     methods: {
+      getUserInfo(userId) {
+        getUserInfo({
+          userId
+        }).then(res => {
+          this.userData = res.user
+          this.$store.dispatch('setUserData', res.user)
+        })
+      },
       gotoBacklog (item) {
         this.$router.push({
           path: '/work/backlog',
@@ -334,7 +342,28 @@
             this.$router.push({path: '/login'});
           }
         });
-      }
+      },
+      messageCenter () {
+        this.$store.dispatch('setCurrentMenu', [{
+          url: '/myself',
+          title: '我的'
+        },{
+          url: '/myself/message',
+          title: '消息中心'
+        }])
+        this.$router.push('/myself')
+      },
+
+      userInfoCenter () {
+        this.$store.dispatch('setCurrentMenu', [{
+          url: '/myself',
+          title: '我的'
+        },{
+          url: '/myself/info',
+          title: '个人中心'
+        }])
+        this.$router.push('/myself/info')
+      },
     },
     components: {
       tableRefOptions,

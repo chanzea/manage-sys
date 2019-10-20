@@ -37,3 +37,21 @@ export async function dataSetCreate(params) {
   const data = await api(`/dataSet/create`, 'POST', params)
   return data
 }
+
+/**
+ * 新建源数据
+ * @param {Obiect} params 
+ */
+export async function dataSetUpdate(params) {
+  const data = await api(`/dataSet/update`, 'POST', params)
+  return data
+}
+
+/**
+ * 新建源数据
+ * @param {Obiect} params 
+ */
+export async function listDataRecord(params) {
+  const data = await api(`/dataSet/listDataRecord`, 'POST', params)
+  return data
+}

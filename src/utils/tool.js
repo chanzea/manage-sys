@@ -1,7 +1,6 @@
 
 
  export function renderDeletePop (h, text, {confirmFn}) {
-   console.log(confirmFn)
   return h('Poptip', {
     props: {
       placement: 'right',

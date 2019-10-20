@@ -196,7 +196,7 @@ export default [
     {
         "id": 8,
         "name": "画图工具",
-        "url": "/",
+        "url": "/psdraw",
         "children": [
             {
                 "id": 100,

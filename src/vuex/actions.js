@@ -32,6 +32,10 @@ const actions = {
 
   setCurrentMenu( {commit} , menu) {
     commit('setCurrentMenu', menu)
+  },
+
+  setUserData( {commit} , userData) {
+    commit('setUserData', userData)
   }
 }
 
