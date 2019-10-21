@@ -166,42 +166,35 @@ export default {
   },
   created () {
     this.userId = this.$route.query.userId || ''
-    this.getRoleList()
-    this.getListTree()
     if (this.userId) {
-      Promise.all([this.getUserInfo(), this.getRoleList() ,this.getListTree]).then(res => {
-        // console.log('this.aaa', this.formProp)
-        // console.log('this.bbb', this.formCustom)
-        // organizationIds
-        // this.$refs['formProp'].$refs[item.ref][0].checkChange(this)
-      })
+      this.getUserInfo()
+    } else {
+      this.getListTree()
     }
+    this.getRoleList()
   },
   methods: {
     // 获取用户信息
     getUserInfo () {
-      const userId = this.$route.query.userId
+      const userId = localStorage.getItem('userId')
       return new Promise((resolve) => {
         getUserInfo({
           userId
         }).then(res => {
           const {user, organizationList, roleList} = res
+          this.user = user
+          return this.getListTree()
+        }).then(data => {
           // 页面渲染
           this.formProp.forEach(item => {
-            this.formCustom[item.key] = user[item.key]
+            this.formCustom[item.key] = this.user[item.key]
             if (item.type === 'switch') {
-              this.formCustom[item.key] = !!user[item.key]
+              this.formCustom[item.key] = !!this.user[item.key]
             }
-            if (item.ref) {
-              this.$refs['formProp'].$refs[item.ref][0].checkChange(user.organizationIds.map(item => {
-                return {
-                  id: item,
-                  name: organizationList[item].organizationName
-                }
-              }))
+            if (item.type === 'treeSelect') {
+              this.formProp[1].options = this.formatTreeData(data, this.formCustom[item.key])
             }
           })
-          resolve()
         })
       })
     },
@@ -274,24 +267,29 @@ export default {
       return new Promise((resolve) => {
         getListTree().then(res => {
           const { organization } = res
-          this.formProp[1].options = this.formatTreeData(organization)
-          resolve()
+          if (!this.userId) { //非編輯狀態時，需要格式化组织树
+            this.formProp[1].options = this.formatTreeData(organization, [])
+          }
+          resolve(organization)
         })
       })
     },
 
     // 格式化数据
-    formatTreeData (item) {
+    formatTreeData (item, selectArr) {
       if (!item.children) {
+        item.selected = selectArr.includes(item.id)
+        item.checked = selectArr.includes(item.id)
         item.title = item.organizationName
         item.name = item.organizationName
         return [item]
       }
+      item.selected = selectArr.includes(item.id)
+      item.checked = selectArr.includes(item.id)
       item.name = item.organizationName
       item.title = item.organizationName
-      // item.children = item.children
       item.children.forEach(subItem => {
-        this.formatTreeData(subItem)
+        this.formatTreeData(subItem, selectArr)
       })
       return [item]
     },

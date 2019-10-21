@@ -37,7 +37,7 @@
 <template>
   <Dropdown
     trigger="custom"
-    :visible="visible"
+    :visible="visible && !disabled"
     class="tree-select-panel"
     v-clickoutside="handleClose">
     <a href="javascript:void(0)" @click="handleOpen">
@@ -45,6 +45,7 @@
                :icon="visible?'arrow-up-b':'arrow-down-b'"
                :placeholder="placeholder"
                @on-click.stop="iconClick"
+               :disabled="disabled"
                readonly>
 
       </i-input>
@@ -92,6 +93,10 @@
         default: false
       },
       lastStep: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       },
@@ -179,6 +184,7 @@
           this.selectedText = textArr.join(',');
           this.selected = checked;
           console.log('valArr', valArr)
+          console.log('this.selected', this.selected)
           this.$emit('input', valArr);
         }
         this.$emit('on-change', this.selected);

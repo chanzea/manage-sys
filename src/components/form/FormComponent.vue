@@ -4,7 +4,7 @@
       <FormItem :label="item.label" v-for="(item, index) in formProp" :key="index" :prop="item.key">
         <Input v-if="['text', 'textarea', 'password'].includes(item.type)" :type="item.type" v-model="formCustom[item.key]" :placeholder="item.placeholder"></Input>
 
-        <TreeSelect v-if="item.type==='treeSelect'" :ref="item.ref" :valField="item.options" v-model="formCustom[item.key]"
+        <TreeSelect v-if="item.type==='treeSelect'" :disabled="item.isDisabled" :ref="item.ref" v-model="formCustom[item.key]"
           :data="item.options"
           :multiple="item.isMultiple"
           :showCheckbox="item.showCheckbox"
