@@ -29,3 +29,12 @@ export async function taskOffline(params) {
   return data
 }
 
+/**
+ * 上线任务
+ * @param {Obiect} params 
+ */
+export async function taskOnline(params) {
+    const data = await api(`/task/online`, 'post', params)
+    return data
+  }
+

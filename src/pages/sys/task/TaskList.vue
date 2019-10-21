@@ -174,7 +174,22 @@ export default {
                   }
                 },
                 "下线"
-              )
+              ),
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.online(params);
+                    }
+                  }
+                },
+                "下线"
+              ),
             ]);
           }
         }
@@ -238,8 +253,18 @@ export default {
     //下线
     offLine(params) {
       let raw = params.row;
+      taskOffline({taskId: raw.id}).then( () => {
+        raw.taskStatus = 2;
+      })
+    },
 
+    online(params) {
+      let raw = params.row;
+      taskOnline({taskId: raw.id}).then( () => {
+        raw.taskStatus = 1;
+      })
     }
+
 
   }
 };
