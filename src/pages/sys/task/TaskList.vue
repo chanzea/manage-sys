@@ -2,15 +2,17 @@
   <div class="page-task-list">
     <table-page :columns="columns" ref="table" :data="data" :total="total">
       <div class="content-header" slot="form">
-        <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
-        <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-        <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
-          <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        <ButtonGroup>
-          <Button type="primary">查询</Button>
-          <Button>重置</Button>
-        </ButtonGroup>
+        <div class="content-header-form">
+          <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
+          <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
+          <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
+            <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+          <ButtonGroup>
+            <Button type="primary">查询</Button>
+            <Button>重置</Button>
+          </ButtonGroup>
+        </div>
         <ButtonGroup class="btns">
           <Button type="primary">新建</Button>
           <Button type="primary">删除</Button>
@@ -174,7 +176,22 @@ export default {
                   }
                 },
                 "下线"
-              )
+              ),
+              h(
+                "span",
+                {
+                  style: {
+                    color: "#2d8cf0",
+                    marginRight: "12px"
+                  },
+                  on: {
+                    click: () => {
+                      this.online(params);
+                    }
+                  }
+                },
+                "下线"
+              ),
             ]);
           }
         }
@@ -238,16 +255,35 @@ export default {
     //下线
     offLine(params) {
       let raw = params.row;
+      taskOffline({taskId: raw.id}).then( () => {
+        raw.taskStatus = 2;
+      })
+    },
 
+    online(params) {
+      let raw = params.row;
+      taskOnline({taskId: raw.id}).then( () => {
+        raw.taskStatus = 1;
+      })
     }
+
 
   }
 };
 </script>
 <style lang="scss" scoped>
 .page-task-list {
-  .btns {
-    margin-top: 12px;
+  .content-header {
+    display: flex;
+    flex-direction: column;
+    &-form {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .btns {
+      margin-top: 12px;
+    }
   }
 }
 </style>

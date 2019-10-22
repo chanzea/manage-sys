@@ -122,76 +122,9 @@
     </div>
 
     <div class="layout-header-right">
-
-
-      <!-- <Poptip class="msg-list list-panel" placement="bottom-end" trigger="hover" @on-popper-show="tabPopperShow">
-        <Badge :dot="isNewMsg">
-          <Icon type="ios-bell" size="24"></Icon>
-        </Badge>
-        <div class="api" slot="content">
-          <Tabs class="tabs" v-model="tabIndex">
-            <TabPane class="msg-tabpane" :label="label1" name="name1">
-              <div class="list">
-                <ul v-if="warningList.length>0">
-                  <li>
-
-                  </li>
-                </ul>
-                <div class="empty" v-else>
-                  <Icon type='information-circled'></Icon>
-                  暂无报警
-                </div>
-              </div>
-
-              <router-link to="/warning/warning" class="more">
-                <Button type="text" long size="large">查看更多</Button>
-              </router-link>
-
-            </TabPane>
-
-            <TabPane class="msg-tabpane" :label="label2" name="name2">
-              <div class="list">
-                <ul v-if="backlogList.length>0">
-                  <li v-for="item in backlogList" @click="gotoBacklog(item)">
-                  <span style="line-height: 24px;font-weight: 800">
-                    {{item.name}}
-                  </span>
-                    <span style="float: right">
-                    {{DateUtils.getSimpleDate2(item.startTime)}}
-                      <Tag :color="item.priority==1?'red':'default'">
-                      {{item.priority == 0 ? '一般' : item.priority == 1 ? '重要' : ''}}
-                      </Tag>
-                  </span>
-                    <div class="backlog-content" v-html="item.content">
-                    </div>
-                  </li>
-                </ul>
-                <div class="empty" v-else>
-                  <Icon type='information-circled'></Icon>
-                  暂无待办事项
-                </div>
-              </div>
-              <router-link to="/work/backlog" class="more">
-                <Button type="text" long size="large">查看更多</Button>
-              </router-link>
-            </TabPane>
-            <TabPane class="msg-tabpane" :label="label3" name="name3">
-              <ul>
-
-              </ul>
-            </TabPane>
-          </Tabs>
-        </div>
-      </Poptip> -->
-
-
       <Dropdown class="user-panel list-panel" v-if="userData">
-
-
         <Avatar icon="person" size="small" style="background-color: #5c6b77"/>
         <span class="user-name">{{userData.userName}}</span>
-
-
         <DropdownMenu slot="list">
           <DropdownItem name="1" @click.native="messageCenter">消息中心</DropdownItem>
           <DropdownItem name="1" @click.native="userInfoCenter">用户中心</DropdownItem>
@@ -332,16 +265,10 @@
         });
       },
       logout () {
-        this.$http.apiPost(config.api.userLogout, null).then((res) => {
-          this.loading = false;
-          if (!res.success) {
-            this.$http.handleError(res);
-            this.changeCaptcha();
-          } else {
-            OperatorUtils.clear();
-            this.$router.push({path: '/login'});
-          }
-        });
+        setTimeout(() => {
+          localStorage.setItem('tokenId', '')
+          this.$router.push('/login')  
+        }, 500);
       },
       messageCenter () {
         this.$store.dispatch('setCurrentMenu', [{

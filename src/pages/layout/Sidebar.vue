@@ -45,18 +45,7 @@
     methods: {
       // 获取当前路径信息
       updatePath () {
-        const sidebarData = [...data, {
-          url: '/myself',
-          name: '我的',
-          children: [{
-            url: '/myself/message',
-            name: '消息中心'
-          },{
-            url: '/myself/info',
-            name: '个人中心'
-          }]
-        }]
-        const currentPath = this.getCurrentPath(sidebarData, this.$route.path)
+        const currentPath = this.getCurrentPath(window.routes[0].children, this.$route.path)
         this.$store.dispatch('setCurrentMenu', currentPath)
         this.activeName = currentPath[1].id
         this.openNames = [currentPath[0].id]
@@ -74,12 +63,15 @@
       },
 
       getCurrentPath(data, path) {
+        console.log('data', data)
         const obj = data.find(item => {
-          return path.indexOf(item.url) !== -1
+          return path.indexOf(item.path) !== -1
         })
+        console.log('obj', obj)
         const subObj = obj.children.filter(item => {
-          return item.url === path
+          return path.indexOf(item.path) !== -1
         })
+        console.log('subObj', subObj)
         return [{
           url: obj.url,
           title: obj.name,

@@ -29,7 +29,7 @@ Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.use(iView);
 window.copyIview = iView
-
+window.routes = routes
 const router = new VueRouter({
   routes
 });

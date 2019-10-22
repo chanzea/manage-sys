@@ -22,7 +22,9 @@ const TaskItembank = resolve => require(['pages/sys/task/TaskItembank'], resolve
 const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
 const TaskMission = resolve => require(['pages/sys/task/TaskMission'], resolve);
 const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
+const TaskMonitor = resolve => require(['pages/sys/task/TaskMonitor'], resolve);
 const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve);
+const Taskinfo = resolve => require(['pages/sys/task/Taskinfo'], resolve);
 
 // 标注数据管理
 const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
@@ -56,20 +58,24 @@ const routes = [
         path: 'user',
         component: UserPage,
         name: '用户管理',
+        id: 1,
         redirect: '/user/data',
         children: [
           {
             path: 'data',
             component: UserData,
-            name: '用户数据'
+            name: '用户数据',
+            id: 11,
           },{
             path: 'add',
             component: UserAdd,
-            name: '新增用户'
+            name: '新增用户',
+            id: 12,
           },{
             path: 'group',
             component: UserGroup,
-            name: '新增用户'
+            name: '组织管理',
+            id: 13,
           },
         ]
       },{
@@ -77,14 +83,17 @@ const routes = [
         component: DataPage,
         name: '源数据管理',
         redirect: '/data/list',
+        id: 2,
         children: [{
           path: 'list',
           component: DataList,
-          name: '源数据'
+          name: '源数据',
+          id: 21,
         },{
           path: 'add',
           component: DataAdd,
-          name: '上传源数据'
+          name: '上传源数据',
+          id: 22,
         }]
       },
       { 
@@ -92,71 +101,95 @@ const routes = [
         component: TaskPage,
         name: '任务管理',
         redirect: '/task/list',
+        id: 3,
         children: [
           {
             path: 'list',
             component: TaskList,
-            name: '任务数据'
+            name: '任务数据',
+            id: 31,
           },{
             path: 'itembank',
             component: TaskItembank,
-            name: '题库列表'
+            name: '题库列表',
+            id: 32,
           },{
             path: 'add',
             component: TaskAdd,
-            name: '新建任务'
+            name: '新建任务',
+            id: 33,
           },{
             path: 'update',
             component: TaskAdd,
             name: '查看任务',
+            id: 33,
             meta: {
               isUpdate: true
             }
           },{
             path: 'mission',
             component: TaskMission,
-            name: '任务大厅'
+            name: '任务大厅',
+            id: 34,
           },{
             path: 'auth',
             component: TaskAuth,
-            name: '审核大厅'
+            name: '审核大厅',
+            id: 35,
+          },{
+            path: 'monitor',
+            component: TaskMonitor,
+            name: '任务监控',
+            id: 36,
           },{
             path: 'template',
             component: TaskTemplate,
-            name: '任务模版'
-          },
+            name: '任务模版',
+            id: 37,
+          },{
+            path: 'info',
+            component: Taskinfo,
+            name: '任务详情'
+          }
         ]
       },{
         path: 'tag',
         component: TagPage,
         name: '标注数据管理',
         redirect: '/tag/list',
+        id: 4,
         children: [{
           path: 'list',
           component: TagList,
-          name: '标注数据'
+          name: '标注数据',
+          id: 41,
         },{
           path: 'add',
           component: TagAdd,
-          name: '退回任务'
+          name: '退回任务',
+          id: 42,
         }]
       },{
         path: 'config',
         component: ConfigPage,
         name: '源数据管理',
         redirect: '/config/role',
+        id: 5,
         children: [{
           path: 'index',
           component: ConfigIndex,
-          name: '系统配置'
+          name: '系统配置',
+          id: 51,
         },{
           path: 'role',
           component: ConfigRole,
-          name: '角色管理'
+          name: '角色管理',
+          id: 52,
         },{
           path: 'menu',
           component: ConfigMenu,
-          name: '权限配置'
+          name: '权限配置',
+          id: 53,
         },]
       },
       { 

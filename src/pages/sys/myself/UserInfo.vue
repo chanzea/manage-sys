@@ -6,7 +6,7 @@
           <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
         </div>
         <div class="btn-list">
-          <Button class="btn-list-item" type="primary" @click="UserUpdate">保存</Button>
+          <Button class="btn-list-item" type="primary" :loading="loading" @click="UserUpdate">保存</Button>
           <Button class="btn-list-item">返回</Button>
         </div>
       </TabPane>
@@ -16,7 +16,7 @@
           <form-component ref="resetPwdForm" :formProp="resetPwdForm" :ruleCustom="ruleResetPwd" :formCustom="formResetPwd"></form-component>
         </div>
         <div class="btn-list">
-          <Button class="btn-list-item" type="primary">确定</Button>
+          <Button class="btn-list-item" type="primary" :loading="loading" :disabled="loading" @click="resetPwd">确定</Button>
           <Button class="btn-list-item">取消</Button>
         </div>
       </TabPane>
@@ -171,6 +171,8 @@ export default {
       formCustom: {},
       user: {},
 
+
+      loading: false,
       resetPwdForm: [{
         label: '原密码',
         type: 'password',
@@ -198,6 +200,7 @@ export default {
         }],
         newPassword: [{
           required: true,
+          trigger: 'blur',
           validator: (rule, value, callback) => {
             if (!reg.test(value)) {
               callback(new Error('要求至少8位数字加英文'))
@@ -208,11 +211,16 @@ export default {
         }],
         comfirmPassword: [{
           required: true,
+          trigger: 'blur',
           validator: (rule, value, callback) => {
             if (!reg.test(value)) {
               callback(new Error('要求至少8位数字加英文'))
             } else {
-              callback()
+              if (value !== this.formResetPwd['newPassword']) {
+                callback(new Error('新密码输入不一致，请重新确认'))
+              } else {
+                callback()
+              }
             }
           }
         }],
@@ -307,6 +315,19 @@ export default {
       })
       return [item]
     },
+
+    //重置密码
+    resetPwd () {
+      this.$refs['resetPwdForm'].$refs['basicForm'].validate((valid) => {
+        if (valid) {
+          console.log('重置密码')
+          this.loading = true
+          setTimeout(() => {
+            this.loading = false
+          }, 2000);
+        }
+      })
+    }
   }
 }
 </script>

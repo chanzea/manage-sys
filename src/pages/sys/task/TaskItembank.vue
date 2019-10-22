@@ -1,6 +1,6 @@
 <template>
   <div class="page-task-ltembank">
-    <table-page :columns="columns" :data="data">
+    <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { taskItemList } from "api/task.js";
 import TablePage from 'components/tablePage.vue';
 export default {
   name: 'TaskList',
@@ -78,25 +79,15 @@ export default {
               h('span', {
                 style: {
                   color: '#2d8cf0',
-                  marginRight: '12px'
+                  marginRight: '12px',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {
                       this.show(params)
                   }
                 }
-              }, '查看'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '详情')
+              }, '查看详情')
             ]);
           }
         }
@@ -111,9 +102,43 @@ export default {
           auditor: '王二',
           status: '完成'
         },
-      ]
+      ],
+      page: {
+        pageNum: 1,
+        pageSize: 20
+      },
+      total: null
     }
-  }
+  },
+  created() {
+    this.taskItemList()
+  },
+  methods: {
+    // 获取题库列表
+    taskItemList () {
+      taskItemList({
+        page: {
+          pageSize: this.page.pageSize,
+          pageNum: this.page.pageNum
+        }
+      }).then(res => {
+        console.log('res', res)
+      })
+    },
+    changePage (page) {
+      this.page.pageNum = page
+      this.taskItemList()
+    },
+
+    changePageSize (pageSize) {
+      this.page.pageSize = pageSize
+      this.taskItemList()
+    },
+
+    show (params) {
+
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>

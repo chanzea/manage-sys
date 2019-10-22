@@ -153,7 +153,6 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            console.log('valid', valid)
             // let data = {
             //   username: this.formLogin.username,
             //   password: this.formLogin.password,
@@ -204,6 +203,8 @@
           this.handleSubmit('formLogin');
         }
       });
+      localStorage.setItem('tokenId', '')
+      localStorage.setItem('userId', '')
     },
     components: {}
   };

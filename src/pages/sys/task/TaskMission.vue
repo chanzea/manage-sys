@@ -185,6 +185,17 @@ export default {
         },
       ]
     }
+  },
+
+  methods: {
+    getTaskList: function() {
+      let page = this.page || "";
+      getTaskList({ page }).then(res => {
+        console.log(res);
+        // this.data = res.data.taskList;
+        // this.total = res.data.count;
+      });
+    }
   }
 }
 </script>
