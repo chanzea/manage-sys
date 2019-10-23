@@ -18,3 +18,13 @@ export async function getRoleListPermission(params) {
   const data = await api(`/role/listPermission`, 'post', params)
   return data
 }
+
+
+/**
+ * 添加角色新权限
+ * @param {Obiect} params 
+ */
+export async function roleAddPermission(params) {
+  const data = await api(`/role/addPermission`, 'post', params)
+  return data
+}

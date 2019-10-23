@@ -9,10 +9,10 @@
       <div class="content-middle">
         <Table :columns="columns" :data="data"></Table>
       </div>
-      <Modal v-model="isShowModal" fullscreen :title="modalContent.title">
+      <Modal v-model="isShowModal" fullscreen @on-ok="updatePermission" :title="modalContent.title">
         <!-- <div>{{modalContent.content}}</div> -->
         <div>
-          <Button slot="append" icon="md-add" @click="getdd">test</Button>
+          <!-- <Button slot="append" icon="md-add" @click="getCheckedNodesIds">test</Button> -->
           <Tree :data="treeData" ref="tree" :render="renderContent" show-checkbox></Tree>
         </div>
       </Modal>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getRoleList, getRoleListPermission } from "api/role.js";
+import { getRoleList, getRoleListPermission, roleAddPermission } from "api/role.js";
 
 import {
   getListTree
@@ -32,7 +32,9 @@ export default {
   data() {
     return {
       isShowModal: false,
+      permissionList: [],//权限id
       data: [],
+      currentUpdateRole: null,
       columns: [
         {
           type: "selection",
@@ -103,6 +105,7 @@ export default {
         {
           permissionName: "平台",
           expand: true,
+          id: 0,
           children: []
         }
       ],
@@ -119,32 +122,33 @@ export default {
     // this.getList();
   },
   methods: {
-    getdd(){
+    getCheckedNodesIds(){
       let checkedNodes = this.$refs.tree.getCheckedNodes();
       let checkedId = checkedNodes.map( item => item.id);
       console.log(checkedId);
+      return checkedId
     },
     delete(row) {
       console.log("row", row);
     },
     async getRoleListPermission(row) {
-      console.log("row", row);
+      this.currentUpdateRole = row;
       this.modalContent.title = row.roleName;
       this.isShowModal = true;
 
-      let dataList = await Promise.all([getListTree(),getRoleListPermission()]);
-
+      let dataList = await Promise.all([getListTree(),getRoleListPermission({roleId: row.id})]);
       let treeList = dataList[0].list;
-
+      // console.log(treeList);
+      let permissionList = this.permissionList = dataList[1].list ;
+      console.log(this.permissionList, treeList)
       treeList.forEach(item => {
         this.formatTreeData(item);
       });
-      this.$set(this.treeData[0], "children", treeList);
-      let permissionList = dataList[1].list;
 
-      console.log("permissionList", permissionList);
-      console.log("treeList", "treeList");
-
+      this.$nextTick( () => {
+        this.$set(this.treeData[0], "children", treeList);
+      })
+      
     },
     getRoleList() {
       getRoleList().then(res => {
@@ -154,39 +158,33 @@ export default {
       });
     },
 
-    // async getList() {
-    //   let list = getListTree().then(res => {
-    //     console.log(res);
-    //     let list = res.list;
-    //     console.log(list);
-    //     list.forEach(item => {
-    //       this.formatTreeData(item);
-    //     });
-    //     this.$set(this.treeData[0], "children", list);
-    //   });
-
-    //   let permissionList = await Promise.all([getListTree(),getRoleList()]);
-      
-    //   console.log("permissionList" ,permissionList)
-
-    // },
+    //更新权限
+    updatePermission() {
+      roleAddPermission({
+        roleId: this.currentUpdateRole.id,
+        permissionIds: this.getCheckedNodesIds()
+      }).then( () => {
+        this.$set(this.treeData[0], "children", []);
+        alert("修改成功");
+      })
+    },
 
     formatTreeData(item) {
       if (!item.children) {
         item.isEdit = false;
         item.expand = true;
-        
+        item.checked = this.permissionList.includes(item.id);//在权限数组里就true
         return [item];
       }
-      item.checked = true;
-      // item.children = item.children;
+
+      item.checked = this.permissionList.includes(item.id);//在权限数组里就true
+      
       item.expand = !!item.children;
       item.children.forEach(subItem => {
         this.formatTreeData(subItem);
       });
-      return [item];
+      // return [item];
     },
-
     renderContent(h, { root, node, data }) {
       return h(
         "span",

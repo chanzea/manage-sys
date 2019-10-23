@@ -187,6 +187,10 @@ export default {
     }
   },
 
+  created(){
+    
+  },
+
   methods: {
     getTaskList: function() {
       let page = this.page || "";
