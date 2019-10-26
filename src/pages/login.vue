@@ -35,7 +35,10 @@
   }
 
   .login-title {
-    text-align: center;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .layout-footer {
@@ -55,65 +58,65 @@
     top: 0;
   }
 
-  .layout-logo {
-    height: 60px;
-    background: url("../../static/assets/img/logo2.png") no-repeat center;
-  }
-
-</style>
-
-<style>
-  .login-panel .ivu-btn-primary {
-    color: #fff;
-    background-color: #222;
-    border-color: #111;
-  }
-
-  .login-panel .ivu-btn-primary:hover {
-    color: #fff;
-    background-color: #444;
-    border-color: #333;
-  }
 </style>
 
 <template>
   <div class="layout">
     <div class="layout-login">
       <div class="login-panel">
-        <i-form ref="formLogin" :model="formLogin" :rules="ruleInline">
-          <FormItem class="login-title">
+        <div class="login-title">
+          <span style="color: #17233d;font-weight: 700">{{isLogin ? '欢迎登录' : '注册新用户'}}</span>
+          <span style="color: #2d8cf0;cursor: pointer" @click="isLogin = !isLogin">{{isLogin ? '注册' : '登录'}}</span>
+        </div>
+        <Form ref="formLogin" :model="formLogin" :rules="ruleInline" v-if="isLogin">
+          <div class="login-area">
+            <FormItem prop="username">
+              <i-input v-model="formLogin.username" type="text" placeholder="用户名" style="width: 100%"></i-input>
+            </FormItem>
+            <FormItem prop="password">
+              <i-input v-model="formLogin.password" type="password" placeholder="密码" style="width: 100%"></i-input>
+            </FormItem>
 
-            <div class="layout-logo"></div>
-          </FormItem>
-
-          <FormItem prop="username">
-            <i-input v-model="formLogin.username" type="text" placeholder="用户名" style="width: 100%"></i-input>
-          </FormItem>
-          <FormItem prop="password">
-            <i-input v-model="formLogin.password" type="password" placeholder="密码" style="width: 100%"></i-input>
-          </FormItem>
-
-          <FormItem v-if="captchaEnable" prop="captcha" class="captchaItem">
-            <i-input v-model="formLogin.captcha" type="text" @change="toUpperCase(val)" :maxlength="4" placeholder="验证码"
-                     style="width: 100%;">
-              <!--<span slot="append"></span>-->
-            </i-input>
-            <img class="captchaImage" :src="captchaUrl" @click="changeCaptcha()" title="点击更换验证码">
-          </FormItem>
-          <FormItem>
-            <i-button type="primary" style="width: 100%" @click="handleSubmit('formLogin')" long :loading="loading">
-              登 录
-            </i-button>
-          </FormItem>
+            <FormItem v-if="captchaEnable" prop="captcha" class="captchaItem">
+              <i-input v-model="formLogin.captcha" type="text" @change="toUpperCase(val)" :maxlength="4" placeholder="验证码"
+                      style="width: 100%;">
+                <!--<span slot="append"></span>-->
+              </i-input>
+              <img class="captchaImage" :src="captchaUrl" @click="changeCaptcha()" title="点击更换验证码">
+            </FormItem>
+            <FormItem>
+              <Button type="primary" style="width: 100%" @click="handleSubmit('formLogin')" long :loading="loading">
+                登 录
+              </Button>
+            </FormItem>
+          </div>
           <div style="padding: 0px 8px;">
             Username:<b>admin</b> Password:<b>123456</b>
             <router-link style="float: right;" to="/">忘记密码</router-link>
           </div>
-        </i-form>
+        </Form>
+        <Form ref="formRegister" :model="formRegister" :rules="ruleRegister" v-else>
+          <FormItem prop="username">
+            <i-input v-model="formRegister.username" type="text" placeholder="请输入登录用户名" style="width: 100%"></i-input>
+          </FormItem>
+          <FormItem prop="password">
+            <i-input v-model="formRegister.password" type="password" placeholder="请输入密码" style="width: 100%"></i-input>
+          </FormItem>
+          <FormItem prop="comfirmPassword">
+            <i-input v-model="formRegister.comfirmPassword" type="password" placeholder="请再次输入密码" style="width: 100%"></i-input>
+          </FormItem>
+          <FormItem prop="email">
+            <i-input v-model="formRegister.email" type="text" placeholder="请输入您的常用邮箱" style="width: 100%"></i-input>
+          </FormItem>
+          <FormItem>
+            <Button type="primary" style="width: 100%" @click="handleSubmit('formRegister')" long :loading="loading">
+              快速注册
+            </Button>
+          </FormItem>
+        </Form>
       </div>
     </div>
     <div class="layout-footer">{{footerText}}</div>
-
   </div>
 </template>
 <script>
@@ -122,12 +125,14 @@
   import {
     BASEURL
   } from 'api/config'
+  const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
   export default {
     data () {
       return {
         captchaUrl: this.captchaUrl = HOST + config.api.captcha + new Date().getTime(),
         captchaEnable: config.captchaEnable,
         loading: false,
+        isLogin: true,
         footerText: config.footerText,
         formLogin: {
           username: '',
@@ -145,7 +150,48 @@
             {required: true, message: '请填写密码', trigger: 'blur'},
             {type: 'string', min: 6, message: '密码长度不能小于6位', trigger: 'blur'}
           ]
-        }
+        },
+
+        formRegister: {
+          username: '',
+          password: '',
+          comfirmPassword: '',
+          email: ''
+        },
+
+        ruleRegister: {
+          username: [{
+            required: true,
+            trigger: 'blur',
+            message: '请输入用户名'
+          }],
+          password: [{
+            required: true,
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              if (!reg.test(value)) {
+                callback(new Error('要求至少8位数字加英文'))
+              } else {
+                callback()
+              }
+            }
+          }],
+          comfirmPassword: [{
+            required: true,
+            trigger: 'blur',
+            validator: (rule, value, callback) => {
+              if (!reg.test(value)) {
+                callback(new Error('要求至少8位数字加英文'))
+              } else {
+                if (value !== this.formRegister['password']) {
+                  callback(new Error('新密码输入不一致，请重新确认'))
+                } else {
+                  callback()
+                }
+              }
+            }
+          }],
+        },
       };
     },
     computed: {},

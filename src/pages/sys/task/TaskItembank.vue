@@ -19,6 +19,14 @@
 <script>
 import { taskItemList } from "api/task.js";
 import TablePage from 'components/tablePage.vue';
+const taskItemStatusData = {
+  '0': '待分发',
+  '1': '待标注',
+  '2': '待审核',
+  '3': '返工标注',
+  '4': '返工标注审核',
+  '5': '已完成'
+}
 export default {
   name: 'TaskList',
   components: {
@@ -107,6 +115,7 @@ export default {
         pageNum: 1,
         pageSize: 20
       },
+      taskItemStatus: '', //状态
       total: null
     }
   },
@@ -120,7 +129,8 @@ export default {
         page: {
           pageSize: this.page.pageSize,
           pageNum: this.page.pageNum
-        }
+        },
+        taskItemStatus:this.taskItemStatus
       }).then(res => {
         console.log('res', res)
       })
