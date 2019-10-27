@@ -199,17 +199,17 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            // let data = {
-            //   username: this.formLogin.username,
-            //   password: this.formLogin.password,
-            //   captcha: this.formLogin.captcha
-            // };
-            this.loading = true;
             const data = {
-              "loginName": "admin",
-              "loginPassword": "admin1234",
-              "verifyCode": "nd74",
-            }
+              username: this.formLogin.username,
+              password: this.formLogin.password,
+              captcha: this.formLogin.captcha
+            };
+            this.loading = true;
+            // const data = {
+            //   "loginName": "admin",
+            //   "loginPassword": "admin1234",
+            //   "verifyCode": "nd74",
+            // }
             axios({
               url: `${BASEURL}/user/login`,
               method: 'post',

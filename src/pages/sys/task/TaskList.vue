@@ -121,27 +121,27 @@ export default {
       ],
       total: 0,
       data: [
-        {
-          id: 38,
-          taskName: "task3",
-          taskRemark: "task1-desc",
-          taskType: 1,
-          markPointType: 1,
-          markPoint: 10,
-          reviewPoint: 10,
-          reviewScale: 0,
-          dataSetId: 17,
-          dataSetSnapshotId: 0,
-          markUserIds: [84],
-          reviewUserIds: [8],
-          taskStatus: 1,
-          taskItemTotal: 5,
-          taskItemUnMarkTotal: 5,
-          taskItemUnReviewTotal: 5,
-          taskItemReMarkTotal: 0,
-          taskItemReReviewTotal: 0,
-          creatorId: 8
-        }
+        // {
+        //   id: 38,
+        //   taskName: "task3",
+        //   taskRemark: "task1-desc",
+        //   taskType: 1,
+        //   markPointType: 1,
+        //   markPoint: 10,
+        //   reviewPoint: 10,
+        //   reviewScale: 0,
+        //   dataSetId: 17,
+        //   dataSetSnapshotId: 0,
+        //   markUserIds: [84],
+        //   reviewUserIds: [8],
+        //   taskStatus: 1,
+        //   taskItemTotal: 5,
+        //   taskItemUnMarkTotal: 5,
+        //   taskItemUnReviewTotal: 5,
+        //   taskItemReMarkTotal: 0,
+        //   taskItemReReviewTotal: 0,
+        //   creatorId: 8
+        // }
       ]
     };
   },

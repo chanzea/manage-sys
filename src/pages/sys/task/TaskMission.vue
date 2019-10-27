@@ -3,7 +3,7 @@
     <div class="task-mission-content">
       <Tabs :value="currentTab">
         <TabPane v-for="(item, index) in tabLists" :key="index" :label="item.label" :name="item.name">
-          <table-page :columns="columns" :data="data">
+          <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
               <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -21,6 +21,7 @@
 
 <script>
 import TablePage from 'components/tablePage.vue';
+import { getTaskList, taskItemAllotMark } from "@/api/task";
 export default {
   name: 'TaskMission',
   components: {
@@ -78,7 +79,7 @@ export default {
         },
         {
           title: '任务编号',
-          key: 'taskId',
+          key: 'id',
           sortable: true
         },
         {
@@ -86,26 +87,16 @@ export default {
           key: 'taskName'
         },
         {
-          title: '创建人',
-          key: 'creator'
-        },
-        {
-          title: '创建时间',
-          key: 'createtime'
+          title: '任务用途',
+          key: 'taskRemark'
         },
         {
           title: '数量',
-          key: 'count'
+          key: 'taskItemMarkTotal'
         },
         {
-          title: '待标注',
-          key: 'mark'
-        },{
-          title: '待审核',
-          key: 'verify'
-        },{
-          title: '状态',
-          key: 'status'
+          title: '剩余数量',
+          key: 'taskRemain'
         },{
           title: '操作',
           key: 'action',
@@ -116,85 +107,68 @@ export default {
               h('span', {
                 style: {
                   color: '#2d8cf0',
-                  marginRight: '12px'
+                  marginRight: '12px',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {
-                      this.show(params)
+                      this.taskItemAllotMark(params)
                   }
                 }
-              }, '查看'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '题库'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '编辑'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '删除'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params)
-                  }
-                }
-              }, '下线')
+              }, '领取任务')
             ]);
           }
         }
       ],
       data: [
-        {
-          taskId: 'QD0001',
-          taskName: '任务拉框',
-          creator: '张三',
-          createtime: '2019-09-15',
-          count: '1000',
-          mark: '500',
-          verify: '800',
-          status: '草稿'
-        },
-      ]
+        // {
+        //   taskId: 'QD0001',
+        //   taskName: '任务拉框',
+        //   taskRemark: '标注任务步态数据',
+        //   taskItemMarkTotal: '1000',
+        //   taskRemain: '500'
+        // },
+      ],
+      page: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      total: null
     }
   },
-
+  created() {
+    this.getTaskList()
+  },
   methods: {
     getTaskList: function() {
       let page = this.page || "";
-      getTaskList({ page }).then(res => {
+      getTaskList({ page, tag: 'mark' }).then(res => {
         console.log(res);
-        // this.data = res.data.taskList;
-        // this.total = res.data.count;
+        const { taskList, count } = res
+        this.data = taskList.map(item => {
+          item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal
+          return item
+        })
+        this.total = count;
       });
+    },
+    changePage (page) {
+      this.page.pageNum = page
+      this.getTaskList()
+    },
+
+    changePageSize (pageSize) {
+      this.page.pageSize = pageSize
+      this.getTaskList()
+    },
+
+    taskItemAllotMark (params) {
+      console.log('params', params)
+      taskItemAllotMark({
+        taskId: params.row.id
+      }).then(res => {
+        console.log('res', res)
+      })
     }
   }
 }

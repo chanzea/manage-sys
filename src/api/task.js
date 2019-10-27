@@ -50,3 +50,9 @@ export async function taskItemList(params) {
     const data = await api(`/taskItem/list`, 'post', params)
     return data
 }
+
+//领取任务
+export async function taskItemAllotMark(params) {
+    const data = await api(`/taskItem/allotMark`, 'post', params)
+    return data
+}
