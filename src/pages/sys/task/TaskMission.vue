@@ -21,7 +21,7 @@
 
 <script>
 import TablePage from 'components/tablePage.vue';
-import { getTaskList, taskItemAllotMark } from "@/api/task";
+import { getTaskList } from "@/api/task";
 export default {
   name: 'TaskMission',
   components: {
@@ -164,10 +164,11 @@ export default {
 
     taskItemAllotMark (params) {
       console.log('params', params)
-      taskItemAllotMark({
-        taskId: params.row.id
-      }).then(res => {
-        console.log('res', res)
+      this.$router.push({
+        path: '/task/classify',
+        query: {
+          id: params.row.id
+        }
       })
     }
   }

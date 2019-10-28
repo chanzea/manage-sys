@@ -14,21 +14,30 @@ export const api = (url, method, data = {}, contentType = 'application/json;char
     method,
     headers: {
       'Content-Type': contentType,
-      // 'tokenId': tokenId
+      'tokenId': tokenId
     }
   }
-  data['tokenId'] = tokenId
   obj[query] = data
   return new Promise((resolve, reject) => {
     axios(obj).then(res => {
       const { data } = res
       if (data.code === 'SUCCESS') {
         resolve(data.data ? data.data : data)
+      } else if (data.code === 'user.token_error') {
+        localStorage.setItem('tokenId', '')
+        copyIview.Modal.warning({
+          title: '提示',
+          content: '请重新登录',
+          okText: '确定',
+          onOk: () => {
+            window.location.reload(); //刷新页面
+          }
+        })
       } else {
         copyIview.Modal.warning({
           title: '提示',
           content: data.message || '系统错误',
-          okText: '确定'
+          okText: '确定',
         })
       }
     }).catch(err => {

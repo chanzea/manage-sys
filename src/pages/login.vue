@@ -91,8 +91,7 @@
             </FormItem>
           </div>
           <div style="padding: 0px 8px;">
-            Username:<b>admin</b> Password:<b>123456</b>
-            <router-link style="float: right;" to="/">忘记密码</router-link>
+            Username:<b>admin</b> Password:<b>admin1234</b>
           </div>
         </Form>
         <Form ref="formRegister" :model="formRegister" :rules="ruleRegister" v-else>
@@ -200,9 +199,9 @@
         this.$refs[name].validate((valid) => {
           if (valid) {
             const data = {
-              username: this.formLogin.username,
-              password: this.formLogin.password,
-              captcha: this.formLogin.captcha
+              loginName: this.formLogin.username,
+              loginPassword: this.formLogin.password,
+              verifyCode: this.formLogin.captcha
             };
             this.loading = true;
             // const data = {
@@ -224,11 +223,14 @@
                 localStorage.setItem('userId', data.data.userId)
                 this.$router.push({path: '/user'});
               } else {
+                this.$Message.warning(data.message);
                 this.changeCaptcha(); //更新验证码
               }
+              this.loading = false;
             }).catch(err => {
               console.log('err', err)
               this.changeCaptcha(); //更新验证码
+              this.loading = false;
             })
           } else {
             this.$Message.error('请填写正确再提交!');
@@ -237,7 +239,7 @@
       },
       changeCaptcha () {
         this.formLogin.captcha = '';
-        // this.captchaUrl = HOST + config.api.captcha + new Date().getTime();
+        this.captchaUrl = HOST + config.api.captcha + new Date().getTime();
       },
       toUpperCase (val) {
         console.log(val);

@@ -2,9 +2,9 @@
   <div class="page-task-add">
     <div class="task-add-content">
       <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="100">
-        <FormItem label="任务编号" prop="taskId">
+        <!-- <FormItem label="任务编号" prop="taskId">
           <Input v-model="formItem.taskId" placeholder="编号"></Input>
-        </FormItem>
+        </FormItem> -->
         <FormItem label="任务名称" prop="taskName">
           <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
         </FormItem>
@@ -69,7 +69,7 @@
         </FormItem>
       </Form>
       <div class="btn-list">
-        <Button class="btn-list-item" type="primary" @click="submit">提交</Button>
+        <Button class="btn-list-item" type="primary" :loading="loading" @click="submit">提交</Button>
         <Button class="btn-list-item">取消</Button>
       </div>
     </div>
@@ -86,6 +86,7 @@ export default {
   name: "TaskAdd",
   data() {
     return {
+      loading: false,
       isUpdate: false,
       formItem: {
         taskName: null,
@@ -159,11 +160,16 @@ export default {
     submit() {
       this.$refs["taskForm"].validate(valid => {
         if (valid) {
+          this.loading = true;
           let params = this.formItem;
-          params = {"taskName":"test","taskRemark":"test","taskType":1,"markPointType":"1","markPoint":"100","reviewPoint":"1000","dataSetId":17,"markUserIds":[7,8],"reviewUserIds":[9,10]};
-          params.tokenId = localStorage.getItem("tokenId")
+          // params = {"taskName":"test","taskRemark":"test","taskType":1,"markPointType":"1","markPoint":"100","reviewPoint":"1000","dataSetId":17,"markUserIds":[7,8],"reviewUserIds":[9,10]};
+          // params.tokenId = localStorage.getItem("tokenId")
           taskAdd(params).then(res => {
             this.$Message.success('添加成功');
+            this.$router.push('/task/mission');
+            this.loading = false;
+          }).catch(() => {
+            this.loading = false
           })
         }
       });

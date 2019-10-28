@@ -198,12 +198,12 @@ export default {
 
     changePage (page) {
       this.page.pageNum = page
-      // this.getDatasetList()
+      this.getTasklistInfo()
     },
 
     changePageSize (pageSize) {
       this.page.pageSize = pageSize
-      // this.getDatasetList()
+      this.getTasklistInfo()
     },
 
   }

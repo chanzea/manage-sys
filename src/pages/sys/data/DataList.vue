@@ -100,7 +100,7 @@ export default {
         },
         {
           title: '创建时间',
-          key: 'createdTime'
+          key: '_createdTime'
         },{
           title: '操作',
           key: 'action',
@@ -203,6 +203,7 @@ export default {
           item.dataPath = item.organizationIds ? item.organizationIds.map(item => {
             return organizationList[item].organizationName
           }).join(',') : '未分组'
+          item._createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
           return item
         })
         this.total = count

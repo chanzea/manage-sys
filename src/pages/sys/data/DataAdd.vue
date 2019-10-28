@@ -117,42 +117,38 @@ export default {
       const _this = this
       console.log('file', file)
       
-      _this.fileName.push(file.name)
-        // const form = new FormData();
-      
-        // browserMD5File(file, function (err, md5) {
-        //   console.log('md5', md5)
-        //     form.append('file', file);
-        //     fileUploadInfo({
-        //       fileMD5: md5,
-        //       fileName: file.name,
-        //       fileSize: file.size
-        //     }).then(res => {
-        //       console.log('fileUpload', res)
-        //       _this.fileId = res.fileId
-        //       _this.formItem.fileIds = [res.fileId]
-        //       _this.startChunkNumber = res.startChunkNumber
-        //       form.append('fileId', res.fileId)
-        //       form.append('chunkNum', res.startChunkNumber)
-        //       return fileUpload(form)
-        //     }).then(res => {
-        //       _this.fileName.push(file.name)
-        //       console.log('/file/upload', res)
-        //     })
-        // });
+      // _this.fileName.push(file.name)
+      const form = new FormData();
+    
+      browserMD5File(file, function (err, md5) {
+        form.append('file', file);
+        fileUploadInfo({
+          fileMD5: md5,
+          fileName: file.name,
+          fileSize: file.size
+        }).then(res => {
+          console.log('fileUpload', res)
+          _this.fileId = res.fileId
+          _this.formItem.fileIds = [res.fileId]
+          _this.startChunkNumber = res.startChunkNumber
+          form.append('fileId', res.fileId)
+          form.append('chunkNum', res.startChunkNumber)
+          return fileUpload(form)
+        }).then(res => {
+          _this.fileName.push(file.name)
+          console.log('/file/upload', res)
+        })
+      });
     },
 
     // 提交源数据
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          console.log('valid', valid)
           dataSetCreate(this.formItem).then(res => {
             this.$Message.success('上传成功');
             this.$router.push('/data/list')
           })
-        } else {
-          this.$Message.error('校验失败');
         }
       })
     },
