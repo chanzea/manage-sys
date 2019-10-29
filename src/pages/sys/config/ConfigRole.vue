@@ -202,6 +202,7 @@ export default {
             .then(res => {
               console.log(res);
               this.$Message.success("创建成功");
+              this.createVisiAble = false;
               this.getRoleList();
             })
             .catch(() => {

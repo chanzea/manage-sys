@@ -1,7 +1,7 @@
 <template>
   <div class="page-config-index">
     <Tree :data="data" :render="renderContent" ></Tree>
-    <DeletePoptip/>  
+    <!-- <DeletePoptip/>   -->
   </div>
 </template>
 <script>
@@ -201,10 +201,7 @@ export default {
         })
         return;
       }
-      const parentKey = root.find(el => el === node).parent;
-      const parent = root.find(el => el.nodeKey === parentKey).node;
-      const index = parent.children.indexOf(data);
-      parent.children.splice(index, 1);
+      
     },
     edit(root, node, data) {
       this.$set(data, "isEdit", true);
@@ -214,12 +211,16 @@ export default {
       data.permissionName = reviseData.reviseNameData;
       data.permissionUri = reviseData.reviseUriData;
 
+      const parentKey = root.find(el => el === node).parent;
+      const parent = root.find(el => el.nodeKey === parentKey).node;
+      console.log(parent)
+
       let params = {
         permissionName: data.permissionName,
         permissionUri: data.permissionUri,
-        permissionParent: data.permissionParent,
+        permissionParent: parent.id || 0,
         permissionType: 1,
-        permissionSort: data.permissionSort || ""
+        permissionSort: data.permissionSort || "0"
       }
 
       if(data.isAdd){
