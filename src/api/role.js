@@ -10,8 +10,29 @@ export async function getRoleList(params) {
   return data
 }
 
+
 /**
- * 获取配置角色列表
+ * 删除角色
+ * @param {Obiect} params 
+ */
+export async function delRole(params) {
+  const data = await api(`/role/delete`, 'post', params)
+  return data
+}
+
+/**
+ * 新增角色
+ * @param {Obiect} params 
+ */
+export async function addRole(params) {
+  const data = await api(`/role/add`, 'post', params)
+  return data
+}
+
+
+
+/**
+ * 获取配置角色权限列表
  * @param {Obiect} params 
  */
 export async function getRoleListPermission(params) {
