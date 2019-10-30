@@ -54,8 +54,8 @@ import {
   dataSetCreate
 } from 'api/data.js'
 import {
-  getUserInfo
-} from 'api/user'
+  orgainzationList
+} from 'api/organization.js'
 export default {
   name: 'DataAdd',
   data () {
@@ -90,7 +90,7 @@ export default {
     }
   },
   created() {
-    this.getUserInfo()
+    this.orgainzationList()
   },
   computed: {
     isDisabled() {
@@ -99,18 +99,12 @@ export default {
   },
   methods: {
     // 获取用户详情
-    getUserInfo () {
-      const userId = localStorage.getItem('userId')
-      getUserInfo({
-        userId
+    orgainzationList () {
+      orgainzationList({
+        layerNumber: 2
       }).then(res => {
         const {organizationList} = res
-        Object.keys(organizationList).forEach(item => {
-          this.organizationsList.push({
-            id: item,
-            organizationName: organizationList[item].organizationName
-          })
-        })
+        this.organizationsList = organizationList
       })
     },
     beforeUpload (file) {
