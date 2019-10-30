@@ -25,7 +25,7 @@ const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
 const TaskMonitor = resolve => require(['pages/sys/task/TaskMonitor'], resolve);
 const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve);
 const Taskinfo = resolve => require(['pages/sys/task/Taskinfo'], resolve);
-const TaskClassify = resolve => require(['pages/sys/task/TaskClassify'], resolve);
+const TaskType = resolve => require(['pages/sys/task/taskType/TaskType'], resolve);
 
 // 标注数据管理
 const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
@@ -152,8 +152,8 @@ const routes = [
             component: Taskinfo,
             name: '任务详情'
           },{
-            path: 'classify',
-            component: TaskClassify,
+            path: 'type',
+            component: TaskType,
             name: '任务分类'
           }
         ]

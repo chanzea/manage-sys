@@ -22,6 +22,28 @@
 <script>
 import TablePage from 'components/tablePage.vue';
 import { getTaskList } from "@/api/task";
+const taskType = {
+  '1': {
+    label: '分类任务',
+    type: 'Classify'
+  }, 
+  '2': {
+    label: '标注任务',
+    type: 'Mark'
+  },
+  '3': {
+    label: '图片剔除任务',
+    type: 'RejectPic'
+  },
+  '4': {
+    label: '文件夹剔除任务',
+    type: 'RejectFolder'
+  },
+  '5': {
+    label: '分割任务',
+    type: 'Lasso'
+  }
+}
 export default {
   name: 'TaskMission',
   components: {
@@ -87,6 +109,10 @@ export default {
           key: 'taskName'
         },
         {
+          title: '任务类型',
+          key: 'taskTypeDis'
+        },
+        {
           title: '任务用途',
           key: 'taskRemark'
         },
@@ -120,15 +146,7 @@ export default {
           }
         }
       ],
-      data: [
-        // {
-        //   taskId: 'QD0001',
-        //   taskName: '任务拉框',
-        //   taskRemark: '标注任务步态数据',
-        //   taskItemMarkTotal: '1000',
-        //   taskRemain: '500'
-        // },
-      ],
+      data: [],
       page: {
         pageNum: 1,
         pageSize: 10
@@ -146,7 +164,8 @@ export default {
         console.log(res);
         const { taskList, count } = res
         this.data = taskList.map(item => {
-          item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal
+          item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
+          item.taskTypeDis = taskType[item.taskType].label
           return item
         })
         this.total = count;
@@ -163,11 +182,11 @@ export default {
     },
 
     taskItemAllotMark (params) {
-      console.log('params', params)
       this.$router.push({
-        path: '/task/classify',
+        path: '/task/type',
         query: {
-          id: params.row.id
+          id: params.row.id,
+          type: taskType[params.row.taskType].type
         }
       })
     }

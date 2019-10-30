@@ -56,3 +56,17 @@ export async function taskItemAllotMark(params) {
     const data = await api(`/taskItem/allotMark`, 'post', params)
     return data
 }
+
+
+//任务题目分类标注
+export async function taskItemMarklist(params) {
+    const data = await api(`/taskItem/markList`, 'post', params)
+    return data
+}
+
+
+//分类标签列举
+export async function tagClassifyList(params) {
+    const data = await api(`/tag/classify/list`, 'get', params)
+    return data
+}
