@@ -21,7 +21,7 @@
       v-model="isShowModal"
       title="分类标注"
       @on-ok="confirm"
-      @on-cancel="cancel">
+      @on-cancel="">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" />
     </Modal>
   </div>
@@ -113,9 +113,6 @@ export default {
         })
       })
     },
-    cancel () {
-
-    },
     confirm () {
       console.log('biaodan', this.formCustom)
       const markDataList = []
@@ -154,6 +151,7 @@ export default {
 <style lang="scss" scoped>
 .page-task-classify {
   .task-classify-content {
+    padding: 0 28px;
     &-list {
       display: flex;
       flex-wrap: wrap;

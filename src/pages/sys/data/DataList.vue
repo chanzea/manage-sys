@@ -144,7 +144,7 @@ export default {
       data: [],
       page: {
         pageNum: 1,
-        pageSize: 20
+        pageSize: 10
       },
       total: null
     }

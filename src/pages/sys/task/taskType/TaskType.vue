@@ -7,17 +7,21 @@
 <script>
 import TaskClassify from './TaskClassify'
 import TaskRejectPic from './TaskRejectPic'
+import TaskRejectFolder from './TaskRejectFolder'
 export default {
   name: 'TaskType',
-  data: {
-    type: ''
+  data() {
+    return {
+      type: ''
+    }
   },
   created() {
     this.type = this.$route.query.type
   },
   components: {
     TaskClassify,
-    TaskRejectPic
+    TaskRejectPic,
+    TaskRejectFolder
   }
 }
 </script>

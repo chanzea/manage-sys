@@ -70,3 +70,15 @@ export async function tagClassifyList(params) {
     const data = await api(`/tag/classify/list`, 'get', params)
     return data
 }
+
+//提交剔除图片
+export async function taskItemMark(params) {
+    const data = await api(`/taskItem/mark`, 'post', params)
+    return data
+}
+
+//获取文件夹图片
+export async function getFolderPic(params) {
+    const data = await api(`/dataSet/listDataRecord`, 'post', params)
+    return data
+}
