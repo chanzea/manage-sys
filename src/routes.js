@@ -21,11 +21,13 @@ const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
 const TaskItembank = resolve => require(['pages/sys/task/TaskItembank'], resolve);
 const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
 const TaskMission = resolve => require(['pages/sys/task/TaskMission'], resolve);
-const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
+// const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
+const TaskAuth = resolve => require(['pages/sys/task/TaskAuthMission'], resolve);
 const TaskMonitor = resolve => require(['pages/sys/task/TaskMonitor'], resolve);
 const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve);
 const Taskinfo = resolve => require(['pages/sys/task/Taskinfo'], resolve);
 const TaskType = resolve => require(['pages/sys/task/taskType/TaskType'], resolve);
+const AuthType = resolve => require(['pages/sys/task/authType/TaskType'], resolve);
 
 // 标注数据管理
 const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
@@ -155,6 +157,11 @@ const routes = [
             path: 'type',
             component: TaskType,
             name: '任务分类'
+          },
+          {
+            path: 'review',
+            component: AuthType,
+            name: "审核分类"
           }
         ]
       },{

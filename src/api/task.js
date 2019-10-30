@@ -70,3 +70,17 @@ export async function tagClassifyList(params) {
     const data = await api(`/tag/classify/list`, 'get', params)
     return data
 }
+
+
+
+//审核领取
+export async function taskItemAllotReview(params) {
+    const data = await api(`/taskItem/allotReview`, 'post', params)
+    return data
+}
+
+//提交审核结果
+export async function taskItemReview(params) {
+    const data = await api(`/taskItem/review`, 'post', params)
+    return data
+}
