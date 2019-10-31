@@ -176,10 +176,9 @@ export default {
   methods: {
     // 获取用户信息
     getUserInfo () {
-      const userId = localStorage.getItem('userId')
       return new Promise((resolve) => {
         getUserInfo({
-          userId
+          userId: this.userId
         }).then(res => {
           const {user, organizationList, roleList} = res
           this.user = user
@@ -240,7 +239,8 @@ export default {
         if (valid) {
           this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
           const params = Object.assign({}, this.formCustom, {
-            enable: this.formCustom.enable ? 1 : 0
+            enable: this.formCustom.enable ? 1 : 0,
+            userId: this.userId
           })
           UserUpdate(params).then(res => {
             this.$Message.success('用户信息更新成功');

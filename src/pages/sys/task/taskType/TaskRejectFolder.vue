@@ -74,6 +74,7 @@ export default {
     }
   },
   methods: {
+    // 更新
     taskItemAllotMark () {
       this.dataRecordList = []
       const taskId = this.$route.query.id
@@ -82,7 +83,7 @@ export default {
       }).then(res => {
         console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res
-        Object.keys(dataRecordList).forEach(item => {
+        dataRecordList && Object.keys(dataRecordList).forEach(item => {
           dataRecordList[item].isSelected = false
           this.dataRecordList.push(dataRecordList[item])
           this.taskItemList = taskItemList

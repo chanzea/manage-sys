@@ -22,7 +22,7 @@
         </FormItem>
         <FormItem label="归属组织" prop="organizations">
           <CheckboxGroup v-model="formItem.organizationIds">
-            <Checkbox v-for="(item, index) in organizationsList" :label="item.id" :key="item.id">{{item.organizationName}}</Checkbox>
+            <Checkbox v-for="(item) in organizationList" :label="item.id" :key="item.id">{{item.organizationName}}</Checkbox>
           </CheckboxGroup>
         </FormItem>
       </Form>
@@ -36,9 +36,12 @@ import {
   getDatasetList,
   dataSetUpdate
 } from 'api/data.js';
+// import {
+//   getUserInfo
+// } from 'api/user'
 import {
-  getUserInfo
-} from 'api/user'
+  orgainzationList
+} from 'api/organization.js'
 import {
   renderDeletePop
 } from 'utils/tool.js'
@@ -63,14 +66,14 @@ export default {
             message: '请输入文件描述'
           }
         ],
-        organizations: [
+        organizationIds: [
           {
             required: true,
             message: '请选择归属组织'
           }
         ],
       },
-      organizationsList: [],
+      organizationList: [],
       formItem: {},
       searchKey: '',
       value: '',
@@ -119,18 +122,6 @@ export default {
                       this.show(params)
                   }
                 }
-              }, '查看'),
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px',
-                  cursor: 'pointer'
-                },
-                on: {
-                  click: () => {
-                      this.show(params)
-                  }
-                }
               }, '编辑'),
               renderDeletePop(h, '您确定要删除吗', {
                 confirmFn: function(){
@@ -151,37 +142,46 @@ export default {
   },
   created () {
     this.getDatasetList()
-    this.getUserInfo ()
+    this.orgainzationList ()
   },
   methods: {
     // 获取用户详情,所属平台组织
-    getUserInfo () {
-      const userId = localStorage.getItem('userId')
-      getUserInfo({
-        userId
+    orgainzationList () {
+      orgainzationList({
+        layerNumber: 2
       }).then(res => {
         const {organizationList} = res
-        Object.keys(organizationList).forEach(item => {
-          this.organizationsList.push({
-            id: parseInt(item),
-            organizationName: organizationList[item].organizationName
-          })
+        this.organizationList = organizationList.map(item => {
+          item.id = parseInt(item.id)
+          return item
         })
       })
     },
     jumpToPage () {
       this.$router.push('/data/add')
     },
+    getOrganizationName (organizationIds) {
+      const organizationList = [...this.organizationList]
+      console.log('organizationList', organizationList)
+      const path = organizationList.filter(item => {
+        return organizationIds.includes(item.id)
+      }).map(item => {
+        return item.organizationName
+      }).join(',')
+      return path
+    },
     confirm () {
       dataSetUpdate({
         dataSetId: this.formItem.id,
         folderName: this.formItem.folderName,
-        folderDesc: this.formItem.folderName,
+        folderDesc: this.formItem.folderDesc,
         organizationIds:this.formItem.organizationIds
       }).then(res => {
         this.data.forEach(item => {
           if (item.id === this.formItem.id) {
             item.folderName = this.formItem.folderName
+            item.folderDesc = this.formItem.folderDesc
+            item.dataPath = this.getOrganizationName(this.formItem.organizationIds)
           }
         })
         this.$Message.success('信息更新成功');

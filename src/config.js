@@ -1,7 +1,7 @@
 module.exports = {
-  appId: 'ffast',
-  name: 'FFast',
-  footerText: 'FFast',
+  appId: 'Tagging',
+  name: 'Tagging',
+  footerText: 'Tagging',
   logo: '',
   iconFontUrl: '',
   whiteList: ['/login', '/reset'],
