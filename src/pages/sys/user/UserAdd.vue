@@ -149,6 +149,7 @@ export default {
         loginPassword: [
           { 
             trigger: 'blur',
+            required: true,
             validator: (rule, value, callback) => {
               if (!reg.test(value)) {
                 callback(new Error('要求至少8位数字加英文'))
@@ -156,7 +157,35 @@ export default {
                 callback()
               }
           }}
-        ]
+        ],
+        loginName: [
+          {
+            trigger: 'blur',
+            required: true,
+            message: '请输入登录账号'
+          }
+        ],
+        userName: [
+          {
+            trigger: 'blur',
+            required: true,
+            message: '请输入用户名'
+          }
+        ],        
+        phoneNum: [
+          {
+            trigger: 'blur',
+            required: true,
+            message: '请输入手机号码'
+          }
+        ],        
+        email: [
+          {
+            trigger: 'blur',
+            required: true,
+            message: '请输入邮箱'
+          }
+        ],
       },
       formCustom: {}
     }
@@ -176,10 +205,9 @@ export default {
   methods: {
     // 获取用户信息
     getUserInfo () {
-      const userId = localStorage.getItem('userId')
       return new Promise((resolve) => {
         getUserInfo({
-          userId
+          userId: this.userId
         }).then(res => {
           const {user, organizationList, roleList} = res
           this.user = user
@@ -220,7 +248,7 @@ export default {
       // const params = {"birthday":"2019-10-16T16:00:00.000Z","loginName":"abaaa","enable":1,"organizationIds":[21,40,41],"roleIds":[11,12],"userName":"aaaaa","sex":1,"loginPassword":"asdfqbwe123","phoneNum":"15912313212","certificateType":"ID_CARD","certificateId":"445124159123132129","qq":"159123132","email":"159123132@qq.com","maritalStatus":0,"address":"sss"}
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
-          this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
+          this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''
           const params = Object.assign({}, this.formCustom, {
             enable: this.formCustom.enable ? 1 : 0
           })
@@ -228,6 +256,8 @@ export default {
           UserRegister(params).then(res => {
             if(isReset) {
               this.$refs['formProp'].$refs['basicForm'].resetFields()
+            } else {
+              this.$router.push('/user/data')
             }
             this.$Message.success('用户已成功注册');
           })
@@ -238,9 +268,10 @@ export default {
     UserUpdate () {
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
-          this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
+          this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''
           const params = Object.assign({}, this.formCustom, {
-            enable: this.formCustom.enable ? 1 : 0
+            enable: this.formCustom.enable ? 1 : 0,
+            userId: this.userId
           })
           UserUpdate(params).then(res => {
             this.$Message.success('用户信息更新成功');

@@ -54,8 +54,7 @@ router.beforeEach((to, from, next) => {
 
 
 router.afterEach(transition => {
-  store.dispatch('showLoading', false);
-  document.title = config.name + " - " + transition.name;
+  document.title = "Tagging - " + transition.name;
 });
 
 

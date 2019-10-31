@@ -1,20 +1,36 @@
 <template>
   <div class="page-task-classify">
     <div class="task-classify-content">
+            <div class="task-classify-content-meta">
+        <div class="task-classify-content-meta-item">
+          <span class="item-label">任务名称:</span>
+          <span class="item-value">aaaa</span>
+        </div>
+        <div class="task-classify-content-meta-item">
+          <span class="item-label">任务模版:</span>
+          <span class="item-value">图片标注模版</span>
+        </div>
+        <div class="task-classify-content-meta-item">
+          <span class="item-label">任务描述:</span>
+          <span class="item-value"><strong>选择图片添加标注</strong></span>
+        </div>
+      </div>
       <div class="task-classify-content-list">
-        <div class="task-classify-content-list-item" :class="item.isSelected ? 'selected-border' : ''" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
-            <!-- <img :src="BASEURL + item.src" alt=""> -->
+        <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
+          <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
           </div>
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
             <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
           </div>
+          <span v-if="item.tag" class="item-tag">
+            <Tag color="success" size="medium">{{item.tag}}</Tag>
+          </span>
         </div>
       </div>
       <div class="task-classify-content-opt">
         <Button class="opt-btn" type="primary" @click="isShowModal = true" :disabled="!isSelected">批量添加标注</Button>
-        <Button class="opt-btn" type="primary" @click="taskItemAllotMark" :disabled="!isNext">下一题</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemMarklist">下一题</Button>
       </div>
     </div>
     <Modal
@@ -80,7 +96,6 @@ export default {
         ],
       },
       formCustom: {},
-      isNext: false //是否可点击下一题
     }
   },
   components: {
@@ -95,6 +110,13 @@ export default {
       return this.taskItemList.some(item => {
         return item.isSelected === true
       })
+    },
+    selectedTaskItem () {
+      return this.taskItemList.filter(item => {
+        return item.isSelected === true
+      }).map(item => {
+        return item.id
+      })
     }
   },
   methods: {
@@ -103,7 +125,6 @@ export default {
       taskItemAllotMark({
         taskId
       }).then(res => {
-        this.isNext = false
         const {taskItemList, dataRecordList, userList} = res
         this.taskItemList = taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].fileUrl
@@ -113,13 +134,30 @@ export default {
         })
       })
     },
+    // 添加标注
     confirm () {
-      console.log('biaodan', this.formCustom)
+      this.taskItemList.forEach(item => {
+        if(this.selectedTaskItem.includes(item.id)) {
+          item.tag = this.formCustom.name
+        }
+      })
+      this.formProp.forEach(item => {
+        this.formCustom[item.key] = ''
+      })
+    },
+
+    taskItemMarklist () {
+      const isNext = this.taskItemList.some(item => {
+        return item.tag !== ''
+      })
+      if (!isNext) {
+        return
+      }
       const markDataList = []
       this.taskItemList.forEach(item => {
         markDataList.push({
           taskItemId: item.id,
-          markData: item.isSelected ? this.formCustom.name : ''
+          markData: item.tag
         })
       })
       const data = {
@@ -129,7 +167,7 @@ export default {
       console.log('data', data)
       taskItemMarklist(data).then(res => {
         console.log('res', res)
-        this.isNext = true
+        this.taskItemAllotMark()
       })
     },
 
@@ -152,6 +190,24 @@ export default {
 .page-task-classify {
   .task-classify-content {
     padding: 0 28px;
+    &-meta {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      &-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 14px;
+        .item-label {
+          color: #333;
+          margin-right: 20px;
+        }
+        .item-value {
+          color: #666;
+        }
+      }
+    }
     &-list {
       display: flex;
       flex-wrap: wrap;
@@ -159,19 +215,19 @@ export default {
       &-item {
         display: flex;
         flex-direction: column;
-        position: relative;
+        align-items: center;
         margin-bottom: 12px;
         margin-right: 12px;
         box-sizing: border-box;
-        width: 250px;
-        height: 150px;
-        &.selected-border {
-          border: 2px solid #f00;
-          box-sizing: border-box;
-        }
+        position: relative;
         .item-thumb {
-          width: 100%;
-          height: 100%;
+          width: 250px;
+          height: 150px;
+          margin-bottom: 12px;
+          &.selected-border {
+            border: 2px solid #f00;
+            box-sizing: border-box;
+          }
         }
         .item-isselect {
           position: absolute;
@@ -179,10 +235,9 @@ export default {
           left: -2px;
           top: -14px;
         }
-        .item-opt {
-          position: absolute;
-          right: 20px;
-          bottom: 20px;
+        .item-tag {
+          color: #666;
+          font-size: 14px;
         }
       }
     }

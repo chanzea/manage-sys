@@ -66,10 +66,10 @@
       }
     },
     created () {
-      this.$on('on-query-backlog', (data) => {
-        this.queryBacklog();
-      });
-      this.queryBacklog();
+      // this.$on('on-query-backlog', (data) => {
+      //   this.queryBacklog();
+      // });
+      // this.queryBacklog();
 
     },
     components: {
