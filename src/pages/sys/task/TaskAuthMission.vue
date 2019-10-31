@@ -1,9 +1,9 @@
 <template>
   <div class="page-task-mission">
     <div class="task-mission-content">
-      <Tabs :value="currentTab">
+      <Tabs :value="currentTab" >
         <TabPane v-for="(item, index) in tabLists" :key="index" :label="item.label" :name="item.name">
-          <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+          <table-page v-if="item.name == 'taskMission'" :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
               <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -21,7 +21,7 @@
 
 <script>
 import TablePage from 'components/tablePage.vue';
-import { getTaskList } from "@/api/task";
+import { getTaskList, taskItemList } from "@/api/task";
 const taskType = {
   '1': {
     label: '分类任务',
@@ -93,59 +93,64 @@ export default {
         },
         name: 'taskComplete'
       }],
-      columns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
-        {
-          title: '任务编号',
-          key: 'id',
-          sortable: true
-        },
-        {
-          title: '任务名称',
-          key: 'taskName'
-        },
-        {
-          title: '任务类型',
-          key: 'taskTypeDis'
-        },
-        {
-          title: '任务用途',
-          key: 'taskRemark'
-        },
-        {
-          title: '数量',
-          key: 'taskItemMarkTotal'
-        },
-        {
-          title: '剩余数量',
-          key: 'taskRemain'
-        },{
-          title: '操作',
-          key: 'action',
-          width: 260,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('span', {
-                style: {
-                  color: '#2d8cf0',
-                  marginRight: '12px',
-                  cursor: 'pointer'
-                },
-                on: {
-                  click: () => {
-                      this.taskItemAllotMark(params)
-                  }
-                }
-              }, '开始审核')
-            ]);
-          }
-        }
-      ],
+      columns: [],
+      // columns: [
+      //   {
+      //     type: 'selection',
+      //     width: 60,
+      //     align: 'center'
+      //   },
+      //   {
+      //     title: '任务编号',
+      //     key: 'id',
+      //     sortable: true
+      //   },
+      //   {
+      //     title: '任务名称',
+      //     key: 'taskName'
+      //   },
+      //   {
+      //     title: '任务类型',
+      //     key: 'taskTypeDis'
+      //   },
+      //   {
+      //     title: '任务用途',
+      //     key: 'taskRemark'
+      //   },
+      //   {
+      //     title: '任务待审核总数',
+      //     key: 'taskItemReviewTotal'
+      //   },
+      //   {
+      //     title: '待审核题目总数',
+      //     key: 'taskItemNeedReviewTotal'
+          
+      //   },{
+      //     title: '已审核题目总数',
+      //     key: 'taskItemHadReviewTotal'   
+      //   },{
+      //     title: '操作',
+      //     key: 'action',
+      //     width: 260,
+      //     align: 'center',
+      //     render: (h, params) => {
+      //       return h('div', [
+      //         h('span', {
+      //           style: {
+      //             color: '#2d8cf0',
+      //             marginRight: '12px',
+      //             cursor: 'pointer'
+      //           },
+      //           on: {
+      //             click: () => {
+      //                 this.taskItemAllotMark(params)
+      //             }
+      //           }
+      //         }, '开始审核')
+      //       ]);
+      //     }
+      //   }
+      // ],
       data: [],
       page: {
         pageNum: 1,
@@ -157,6 +162,9 @@ export default {
   created() {
     this.getTaskList()
   },
+
+  
+
   methods: {
     getTaskList: function() {
       let page = this.page || "";
@@ -172,6 +180,16 @@ export default {
         this.total = count;
       });
     },
+
+    //获取返工审核列表
+    getReturnTaskItemList(){
+      let params = {
+        page: this.page,
+        taskItemStatus: 4 // RETURN_REVIEW(4)
+      }
+      taskItemList(params)
+    },
+
     changePage (page) {
       this.page.pageNum = page
       this.getTaskList()
@@ -191,7 +209,73 @@ export default {
         }
       })
     }
-  }
+  },
+
+  watch: {
+    currentTab: {
+      handler (val) {
+        console.log(val);
+        this.columns =  [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: '任务编号',
+            key: 'id',
+            sortable: true
+          },
+          {
+            title: '任务名称',
+            key: 'taskName'
+          },
+          {
+            title: '任务类型',
+            key: 'taskTypeDis'
+          },
+          {
+            title: '任务用途',
+            key: 'taskRemark'
+          },
+          {
+            title: '任务待审核总数',
+            key: 'taskItemReviewTotal'
+          },
+          {
+            title: '待审核题目总数',
+            key: 'taskItemNeedReviewTotal'
+            
+          },{
+            title: '已审核题目总数',
+            key: 'taskItemHadReviewTotal'   
+          },{
+            title: '操作',
+            key: 'action',
+            width: 260,
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h('span', {
+                  style: {
+                    color: '#2d8cf0',
+                    marginRight: '12px',
+                    cursor: 'pointer'
+                  },
+                  on: {
+                    click: () => {
+                        this.taskItemAllotMark(params)
+                    }
+                  }
+                }, '开始审核')
+              ]);
+            }
+          }
+        ];
+      },
+      immediate: true
+    } 
+  },
 }
 </script>
 <style lang="scss" scoped>

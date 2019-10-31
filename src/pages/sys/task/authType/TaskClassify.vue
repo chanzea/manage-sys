@@ -16,8 +16,8 @@
       <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
 
       <div class="task-classify-content-opt">
-        <Button class="opt-btn" type="primary" @click="submit">提交</Button>
-        <Button class="opt-btn" type="primary" @click="taskItemAllotReview" >下一题</Button>
+        <!-- <Button class="opt-btn" type="primary" @click="submit">提交</Button> -->
+        <Button class="opt-btn" type="primary" @click="submit" >确认并跳到下一题</Button>
       </div>
     </div>
   </div>
@@ -97,14 +97,6 @@ export default {
 
     },
     submit () {
-      const markDataList = []
-      this.taskItemList.forEach(item => {
-        markDataList.push({
-          taskItemId: item.id,
-          markData: item.isSelected ? this.formCustom.name : ''
-        })
-      })
-
       let taskItemId = this.taskItemList.map( item => item.id)[0];
       const data = {
         taskId: this.$route.query.id,
@@ -115,7 +107,13 @@ export default {
       console.log('data', data)
       taskItemReview(data).then(res => {
         console.log('res', res)
-      })
+      }).then( () => {
+          // this.$message.success("提交成功，下一题");
+          this.$Message.info('提交成功，下一题');
+          this.taskItemAllotReview();
+        }).catch( () => {
+          this.$Message.error("提交失败");
+        })
     },
   },
 }
