@@ -268,7 +268,7 @@ export default {
     UserUpdate () {
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
-          this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
+          this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''
           const params = Object.assign({}, this.formCustom, {
             enable: this.formCustom.enable ? 1 : 0,
             userId: this.userId
