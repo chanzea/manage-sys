@@ -195,7 +195,8 @@ export default {
     getCompleteTaskItemList(){
       let params = {
         page: this.page,
-        taskItemStatus: 5 // finish(4)
+        taskItemStatus: 5,
+        tag: "mark"
       }
       taskItemList(params).then( (res) => {
         let {userList, taskItemList} = res;

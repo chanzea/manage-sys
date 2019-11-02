@@ -69,6 +69,8 @@ export default {
         inputValue: '',
         dateValue: ''
       },
+      userList: [],
+      taskList: [],
       currentTab: 'taskMission',
       tabLists: [{
         label: (h) => {
@@ -143,21 +145,24 @@ export default {
         taskItemStatus: 4 // RETURN_REVIEW(4)
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList} = res;
+        let {userList, taskItemList, taskList} = res;
         this.userList = userList;
         this.data = taskItemList;
+        this.taskList = taskList;
       });
     },
 
     getCompleteTaskItemList(){
       let params = {
         page: this.page,
-        taskItemStatus: 5 // finish(4)
+        taskItemStatus: 5,
+        tag: "review"
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList} = res;
+        let {userList, taskItemList, taskList} = res;
         this.userList = userList;
         this.data = taskItemList;
+        this.taskList = taskList;
       });
     },
 
@@ -201,9 +206,10 @@ export default {
         this.$router.push({
           path: '/task/review',
           query: {
+            id: params.taskId,
             taskItemId: params.row.id,
-            type: taskType[params.row.taskType].type,
-            viewOnly:  value == "taskComplete"
+            type: taskType[params.row.taskItemType].type,
+            viewOnly:  this.currentTab == "taskComplete"
           }
         }) 
     },

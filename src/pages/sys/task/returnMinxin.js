@@ -15,7 +15,15 @@ const mixin = {
                 },
                 {
                     title: '任务名称',
-                    key: 'taskName'
+                    key: 'taskName',
+                    render: (h, params) => {
+                        // console.log("TCL: params", params)
+                        // let arr = params.row.markUserIds.map( item => {
+                        //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
+                        //     return loginName
+                        // }); 
+                        return h('div', this.taskList[params.row.taskId] ? this.taskList[params.row.taskId].taskName : "");
+                    }
                 },
                 {
                     title: '标注人员',
@@ -38,6 +46,8 @@ const mixin = {
                         //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
                         //     return loginName
                         // }); 
+                        // return h('div', arr.join(','))
+                        // return params.row.markUserIds
                         return h('div', this.userList[params.row.reviewUserId] ? this.userList[params.row.reviewUserId].loginName : "");
                     }
                 },
