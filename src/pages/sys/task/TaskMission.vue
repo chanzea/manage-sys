@@ -150,7 +150,7 @@ export default {
           }
         }
       ],
-      columns: this.missionColumns,
+      columns: [],
       data: [],
       userList: [],
       page: {
@@ -161,7 +161,8 @@ export default {
     }
   },
   created() {
-    this.getTaskList()
+    this.getTaskList();
+    this.columns = this.missionColumns;
   },
   methods: {
     getTaskList: function() {
@@ -204,6 +205,7 @@ export default {
     },
 
     changeTab(value){
+      this.data = [];
       this.currentTab = value;
       this.columns =  value == "taskMission" ? this.missionColumns : this.returnColumns;
 
