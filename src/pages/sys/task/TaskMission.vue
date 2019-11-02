@@ -97,7 +97,7 @@ export default {
         },
         name: 'taskComplete'
       }],
-      columns: [
+      missionColumns: [
         {
           type: 'selection',
           width: 60,
@@ -150,6 +150,7 @@ export default {
           }
         }
       ],
+      columns: this.missionColumns,
       data: [],
       userList: [],
       page: {
@@ -203,10 +204,10 @@ export default {
     },
 
     changeTab(value){
-    console.log("TCL: changeTab -> value", value)
-      
       this.currentTab = value;
-      this.columns =  value == "taskMission" ? this.columns : this.returnColumns;
+      this.columns =  value == "taskMission" ? this.missionColumns : this.returnColumns;
+
+      console.log(this.columns);
       if(this.currentTab == "taskRework"){
         this.actionText = "重做任务"
       } else {
