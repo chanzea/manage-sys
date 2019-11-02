@@ -5,13 +5,11 @@
       <div class="layout-logo-left"></div>
       <Submenu v-for="item in menuData" :name="item.id" :key="item.id">
         <template slot="title">
-          <Icon :type="item.icon"></Icon>
-          <span>{{item.title}}</span>
+          <span>{{item.permissionName}}</span>
         </template>
         <div v-for="childrenItem in item.children" :key="childrenItem.id">
           <MenuItem :name="childrenItem.id" :key="childrenItem.id" @click.native="jumpToPage(item,childrenItem)">
-            <Icon :type="childrenItem.icon" v-show="childrenItem.icon"></Icon>
-            <span>{{childrenItem.title}}</span>
+            <span>{{childrenItem.permissionName}}</span>
           </MenuItem>
         </div>
       </Submenu>
@@ -27,26 +25,30 @@
     mapGetters
   } from 'vuex'
   import data from '@/mock/side.js'
+  import {
+    getMessage
+  } from 'utils/tool.js'
+  window.data = data
   export default {
     name: 'sidebar',
     props: ['menuSmall'],
     data () {
       return {
         menuHover: false,
-        menuData: data,
+        menuData: JSON.parse(getMessage('permissionList')),
         activeName: '',
         openNames: []
       };
     },
-    created: function () {
+    created() {
       this.updatePath()
     },
     computed: {},
     methods: {
       // 获取当前路径信息
       updatePath () {
-        const currentPath = this.getCurrentPath(window.routes[0].children, this.$route.path)
-        this.$store.dispatch('setCurrentMenu', currentPath)
+        const currentPath = this.getCurrentPath(this.menuData, this.$route.path)
+        // this.$store.dispatch('setCurrentMenu', currentPath)
         this.activeName = currentPath[1].id
         this.openNames = [currentPath[0].id]
       },
@@ -58,33 +60,34 @@
       },
 
       jumpToPage (item, subItem) {
-        this.$router.push(subItem.url)
+        this.$router.push(subItem.uiPath)
         this.$store.dispatch('setCurrentMenu', [item, subItem])
       },
 
       getCurrentPath(data, path) {
         console.log('data', data)
         const obj = data.find(item => {
-          return path.indexOf(item.path) !== -1
+          return path.indexOf(item.uiPath) !== -1
         })
         console.log('obj', obj)
         const subObj = obj.children.filter(item => {
-          return path.indexOf(item.path) !== -1
+          return path.indexOf(item.uiPath) !== -1
         })
         console.log('subObj', subObj)
         return [{
-          url: obj.url,
-          title: obj.name,
+          url: obj.uiPath,
+          title: obj.permissionName,
           id: obj.id
         }, {
-          url: subObj.url,
-          title: subObj[0].name,
+          url: subObj[0].uiPath,
+          title: subObj[0].permissionName,
           id: subObj[0].id
         }]
       }
     },
     watch: {
-      $route () {
+      '$route' () {
+        console.log('aaa')
         this.updatePath()
       }
     },

@@ -36,9 +36,6 @@ import {
   getDatasetList,
   dataSetUpdate
 } from 'api/data.js';
-// import {
-//   getUserInfo
-// } from 'api/user'
 import {
   orgainzationList
 } from 'api/organization.js'
@@ -158,7 +155,7 @@ export default {
       })
     },
     jumpToPage () {
-      this.$router.push('/data/add')
+      this.$router.push('/dataSet/create')
     },
     getOrganizationName (organizationIds) {
       const organizationList = [...this.organizationList]

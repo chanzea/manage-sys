@@ -17,6 +17,9 @@ import config from './config';
 // import http from './utils/HttpUtils';
 import 'vue-fabric/dist/vue-fabric.min.css';
 import { Fabric } from 'vue-fabric';
+import {
+  getMessage
+} from './utils/tool.js'
 Vue.use(Fabric);
 // import './styles/index.less';
 // import mock from './mock/index.js';
@@ -35,7 +38,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const tokenId = localStorage.getItem('tokenId')
+  const tokenId = getMessage('tokenId')
   if (!tokenId) {
     if (to.path !== '/login') {
       next('/login')
@@ -61,7 +64,7 @@ router.afterEach(transition => {
 // 自动设置语言
 const navLang = navigator.language
 const localLang = (navLang === 'zh-CN' || navLang === 'en-US') ? navLang : false
-const lang = window.localStorage.getItem('language') || localLang || 'zh-CN'
+const lang = window.sessionStorage.getItem('language') || localLang || 'zh-CN'
 
 Vue.config.lang = lang
 

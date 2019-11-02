@@ -127,7 +127,8 @@ export default {
       }).then(res => {
         const {taskItemList, dataRecordList, userList} = res
         this.taskItemList = taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          // item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
           item.tag = ''
           return item

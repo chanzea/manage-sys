@@ -124,6 +124,10 @@
   import {
     BASEURL
   } from 'api/config'
+  import {
+    getMessage,
+    saveMessage
+  } from 'utils/tool.js'
   const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
   export default {
     data () {
@@ -219,8 +223,10 @@
               const { data } = res
               if(data.code === 'SUCCESS') {
                 this.$Message.success('登录成功');
-                localStorage.setItem('tokenId', data.data.tokenId)
-                localStorage.setItem('userId', data.data.userId)
+                saveMessage('tokenId', data.data.tokenId)
+                saveMessage('userId', data.data.userId)
+                saveMessage('permissionList', JSON.stringify(data.data.permissionList))
+                window.permissionList = data.data.permissionList
                 this.$router.push({path: '/user'});
               } else {
                 this.$Message.warning(data.message);
@@ -251,8 +257,8 @@
           this.handleSubmit('formLogin');
         }
       });
-      localStorage.setItem('tokenId', '')
-      localStorage.setItem('userId', '')
+      saveMessage('tokenId', '')
+      saveMessage('userId', '')
     },
     components: {}
   };

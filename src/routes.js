@@ -62,15 +62,15 @@ const routes = [
         component: UserPage,
         name: '用户管理',
         id: 1,
-        redirect: '/user/data',
+        redirect: '/user/list',
         children: [
           {
-            path: 'data',
+            path: 'list',
             component: UserData,
             name: '用户数据',
             id: 11,
           },{
-            path: 'add',
+            path: 'create',
             component: UserAdd,
             name: '新增用户',
             id: 12,
@@ -82,10 +82,10 @@ const routes = [
           },
         ]
       },{
-        path: 'data',
+        path: 'dataSet',
         component: DataPage,
         name: '源数据管理',
-        redirect: '/data/list',
+        redirect: '/dataSet/list',
         id: 2,
         children: [{
           path: 'list',
@@ -93,7 +93,7 @@ const routes = [
           name: '源数据',
           id: 21,
         },{
-          path: 'add',
+          path: 'create',
           component: DataAdd,
           name: '上传源数据',
           id: 22,

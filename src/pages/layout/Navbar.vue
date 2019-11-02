@@ -113,11 +113,11 @@
         <Icon type="navicon" size="34"></Icon>
       </div>
       <div class="path">
-        <Breadcrumb>
+        <!-- <Breadcrumb>
           <BreadcrumbItem v-for="(item, index) in currentMenu" :key="index" :to="item.url">
             {{item.title}}
           </BreadcrumbItem>
-        </Breadcrumb>
+        </Breadcrumb> -->
       </div>
     </div>
 
@@ -150,6 +150,10 @@
   import {
     getUserInfo
   } from 'api/user'
+  import {
+    getMessage,
+    saveMessage
+  } from 'utils/tool.js'
   /**
    * 弹出式表单参数
    */
@@ -221,12 +225,12 @@
           return false;
         }
       },
-      ...mapGetters([
-        'currentMenu',
-      ])
+      // ...mapGetters([
+      //   'currentMenu',
+      // ])
     },
     created () {
-      const userId = localStorage.getItem('userId')
+      const userId = getMessage('userId')
       this.getUserInfo(userId)
     },
     methods: {
@@ -266,29 +270,29 @@
       },
       logout () {
         setTimeout(() => {
-          localStorage.setItem('tokenId', '')
+          saveMessage('tokenId', '')
           this.$router.push('/login')  
         }, 500);
       },
       messageCenter () {
-        this.$store.dispatch('setCurrentMenu', [{
-          url: '/myself',
-          title: '我的'
-        },{
-          url: '/myself/message',
-          title: '消息中心'
-        }])
+        // this.$store.dispatch('setCurrentMenu', [{
+        //   url: '/myself',
+        //   title: '我的'
+        // },{
+        //   url: '/myself/message',
+        //   title: '消息中心'
+        // }])
         this.$router.push('/myself')
       },
 
       userInfoCenter () {
-        this.$store.dispatch('setCurrentMenu', [{
-          url: '/myself',
-          title: '我的'
-        },{
-          url: '/myself/info',
-          title: '个人中心'
-        }])
+        // this.$store.dispatch('setCurrentMenu', [{
+        //   url: '/myself',
+        //   title: '我的'
+        // },{
+        //   url: '/myself/info',
+        //   title: '个人中心'
+        // }])
         this.$router.push('/myself/info')
       },
     },
