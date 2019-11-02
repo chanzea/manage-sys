@@ -90,7 +90,7 @@ export default {
     FormComponent
   },
   created() {
-    const taskId = this.$route.query.id
+    const taskId = this.$route.query.id;
     const taskItemId = this.$route.query.taskItemId
     // 当前存在 taskItemId ，返工任务
     if (taskItemId) {

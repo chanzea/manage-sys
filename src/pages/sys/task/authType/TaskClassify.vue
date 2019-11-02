@@ -50,7 +50,7 @@
 
 <script>
 import FormComponent from 'components/form/FormComponent.vue'
-import { taskItemAllotReview, taskItemReview } from "@/api/task";
+import { taskItemAllotReview, taskItemReview, taskItemDetail } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -94,7 +94,14 @@ export default {
     FormComponent
   },
   created() {
-    this.taskItemAllotReview()
+    const taskId = this.$route.query.id
+    const taskItemId = this.$route.query.taskItemId
+    // 当前存在 taskItemId ，返工任务
+    if (taskItemId) {
+      this.taskItemDetail(taskId, taskItemId)
+    } else {
+      this.taskItemAllotReview();
+    }
   },
   computed: {
     isSelected () {
@@ -128,6 +135,25 @@ export default {
     cancel () {
 
     },
+
+    taskItemDetail (taskId, taskItemId) {
+      this.taskItemList = []
+      taskItemDetail({
+        taskId,
+        taskItemId
+      }).then(res => {
+        console.log('res', res)
+        const {taskItemList, dataRecordList} = res
+        this.taskItemList = taskItemList ? taskItemList.map(item => {
+          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
+          item.isSelected = false
+          item.tag = item.taskData
+          return item
+        }) : []
+        this.isNext = !!taskItemList
+      })
+    },
+
     submit () {
       let taskItemId = this.taskItemList.map( item => item.id)[0];
       const data = {

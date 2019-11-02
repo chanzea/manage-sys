@@ -206,7 +206,7 @@ export default {
         this.$router.push({
           path: '/task/review',
           query: {
-            id: params.taskId,
+            id: params.row.taskId,
             taskItemId: params.row.id,
             type: taskType[params.row.taskItemType].type,
             viewOnly:  this.currentTab == "taskComplete"
