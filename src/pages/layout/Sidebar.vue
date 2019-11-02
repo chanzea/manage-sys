@@ -35,26 +35,20 @@
     data () {
       return {
         menuHover: false,
-        menuData: [],
+        menuData: JSON.parse(getMessage('permissionList')),
         activeName: '',
         openNames: []
       };
     },
     created() {
-      this.upDateSideBar()
       this.updatePath()
     },
     computed: {},
     methods: {
-      upDateSideBar () {
-        this.menuData = JSON.parse(getMessage('permissionList'))
-      },    
-
       // 获取当前路径信息
       updatePath () {
-        const currentPath = this.getCurrentPath(window.routes[0].children, this.$route.path)
-        console.log('')
-        // this.$store.dispatch('setCurrentMenu', currentPath)
+        const currentPath = this.getCurrentPath(this.menuData, this.$route.path)
+        this.$store.dispatch('setCurrentMenu', currentPath)
         this.activeName = currentPath[1].id
         this.openNames = [currentPath[0].id]
       },
@@ -67,25 +61,26 @@
 
       jumpToPage (item, subItem) {
         this.$router.push(subItem.uiPath)
-        // this.$store.dispatch('setCurrentMenu', [item, subItem])
+        this.$store.dispatch('setCurrentMenu', [item, subItem])
       },
 
       getCurrentPath(data, path) {
+        console.log('data', data)
         const obj = data.find(item => {
-          return path.indexOf(item.path) !== -1
+          return path.indexOf(item.uiPath) !== -1
         })
         console.log('obj', obj)
         const subObj = obj.children.filter(item => {
-          return path.indexOf(item.path) !== -1
+          return path.indexOf(item.uiPath) !== -1
         })
         console.log('subObj', subObj)
         return [{
-          url: obj.url,
-          title: obj.name,
+          url: obj.uiPath,
+          title: obj.permissionName,
           id: obj.id
         }, {
-          url: subObj[0].url,
-          title: subObj[0].name,
+          url: subObj[0].uiPath,
+          title: subObj[0].permissionName,
           id: subObj[0].id
         }]
       }
