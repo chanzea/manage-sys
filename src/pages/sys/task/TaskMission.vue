@@ -1,7 +1,7 @@
 <template>
   <div class="page-task-mission">
     <div class="task-mission-content">
-      <Tabs :value="currentTab">
+      <Tabs :value="currentTab" @on-click="changeTab">
         <TabPane v-for="(item, index) in tabLists" :key="index" :label="item.label" :name="item.name">
           <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
@@ -21,7 +21,8 @@
 
 <script>
 import TablePage from 'components/tablePage.vue';
-import { getTaskList } from "@/api/task";
+import { getTaskList, taskItemList } from "@/api/task";
+import returnMinxin from "./returnMinxin"
 const taskType = {
   '1': {
     label: '分类任务',
@@ -49,12 +50,15 @@ export default {
   components: {
     TablePage
   },
+  mixins: [returnMinxin],
   data () {
     return {
+      actionText: "重做任务",
       searchData: {
         inputValue: '',
         dateValue: ''
       },
+      userlist:[],
       currentTab: 'taskMission',
       tabLists: [{
         label: (h) => {
@@ -147,6 +151,7 @@ export default {
         }
       ],
       data: [],
+      userList: [],
       page: {
         pageNum: 1,
         pageSize: 10
@@ -171,16 +176,73 @@ export default {
         this.total = count;
       });
     },
-    changePage (page) {
-      this.page.pageNum = page
-      this.getTaskList()
+
+    //获取返工列表
+    getReturnTaskItemList(){
+      let params = {
+        page: this.page,
+        taskItemStatus: 4 // RETURN_REVIEW(4)
+      }
+      taskItemList(params).then( (res) => {
+        let {userList, taskItemList} = res;
+        this.userList = userList;
+        this.data = taskItemList;
+      });
     },
 
-    changePageSize (pageSize) {
-      this.page.pageSize = pageSize
-      this.getTaskList()
+    getCompleteTaskItemList(){
+      let params = {
+        page: this.page,
+        taskItemStatus: 5 // finish(4)
+      }
+      taskItemList(params).then( (res) => {
+        let {userList, taskItemList} = res;
+        this.userList = userList;
+        this.data = taskItemList;
+      });
     },
 
+    changeTab(value){
+    console.log("TCL: changeTab -> value", value)
+      
+      this.currentTab = value;
+      this.columns =  value == "taskMission" ? this.columns : this.returnColumns;
+      if(this.currentTab == "taskRework"){
+        this.actionText = "重做任务"
+      } else {
+        this.actionText = "查看详情"
+      }
+      this.page = {
+        pageNum: 1,
+        pageSize: 10
+      };
+      this.justGetdata();
+    },
+
+    //判断调哪个函数
+    justGetdata(){
+      let getDataMap = {
+        taskMission: this.getTaskList,
+        taskRework: this.getReturnTaskItemList,
+        taskComplete: this.getCompleteTaskItemList
+      }
+      getDataMap[this.currentTab]();
+    },
+    
+
+    //这个函数在minxin里面
+    actionCallFn(params){
+        this.$router.push({
+          path: '/task/type',
+          query: {
+            taskItemId: params.row.id,
+            type: taskType[params.row.taskType].type,
+            viewOnly:  value == "taskComplete"
+          }
+        }) 
+    },
+
+    //领取路由跳转
     taskItemAllotMark (params) {
       this.$router.push({
         path: '/task/type',
@@ -189,7 +251,17 @@ export default {
           type: taskType[params.row.taskType].type
         }
       })
-    }
+    },
+
+    changePage (page) {
+      this.page.pageNum = page
+      this.justGetdata()
+    },
+
+    changePageSize (pageSize) {
+      this.page.pageSize = pageSize
+      this.justGetdata()
+    },
   }
 }
 </script>
