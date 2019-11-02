@@ -32,6 +32,9 @@ import {
   getUserInfo,
   UserUpdate
 } from 'api/user'
+import {
+  getMessage
+} from 'utils/tool.js'
 const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
 export default {
   name: 'pageUserInfo',
@@ -238,7 +241,7 @@ export default {
   methods: {
     // 获取用户信息
     getUserInfo () {
-      const userId = localStorage.getItem('userId')
+      const userId = getMessage('userId')
       return new Promise((resolve) => {
         getUserInfo({
           userId

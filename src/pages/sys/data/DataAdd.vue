@@ -141,7 +141,7 @@ export default {
         if (valid) {
           dataSetCreate(this.formItem).then(res => {
             this.$Message.success('上传成功');
-            this.$router.push('/data/list')
+            this.$router.push('/dataSet/list')
           })
         }
       })

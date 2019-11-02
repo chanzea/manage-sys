@@ -9,15 +9,15 @@ export default [
                 "id": 11,
                 "name": "用户数据",
                 "icon": "gear-b",
-                "url": "/user/data",
+                "url": "/user/list",
                 "parentId": 1,
-                "title": "用户数据"
+                "title": "用户数据",
             },
             {
                 "id": 12,
                 "name": "新增用户",
                 "icon": "gear-b",
-                "url": "/user/add",
+                "url": "/user/create",
                 "parentId": 1,
                 "title": "新增用户"
             },
@@ -36,13 +36,13 @@ export default [
         "id": 2,
         "name": "源数据管理",
         "icon": "",
-        "url": "/data",
+        "url": "/dataSet",
         "children": [
             {
                 "id": 21,
                 "name": "源数据",
                 "icon": "help-buoy",
-                "url": "/data/list",
+                "url": "/dataSet/list",
                 "parentId": 2,
                 "title": "源数据"
             },
@@ -50,7 +50,7 @@ export default [
                 "id": 22,
                 "name": "上传源数据",
                 "icon": "help-buoy",
-                "url": "/data/add",
+                "url": "/dataSet/create",
                 "parentId": 2,
                 "title": "上传源数据"
             }

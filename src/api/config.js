@@ -1,8 +1,13 @@
 import axios from 'axios';
 export const BASEURL = 'http://118.24.124.177:8099' //api地址
+import {
+  saveMessage,
+  getMessage
+} from './../utils/tool.js'
+
 
 export const api = (url, method, data = {}, contentType = 'application/json;charset=UTF-8') => {
-  const tokenId = localStorage.getItem('tokenId')
+  const tokenId = getMessage('tokenId')
   // token失效，应回到登录页
   if (!tokenId) {
     return;
@@ -24,7 +29,7 @@ export const api = (url, method, data = {}, contentType = 'application/json;char
       if (data.code === 'SUCCESS') {
         resolve(data.data ? data.data : data)
       } else if (data.code === 'user.token_error') {
-        localStorage.setItem('tokenId', '')
+        saveMessage('tokenId', '')
         copyIview.Modal.warning({
           title: '提示',
           content: '请重新登录',

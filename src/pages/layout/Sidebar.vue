@@ -10,7 +10,6 @@
         </template>
         <div v-for="childrenItem in item.children" :key="childrenItem.id">
           <MenuItem :name="childrenItem.id" :key="childrenItem.id" @click.native="jumpToPage(item,childrenItem)">
-            <Icon :type="childrenItem.icon" v-show="childrenItem.icon"></Icon>
             <span>{{childrenItem.title}}</span>
           </MenuItem>
         </div>
@@ -27,22 +26,36 @@
     mapGetters
   } from 'vuex'
   import data from '@/mock/side.js'
+  import {
+    getMessage
+  } from 'utils/tool.js'
+  window.data = data
   export default {
     name: 'sidebar',
     props: ['menuSmall'],
     data () {
       return {
         menuHover: false,
-        menuData: data,
+        menuData: [],
         activeName: '',
         openNames: []
       };
     },
-    created: function () {
+    created() {
+      this.upDateSideBar()
       this.updatePath()
     },
     computed: {},
     methods: {
+      upDateSideBar () {
+        const permissionList = getMessage('permissionList');
+        const pathArr = permissionList && JSON.parse(permissionList).map(item => {
+          return item.uiPath
+        })
+        this.menuData = data.filter(item => {
+          return permissionList.includes(item.url)
+        });
+      },
       // 获取当前路径信息
       updatePath () {
         const currentPath = this.getCurrentPath(window.routes[0].children, this.$route.path)
@@ -63,7 +76,6 @@
       },
 
       getCurrentPath(data, path) {
-        console.log('data', data)
         const obj = data.find(item => {
           return path.indexOf(item.path) !== -1
         })

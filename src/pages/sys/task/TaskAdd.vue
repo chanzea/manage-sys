@@ -163,7 +163,7 @@ export default {
           this.loading = true;
           let params = this.formItem;
           // params = {"taskName":"test","taskRemark":"test","taskType":1,"markPointType":"1","markPoint":"100","reviewPoint":"1000","dataSetId":17,"markUserIds":[7,8],"reviewUserIds":[9,10]};
-          // params.tokenId = localStorage.getItem("tokenId")
+          // params.tokenId = sessionStorage.getItem("tokenId")
           taskAdd(params).then(res => {
             this.$Message.success('添加成功');
             this.$router.push('/task/mission');

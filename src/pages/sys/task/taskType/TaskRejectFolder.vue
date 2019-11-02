@@ -39,7 +39,7 @@
       @on-ok=""
       @on-cancel="">
       <div class="pic-list">
-        <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.fileUrl + ')', 'background-size': 'cover'}">
+        <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.thumbnailUrl + ')', 'background-size': 'cover'}">
         </div>
       </div>
     </Modal>

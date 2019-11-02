@@ -150,6 +150,10 @@
   import {
     getUserInfo
   } from 'api/user'
+  import {
+    getMessage,
+    saveMessage
+  } from 'utils/tool.js'
   /**
    * 弹出式表单参数
    */
@@ -226,7 +230,7 @@
       ])
     },
     created () {
-      const userId = localStorage.getItem('userId')
+      const userId = getMessage('userId')
       this.getUserInfo(userId)
     },
     methods: {
@@ -266,7 +270,7 @@
       },
       logout () {
         setTimeout(() => {
-          localStorage.setItem('tokenId', '')
+          saveMessage('tokenId', '')
           this.$router.push('/login')  
         }, 500);
       },
