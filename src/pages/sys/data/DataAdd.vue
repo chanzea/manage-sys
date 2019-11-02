@@ -1,7 +1,6 @@
 <template>
   <div class="page-data-add">
     <div class="data-add-content">
-      {{formItem}}
       <Form ref="formItem" :rules="ruleValidate" :model="formItem" :label-width="100">
         <FormItem label="文件夹名称" prop="folderName">
           <Input v-model="formItem.folderName" placeholder="名称"></Input>
@@ -109,9 +108,6 @@ export default {
     },
     beforeUpload (file) {
       const _this = this
-      console.log('file', file)
-      
-      // _this.fileName.push(file.name)
       const form = new FormData();
     
       browserMD5File(file, function (err, md5) {
@@ -121,7 +117,6 @@ export default {
           fileName: file.name,
           fileSize: file.size
         }).then(res => {
-          console.log('fileUpload', res)
           _this.fileId = res.fileId
           _this.formItem.fileIds = [res.fileId]
           _this.startChunkNumber = res.startChunkNumber
@@ -130,7 +125,6 @@ export default {
           return fileUpload(form)
         }).then(res => {
           _this.fileName.push(file.name)
-          console.log('/file/upload', res)
         })
       });
     },

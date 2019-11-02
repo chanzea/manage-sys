@@ -177,7 +177,7 @@ export default {
 
     show (params) {
       this.$router.push({
-        path: '/user/add',
+        path: '/user/create',
         query: {
           userId: params.row.id
         }

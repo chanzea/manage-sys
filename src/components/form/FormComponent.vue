@@ -11,7 +11,7 @@
           @on-change="(val)=>{if(item.onChange!=null){item.onChange(val,data,fromData,mData)}}">
         </TreeSelect>
 
-        <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="formCustom[item.key]" :placeholder="item.placeholder">
+        <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="formCustom[item.key]" :placeholder="item.placeholder" @on-change="selectValue">
           <Option :value="subItem.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
         </Select>
 
@@ -60,6 +60,11 @@ export default {
   },
   components: {
     TreeSelect
+  },
+  methods: {
+    selectValue(val) {
+      this.$emit('on-change', val)
+    }
   }
 }
 </script>

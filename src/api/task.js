@@ -93,3 +93,14 @@ export async function taskItemReview(params) {
     const data = await api(`/taskItem/review`, 'post', params)
     return data
 }
+
+
+export async function tagClassifyAdd(params) {
+    const data = await api(`/tag/classify/add`, 'post', params)
+    return data
+}
+
+export async function taskItemDetail(params) {
+    const data = await api(`/taskItem/detail`, 'post', params)
+    return data
+}

@@ -79,15 +79,14 @@
           title: obj.permissionName,
           id: obj.id
         }, {
-          url: subObj[0].uiPath,
-          title: subObj[0].permissionName,
-          id: subObj[0].id
+          url: subObj[0] && subObj[0].uiPath,
+          title: subObj[0] && subObj[0].permissionName,
+          id: subObj[0] && subObj[0].id
         }]
       }
     },
     watch: {
       '$route' () {
-        console.log('aaa')
         this.updatePath()
       }
     },

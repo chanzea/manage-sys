@@ -30,7 +30,7 @@
       </div>
       <div class="task-classify-content-opt">
         <Button class="opt-btn" type="primary" @click="isShowModal = true" :disabled="!isSelected">批量添加标注</Button>
-        <Button class="opt-btn" type="primary" @click="taskItemMarklist">下一题</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemMarklist" :disabled="!isNext">下一题</Button>
       </div>
     </div>
     <Modal
@@ -38,14 +38,14 @@
       title="分类标注"
       @on-ok="confirm"
       @on-cancel="">
-      <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" />
+      <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" @on-change="selectTag" />
     </Modal>
   </div>
 </template>
 
 <script>
 import FormComponent from 'components/form/FormComponent.vue'
-import { taskItemAllotMark, taskItemMarklist, tagClassifyList } from "@/api/task";
+import { taskItemAllotMark, taskItemMarklist, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -60,7 +60,7 @@ export default {
         {
           label: '快捷',
           type: 'select',
-          value: [],
+          value: '',
           options: [],
           placeholder: '可以选择已标记过的标签',
           key: 'tags'
@@ -70,12 +70,6 @@ export default {
           type: 'text',
           value: '',
           key: 'name'
-        },
-        {
-          label: '描述',
-          type: 'textarea',
-          value: '',
-          key: 'dis'
         }
       ],
       // 验证规则
@@ -86,24 +80,26 @@ export default {
             trigger: 'blur',
             message: '请输入标签名称'
           }
-        ],
-        dis: [
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请对标签进行描述'
-          }
-        ],
+        ]
       },
       formCustom: {},
+      isNext: true //是否有下一題
     }
   },
   components: {
     FormComponent
   },
   created() {
-    this.taskItemAllotMark()
-    this.tagClassifyList()
+    const taskId = this.$route.query.id
+    const taskItemId = this.$route.query.taskItemId
+    // 当前存在 taskItemId ，返工任务
+    if (taskItemId) {
+      this.taskItemDetail(taskId, taskItemId)
+    } else {
+      this.taskItemAllotMark()
+    }
+    this.tagClassifyList(taskId)
+    
   },
   computed: {
     isSelected () {
@@ -122,17 +118,18 @@ export default {
   methods: {
     taskItemAllotMark () {
       const taskId = this.$route.query.id
+      this.taskItemList = []
       taskItemAllotMark({
         taskId
       }).then(res => {
         const {taskItemList, dataRecordList, userList} = res
-        this.taskItemList = taskItemList.map(item => {
-          // item.src = dataRecordList[item.dataRecordId].fileUrl
+        this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
           item.tag = ''
           return item
-        })
+        }) : []
+        this.isNext = !!taskItemList
       })
     },
     // 添加标注
@@ -142,11 +139,26 @@ export default {
           item.tag = this.formCustom.name
         }
       })
+      const params = {
+        taskId: this.$route.query.id,
+        tagName: this.formCustom.name,
+        tagType: 1
+      }
       this.formProp.forEach(item => {
         this.formCustom[item.key] = ''
       })
+      tagClassifyAdd(params)
+      // .catch(() => {
+      //   this.$Message.error('标签添加失败');
+      // })
     },
 
+    //選擇標簽
+    selectTag (val) {
+      this.formCustom.name = val
+    },
+
+    // 提交任务
     taskItemMarklist () {
       const isNext = this.taskItemList.some(item => {
         return item.tag !== ''
@@ -165,22 +177,41 @@ export default {
         taskId: this.$route.query.id,
         markDataList
       }
-      console.log('data', data)
       taskItemMarklist(data).then(res => {
-        console.log('res', res)
         this.taskItemAllotMark()
       })
     },
 
     // 获取分类标签
-    tagClassifyList () {
-      const taskId = this.$route.query.id
+    tagClassifyList (taskId) {
       tagClassifyList({
         taskId
       }).then(res => {
         console.log('tagClassifyList', res)
         const { list } = res
-        this.formProp[0].options = list
+        this.formProp[0].options = list.map(item => {
+          item.value = item.tagName;
+          item.label = item.tagName;
+          return item
+        })
+      })
+    },
+
+    taskItemDetail (taskId, taskItemId) {
+      this.taskItemList = []
+      taskItemDetail({
+        taskId,
+        taskItemId
+      }).then(res => {
+        console.log('res', res)
+        const {taskItemList, dataRecordList} = res
+        this.taskItemList = taskItemList ? taskItemList.map(item => {
+          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
+          item.isSelected = false
+          item.tag = item.taskData
+          return item
+        }) : []
+        this.isNext = !!taskItemList
       })
     }
   },

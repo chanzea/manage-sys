@@ -238,7 +238,8 @@ export default {
           query: {
             taskItemId: params.row.id,
             type: taskType[params.row.taskItemType].type,
-            viewOnly:  this.currentTab == "taskComplete"
+            viewOnly:  this.currentTab == "taskComplete",
+            id: params.row.taskId
           }
         }) 
     },
