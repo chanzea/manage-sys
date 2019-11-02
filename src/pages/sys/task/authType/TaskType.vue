@@ -7,6 +7,7 @@
 <script>
 import TaskClassify from './TaskClassify'
 import TaskRejectPic from './TaskRejectPic'
+import TaskRejectFolder from './TaskRejectFolder'
 export default {
   name: 'TaskType',
   data: {
@@ -17,7 +18,8 @@ export default {
   },
   components: {
     TaskClassify,
-    TaskRejectPic
+    TaskRejectPic,
+    TaskRejectFolder
   }
 }
 </script>

@@ -79,15 +79,16 @@ export default {
       }).then(res => {
         console.log('res', res)
 
-        if(res.count == 0){
+        
+        const {taskItemList, dataRecordList, userList} = res
+        if(!taskItemList){
           this.$Message.info("任务审核完成，没有下一题了");
           this.noMore = true;
           return;
         }
-        const {taskItemList, dataRecordList, userList} = res
 
         dataRecordList && Object.keys(dataRecordList).forEach(item => {
-          dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item) 
+          dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item); 
           this.dataRecordList.push(dataRecordList[item])
           this.taskItemList = taskItemList
         })
