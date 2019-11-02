@@ -236,7 +236,7 @@ export default {
           path: '/task/type',
           query: {
             taskItemId: params.row.id,
-            type: taskType[params.row.taskType].type,
+            type: taskType[params.row.taskItemType].type,
             viewOnly:  value == "taskComplete"
           }
         }) 

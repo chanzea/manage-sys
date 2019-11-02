@@ -22,16 +22,24 @@ const mixin = {
                     key: 'markUserIds',
                     render: (h, params) => {
                         // console.log("TCL: params", params)
-                        let arr = params.row.markUserIds.map( item => {
-                            let loginName = this.userList[item] ? this.userList[item].loginName : "";
-                            return loginName
-                        }); 
-                        return h('div', arr.join());
+                        // let arr = params.row.markUserIds.map( item => {
+                        //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
+                        //     return loginName
+                        // }); 
+                        return h('div', this.userList[params.row.markUserId] ? this.userList[params.row.markUserId].loginName : "");
                     }
                 },
                 {
                     title: '审核人员',
-                    key: 'reviewUserIds'
+                    key: 'reviewUserIds',
+                    render: (h, params) => {
+                        // console.log("TCL: params", params)
+                        // let arr = params.row.markUserIds.map( item => {
+                        //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
+                        //     return loginName
+                        // }); 
+                        return h('div', this.userList[params.row.reviewUserId] ? this.userList[params.row.reviewUserId].loginName : "");
+                    }
                 },
                 {
                     title: '操作',
