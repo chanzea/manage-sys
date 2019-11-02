@@ -23,14 +23,16 @@
               <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
           </div>
         </div>
-        
       </div>
       <div v-if = "!noMore">
-          <span class="item-value"><strong>打勾的为剔除的图片</strong></span>
-          <RadioGroup v-model="taskItemStatus">
-              <Radio  label="5">通过</Radio>
-              <Radio  label="4">不通过</Radio>
-          </RadioGroup>
+          <div style="margin: 10px 0;">
+            <RadioGroup v-model="taskItemStatus">
+                <Radio  label="5">通过</Radio>
+                <Radio  label="4">不通过</Radio>
+            </RadioGroup>
+            <span class="item-value" style="color: red;vertical-align: middle;"><strong>(打勾的为剔除的图片)</strong></span>
+          </div>
+
           <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
 
           <div class="task-classify-content-opt">
@@ -126,7 +128,7 @@ export default {
     &-meta {
       display: flex;
       flex-direction: column;
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
       &-item {
         display: flex;
         align-items: center;
@@ -144,7 +146,7 @@ export default {
     &-list {
       display: flex;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
       &-item {
         display: flex;
         flex-direction: column;

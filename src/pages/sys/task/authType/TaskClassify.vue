@@ -1,23 +1,48 @@
 <template>
   <div class="page-task-classify">
     <div class="task-classify-content">
+      <div class="task-reject-folder-content-meta" v-if = "!noMore">
+        <div class="task-item">
+          <span class="item-label">任务名称:</span>
+          <span class="item-value">aaaa</span>
+        </div>
+        <div class="task-item">
+          <span class="item-label">任务模版:</span>
+          <span class="item-value">分类任务</span>
+        </div>
+        <div class="task-item">
+          <span class="item-label">任务描述:</span>
+          <span class="item-value">为图片打上分类标签</span>
+        </div>
+      </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
           <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
             <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
-          <div class="desc" style="fontSize:20px;fontWeight: bold">标注信息：{{item.taskData}}</div>
+          <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div>
         </div>
-      </div>
-      <RadioGroup v-model="taskItemStatus">
-          <Radio  label="5">通过</Radio>
-          <Radio  label="4">不通过</Radio>
-      </RadioGroup>
-      <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
 
-      <div class="task-classify-content-opt">
-        <!-- <Button class="opt-btn" type="primary" @click="submit">提交</Button> -->
-        <Button class="opt-btn" type="primary" @click="submit" >确认并跳到下一题</Button>
+        <div style="font-size: 24px; font-weight: bold">
+          暂无需要审核的题目
+        </div>
+
+      </div>
+      <div v-if = "!noMore">
+          <div style="margin: 10px 0;">
+            <RadioGroup v-model="taskItemStatus">
+                <Radio  label="5">通过</Radio>
+                <Radio  label="4">不通过</Radio>
+            </RadioGroup>
+          </div>
+          
+          <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
+
+          <div class="m_actionBtn">
+            <Button class="opt-btn" type="primary" @click="submit">提交</Button>
+            <Button class="opt-btn" type="primary" @click="taskItemAllotReview" :disabled="noMore">确认并跳到下一题</Button>
+            <Button class="opt-btn" type="primary" >返回审核大厅</Button>
+          </div>
       </div>
     </div>
   </div>
@@ -34,6 +59,7 @@ export default {
   data() {
     return {
       taskItemList: [],
+      noMore: false,
       isShowModal: false,
       BASEURL,
       taskItemStatus: "5",
@@ -85,6 +111,11 @@ export default {
       }).then(res => {
         this.isNext = false
         let {taskItemList, dataRecordList, userList} = res;
+        if(!taskItemList){
+          this.$Message.info("任务审核完成");
+          this.noMore = true;
+          return;
+        }
         taskItemList = taskItemList || [];//没有居然是null
         this.taskItemList = taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].fileUrl
@@ -111,7 +142,7 @@ export default {
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功，下一题');
-          this.taskItemAllotReview();
+          // this.taskItemAllotReview();
         }).catch( () => {
           this.$Message.error("提交失败");
         })
@@ -120,13 +151,23 @@ export default {
 }
 </script>
 
+<style lang="scss">
+  .task-item{
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  .m_actionBtn{
+    margin-top: 10px;
+  }
+</style>
+
 <style lang="scss" scoped>
 .page-task-classify {
   .task-classify-content {
     &-list {
       display: flex;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
       &-item {
         display: flex;
         flex-direction: column;

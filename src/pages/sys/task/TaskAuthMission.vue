@@ -14,7 +14,7 @@
             </div>
           </table-page>
 
-          <table-page v-else-if="item.name == 'taskRework'" :columns="returnColumns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+          <table-page v-else :columns="returnColumns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
               <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -25,10 +25,6 @@
             </div>
           </table-page>
 
-
-
-
-          returnColumns
         </TabPane>
       </Tabs>
     </div>
@@ -78,11 +74,11 @@ export default {
         label: (h) => {
           return h('div', [
             h('span', '审核大厅'),
-            h('Badge', {
-              props: {
-                count: 3
-              }
-            })
+            // h('Badge', {
+            //   props: {
+            //     count: 3
+            //   }
+            // })
           ])
         },
         name: 'taskMission'
@@ -90,11 +86,11 @@ export default {
         label: (h) => {
           return h('div', [
             h('span', '返工审核'),
-            h('Badge', {
-              props: {
-                count: 3
-              }
-            })
+            // h('Badge', {
+            //   props: {
+            //     count: 3
+            //   }
+            // })
           ])
         },
         name: 'taskRework'
@@ -102,11 +98,11 @@ export default {
         label: (h) => {
           return h('div', [
             h('span', '已完成审核'),
-            h('Badge', {
-              props: {
-                count: 3
-              }
-            })
+            // h('Badge', {
+            //   props: {
+            //     count: 3
+            //   }
+            // })
           ])
         },
         name: 'taskComplete'
@@ -123,8 +119,6 @@ export default {
   created() {
     this.getTaskList()
   },
-
-  
 
   methods: {
     getTaskList: function() {
@@ -149,9 +143,9 @@ export default {
         taskItemStatus: 4 // RETURN_REVIEW(4)
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskList} = res;
+        let {userList, taskItemList} = res;
         this.userList = userList;
-        this.data = taskList;
+        this.data = taskItemList;
       });
     },
 
@@ -161,20 +155,10 @@ export default {
         taskItemStatus: 5 // finish(4)
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskList} = res;
+        let {userList, taskItemList} = res;
         this.userList = userList;
-        this.data = taskList;
+        this.data = taskItemList;
       });
-    },
-
-    changePage (page) {
-      this.page.pageNum = page
-      this.justGetdata()
-    },
-
-    changePageSize (pageSize) {
-      this.page.pageSize = pageSize
-      this.justGetdata();//判断当前调用哪些函数
     },
 
     taskItemAllotMark (params) {
@@ -212,7 +196,6 @@ export default {
       getDataMap[this.currentTab]();
     },
     
-
     //这个函数在minxin里面
     actionCallFn(params){
         this.$router.push({
@@ -223,6 +206,17 @@ export default {
             viewOnly:  value == "taskComplete"
           }
         }) 
+    },
+
+    //修改分页
+    changePage (page) {
+      this.page.pageNum = page
+      this.justGetdata()
+    },
+
+    changePageSize (pageSize) {
+      this.page.pageSize = pageSize
+      this.justGetdata();//判断当前调用哪些函数
     },
 
   },
