@@ -113,11 +113,11 @@
         <Icon type="navicon" size="34"></Icon>
       </div>
       <div class="path">
-        <Breadcrumb>
+        <!-- <Breadcrumb>
           <BreadcrumbItem v-for="(item, index) in currentMenu" :key="index" :to="item.url">
             {{item.title}}
           </BreadcrumbItem>
-        </Breadcrumb>
+        </Breadcrumb> -->
       </div>
     </div>
 
@@ -225,9 +225,9 @@
           return false;
         }
       },
-      ...mapGetters([
-        'currentMenu',
-      ])
+      // ...mapGetters([
+      //   'currentMenu',
+      // ])
     },
     created () {
       const userId = getMessage('userId')
@@ -275,24 +275,24 @@
         }, 500);
       },
       messageCenter () {
-        this.$store.dispatch('setCurrentMenu', [{
-          url: '/myself',
-          title: '我的'
-        },{
-          url: '/myself/message',
-          title: '消息中心'
-        }])
+        // this.$store.dispatch('setCurrentMenu', [{
+        //   url: '/myself',
+        //   title: '我的'
+        // },{
+        //   url: '/myself/message',
+        //   title: '消息中心'
+        // }])
         this.$router.push('/myself')
       },
 
       userInfoCenter () {
-        this.$store.dispatch('setCurrentMenu', [{
-          url: '/myself',
-          title: '我的'
-        },{
-          url: '/myself/info',
-          title: '个人中心'
-        }])
+        // this.$store.dispatch('setCurrentMenu', [{
+        //   url: '/myself',
+        //   title: '我的'
+        // },{
+        //   url: '/myself/info',
+        //   title: '个人中心'
+        // }])
         this.$router.push('/myself/info')
       },
     },

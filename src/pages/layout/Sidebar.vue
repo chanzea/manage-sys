@@ -48,7 +48,7 @@
       // 获取当前路径信息
       updatePath () {
         const currentPath = this.getCurrentPath(this.menuData, this.$route.path)
-        this.$store.dispatch('setCurrentMenu', currentPath)
+        // this.$store.dispatch('setCurrentMenu', currentPath)
         this.activeName = currentPath[1].id
         this.openNames = [currentPath[0].id]
       },
@@ -86,7 +86,8 @@
       }
     },
     watch: {
-      $route () {
+      '$route' () {
+        console.log('aaa')
         this.updatePath()
       }
     },
