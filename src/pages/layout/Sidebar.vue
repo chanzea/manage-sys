@@ -5,12 +5,11 @@
       <div class="layout-logo-left"></div>
       <Submenu v-for="item in menuData" :name="item.id" :key="item.id">
         <template slot="title">
-          <Icon :type="item.icon"></Icon>
-          <span>{{item.title}}</span>
+          <span>{{item.permissionName}}</span>
         </template>
         <div v-for="childrenItem in item.children" :key="childrenItem.id">
           <MenuItem :name="childrenItem.id" :key="childrenItem.id" @click.native="jumpToPage(item,childrenItem)">
-            <span>{{childrenItem.title}}</span>
+            <span>{{childrenItem.permissionName}}</span>
           </MenuItem>
         </div>
       </Submenu>
@@ -48,18 +47,14 @@
     computed: {},
     methods: {
       upDateSideBar () {
-        const permissionList = getMessage('permissionList');
-        const pathArr = permissionList && JSON.parse(permissionList).map(item => {
-          return item.uiPath
-        })
-        this.menuData = data.filter(item => {
-          return permissionList.includes(item.url)
-        });
-      },
+        this.menuData = JSON.parse(getMessage('permissionList'))
+      },    
+
       // 获取当前路径信息
       updatePath () {
         const currentPath = this.getCurrentPath(window.routes[0].children, this.$route.path)
-        this.$store.dispatch('setCurrentMenu', currentPath)
+        console.log('')
+        // this.$store.dispatch('setCurrentMenu', currentPath)
         this.activeName = currentPath[1].id
         this.openNames = [currentPath[0].id]
       },
@@ -71,8 +66,8 @@
       },
 
       jumpToPage (item, subItem) {
-        this.$router.push(subItem.url)
-        this.$store.dispatch('setCurrentMenu', [item, subItem])
+        this.$router.push(subItem.uiPath)
+        // this.$store.dispatch('setCurrentMenu', [item, subItem])
       },
 
       getCurrentPath(data, path) {
@@ -89,7 +84,7 @@
           title: obj.name,
           id: obj.id
         }, {
-          url: subObj.url,
+          url: subObj[0].url,
           title: subObj[0].name,
           id: subObj[0].id
         }]
