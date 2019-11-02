@@ -22,22 +22,31 @@
               <img :src="folderSrc" alt="">
             </div>
             <span style="margin: 8px 0 12px; color: #666;">查看缩略图</span>
-            <div class="item-isselect" @click="item.isSelected = !item.isSelected">
+            <div class="item-isselect">
               <Icon type="ios-checkbox-outline" style="" v-if="!item.isSelected" />
               <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
             </div>
           </div>
         </div>
       </div>
-      <div class="task-reject-folder-content-opt">
-        <Button class="opt-btn" type="primary" @click="taskItemMark" :disabled="!isSelected">下一题</Button>
+      <div v-if = "!noMore">
+          <span class="item-value"><strong>打勾的为剔除的图片</strong></span>
+          <RadioGroup v-model="taskItemStatus">
+              <Radio  label="5">通过</Radio>
+              <Radio  label="4">不通过</Radio>
+          </RadioGroup>
+          <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
+
+          <div class="task-classify-content-opt">
+            <!-- <Button class="opt-btn" type="primary" @click="submit">提交</Button> -->
+            <Button class="opt-btn" type="primary" @click="submit" :disabled="noMore">确认并跳到下一题</Button>
+          </div>
       </div>
     </div>
     <Modal
       v-model="isShowModal"
       title="查看缩略图"
-      @on-ok=""
-      @on-cancel="">
+    >
       <div class="pic-list">
         <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.fileUrl + ')', 'background-size': 'cover'}">
         </div>
@@ -47,7 +56,7 @@
 </template>
 
 <script>
-import { taskItemAllotMark, taskItemMark, getFolderPic } from "@/api/task";
+import { taskItemAllotReview, taskItemReview, getFolderPic } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -57,6 +66,9 @@ export default {
     return {
       BASEURL,
       isShowModal: false,
+      noMore: false,
+      taskItemStatus: "5",
+      taskItemReviewAdivse: "",
       folderSrc: require('../../../../../static/assets/img/folder.png'),
       taskItemList: [],
       dataRecordList: [],
@@ -64,7 +76,7 @@ export default {
     }
   },
   created() {
-    this.taskItemAllotMark()
+    this.taskItemAllotReview()
   },
   computed: {
     isSelected () {
@@ -75,16 +87,21 @@ export default {
   },
   methods: {
     // 更新
-    taskItemAllotMark () {
+    taskItemAllotReview () {
       this.dataRecordList = []
       const taskId = this.$route.query.id
-      taskItemAllotMark({
+      taskItemAllotReview({
         taskId
       }).then(res => {
         console.log('res', res)
-        const {taskItemList, dataRecordList, userList} = res
+        const {taskItemList, dataRecordList, userList} = res;
+        if(!taskItemList){
+          this.$Message.info("任务审核完成，没有下一题了");
+          this.noMore = true;
+          return;
+        }
         dataRecordList && Object.keys(dataRecordList).forEach(item => {
-          dataRecordList[item].isSelected = false
+          dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item);
           this.dataRecordList.push(dataRecordList[item])
           this.taskItemList = taskItemList
         })
@@ -92,23 +109,24 @@ export default {
       })
     },
 
-    // 提交剔除的图片
-    taskItemMark () {
+    submit () {
+      let taskItemId = this.taskItemList.map( item => item.id)[0];
       const data = {
         taskId: this.$route.query.id,
-        markData: {
-          taskItemId: this.taskItemList[0].id,
-          markData: this.dataRecordList.filter(item => {
-            return item.isSelected === true
-          }).map(item => {
-            return item.id
-          }).join(',')
-        }
+        taskItemId: String(taskItemId),
+        taskItemStatus: this.taskItemStatus,
+        taskItemReviewAdivse: this.taskItemReviewAdivse
       }
       console.log('data', data)
-      taskItemMark(data).then(res => {
-        this.taskItemAllotMark()
-      })
+      taskItemReview(data).then(res => {
+        console.log('res', res)
+      }).then( () => {
+          // this.$message.success("提交成功，下一题");
+          this.$Message.info('提交成功，下一题');
+          this.taskItemAllotReview();
+        }).catch( () => {
+          this.$Message.error("提交失败");
+        })
     },
 
     getFolderPic (item) {

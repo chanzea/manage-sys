@@ -84,7 +84,8 @@ export default {
         taskId
       }).then(res => {
         this.isNext = false
-        const {taskItemList, dataRecordList, userList} = res
+        let {taskItemList, dataRecordList, userList} = res;
+        taskItemList = taskItemList || [];//没有居然是null
         this.taskItemList = taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].fileUrl
           item.isSelected = false
