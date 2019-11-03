@@ -186,9 +186,10 @@ export default {
         taskItemStatus: 4 // RETURN_REVIEW(4)
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList} = res;
+        let {userList, taskItemList, taskList} = res;
         this.userList = userList;
         this.data = taskItemList;
+        this.taskList = taskList;
       });
     },
 
@@ -199,9 +200,10 @@ export default {
         tag: "mark"
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList} = res;
+        let {userList, taskItemList, taskList} = res;
         this.userList = userList;
         this.data = taskItemList;
+        this.taskList = taskList;
       });
     },
 
@@ -237,10 +239,10 @@ export default {
         this.$router.push({
           path: '/task/type',
           query: {
+            id: params.row.taskId,
             taskItemId: params.row.id,
             type: taskType[params.row.taskItemType].type,
             viewOnly:  this.currentTab == "taskComplete",
-            id: params.row.taskId
           }
         }) 
     },
