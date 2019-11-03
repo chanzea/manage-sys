@@ -194,6 +194,11 @@
               }
             }
           }],
+          email: [{
+            required: true,
+            trigger: 'blur',
+            message: '请输入邮箱'
+          }]
         },
       };
     },
@@ -202,46 +207,76 @@
       handleSubmit (name) {
         this.$refs[name].validate((valid) => {
           if (valid) {
-            const data = {
-              loginName: this.formLogin.username,
-              loginPassword: this.formLogin.password,
-              verifyCode: this.formLogin.captcha
-            };
-            this.loading = true;
-            // const data = {
-            //   "loginName": "admin",
-            //   "loginPassword": "admin1234",
-            //   "verifyCode": "nd74",
-            // }
-            axios({
-              url: `${BASEURL}/user/login`,
-              method: 'post',
-              data, 
-              headers: {'Content-Type': 'application/json;charset=UTF-8'}
-            }).then(res => {
-              console.log('res', res)
-              const { data } = res
-              if(data.code === 'SUCCESS') {
-                this.$Message.success('登录成功');
-                saveMessage('tokenId', data.data.tokenId)
-                saveMessage('userId', data.data.userId)
-                saveMessage('permissionList', JSON.stringify(data.data.permissionList))
-                window.permissionList = data.data.permissionList
-                this.$router.push({path: '/user'});
-              } else {
-                this.$Message.warning(data.message);
-                this.changeCaptcha(); //更新验证码
-              }
-              this.loading = false;
-            }).catch(err => {
-              console.log('err', err)
-              this.changeCaptcha(); //更新验证码
-              this.loading = false;
-            })
+            if (name === 'formLogin') {
+              this.userLogin()
+            } else if (name === 'formRegister') {
+              this.userRegister()
+            }
           } else {
             this.$Message.error('请填写正确再提交!');
           }
         });
+      },
+
+      userLogin () {
+        const data = {
+          loginName: this.formLogin.username,
+          loginPassword: this.formLogin.password,
+          verifyCode: this.formLogin.captcha
+        };
+        this.loading = true;
+        axios({
+          url: `${BASEURL}/user/login`,
+          method: 'post',
+          data, 
+          headers: {'Content-Type': 'application/json;charset=UTF-8'}
+        }).then(res => {
+          console.log('res', res)
+          const { data } = res
+          if(data.code === 'SUCCESS') {
+            this.$Message.success('登录成功');
+            saveMessage('tokenId', data.data.tokenId)
+            saveMessage('userId', data.data.userId)
+            saveMessage('permissionList', JSON.stringify(data.data.permissionList))
+            this.$router.push({path: '/user'});
+          } else {
+            this.$Message.warning(data.message);
+            this.changeCaptcha(); //更新验证码
+          }
+          this.loading = false;
+        }).catch(err => {
+          console.log('err', err)
+          this.changeCaptcha(); //更新验证码
+          this.loading = false;
+        })
+      },
+      userRegister () {
+        const data = {
+          loginName: this.formRegister.username,
+          loginPassword: this.formRegister.password,
+          email: this.formRegister.email
+        };
+        this.loading = true;
+        axios({
+          url: `${BASEURL}/user/register`,
+          method: 'post',
+          data, 
+          headers: {'Content-Type': 'application/json;charset=UTF-8'}
+        }).then(res => {
+          console.log('res', res)
+          const { data } = res
+          if(data.code === 'SUCCESS') {
+            this.$Message.success('注册成功，请到邮箱认证');
+            this.isLogin = false
+          } else {
+            this.$Message.warning(data.message);
+            this.changeCaptcha(); //更新验证码
+          }
+          this.loading = false;
+        }).catch(err => {
+          console.log('err', err)
+          this.loading = false;
+        })
       },
       changeCaptcha () {
         this.formLogin.captcha = '';

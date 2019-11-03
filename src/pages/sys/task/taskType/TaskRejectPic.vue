@@ -24,15 +24,26 @@
           </div>
         </div>
       </div>
-      <div class="task-reject-pic-content-opt">
-        <Button class="opt-btn" type="primary" @click="taskItemMark" :disabled="!isSelected">下一题</Button>
+      <div class="task-reject-pic-content-meta">
+        <div class="task-reject-pic-content-meta-item" v-if="reviewInfo.name">
+          <span class="item-label">审核人:</span>
+          <span class="item-value">{{reviewInfo.name}}</span>
+        </div>
+        <div class="task-reject-pic-content-meta-item" v-if="reviewInfo.advise">
+          <span class="item-label">审核意见:</span>
+          <span class="item-value">{{reviewInfo.advise}}</span>
+        </div>
+      </div>
+      <div class="task-reject-pic-content-opt" v-if="!viewOnly">
+        <Button class="opt-btn" type="primary" @click="taskItemMark(false)" :disabled="!isSelected">保存</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemMark(true)" :disabled="!isSelected">下一题</Button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { taskItemAllotMark, taskItemMark } from "@/api/task";
+import { taskItemAllotMark, taskItemMark, taskItemDetail } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -43,10 +54,22 @@ export default {
       taskItemList: [],
       dataRecordList: [],
       BASEURL,
+      viewOnly: false,
+      reviewInfo: {
+
+      }
     }
   },
   created() {
-    this.taskItemAllotMark()
+    const taskId = this.$route.query.id;
+    const taskItemId = this.$route.query.taskItemId
+    this.viewOnly = this.$route.query.viewOnly
+    // 当前存在 taskItemId ，返工任务
+    if (taskItemId) {
+      this.taskItemDetail(taskId, taskItemId)
+    } else {
+      this.taskItemAllotMark()
+    }
   },
   computed: {
     isSelected () {
@@ -74,7 +97,14 @@ export default {
     },
 
     // 提交剔除的图片
-    taskItemMark () {
+    taskItemMark (next) {
+      const isNext = this.dataRecordList.some(item => {
+        return item.isSelected !== true
+      })
+      if (!isNext) {
+        this.$Message.warning('请先点击图片选择与大多数图片不同的少数派');
+        return
+      }
       const data = {
         taskId: this.$route.query.id,
         markData: {
@@ -88,7 +118,31 @@ export default {
       }
       console.log('data', data)
       taskItemMark(data).then(res => {
-        this.taskItemAllotMark()
+        if (next) {
+          this.taskItemAllotMark()
+        }
+      })
+    },
+
+    taskItemDetail (taskId, taskItemId) {
+      this.dataRecordList = []
+      taskItemDetail({
+        taskId,
+        taskItemId
+      }).then(res => {
+        console.log('res', res)
+        const {taskItemList, dataRecordList, userList} = res
+        dataRecordList && Object.keys(dataRecordList).forEach(item => {
+          dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item);
+          this.dataRecordList.push(dataRecordList[item])
+          this.taskItemList = taskItemList
+        })
+        taskItemList && taskItemList.forEach(item => {
+          this.reviewInfo = {
+            name: userList[item.reviewUserId].userName,
+            advise: item.reviewAdvise
+          }
+        })
       })
     }
   }
@@ -103,16 +157,19 @@ export default {
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
+      width: 60%;
       &-item {
         display: flex;
-        align-items: center;
         margin-bottom: 16px;
         font-size: 14px;
         .item-label {
           color: #333;
+          min-width: 80px;
           margin-right: 20px;
         }
         .item-value {
+          flex: 1;
+          line-height: 17px;
           color: #666;
         }
       }

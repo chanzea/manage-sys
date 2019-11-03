@@ -40,7 +40,8 @@
       </div>
       <div class="task-classify-content-opt" v-if="!viewOnly">
         <Button class="opt-btn" type="primary" @click="isShowModal = true" :disabled="!isSelected">批量添加标注</Button>
-        <Button class="opt-btn" type="primary" @click="taskItemMarklist" :disabled="!isNext">下一题</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
       </div>
     </div>
     <Modal
@@ -115,8 +116,7 @@ export default {
     } else {
       this.taskItemAllotMark()
     }
-    this.tagClassifyList(taskId)
-    
+    this.tagClassifyList(taskId)    
   },
   computed: {
     isSelected () {
@@ -167,9 +167,6 @@ export default {
         this.formCustom[item.key] = ''
       })
       tagClassifyAdd(params)
-      // .catch(() => {
-      //   this.$Message.error('标签添加失败');
-      // })
     },
 
     //選擇標簽
@@ -178,11 +175,12 @@ export default {
     },
 
     // 提交任务
-    taskItemMarklist () {
+    taskItemMarklist (next) {
       const isNext = this.taskItemList.some(item => {
         return item.tag !== ''
       })
       if (!isNext) {
+        this.$Message.warning('请选择图片添加标注');
         return
       }
       const markDataList = []
@@ -197,7 +195,9 @@ export default {
         markDataList
       }
       taskItemMarklist(data).then(res => {
-        this.taskItemAllotMark()
+        if (next) {
+          this.taskItemAllotMark()
+        }
       })
     },
 
@@ -251,16 +251,19 @@ export default {
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
+      width: 60%;
       &-item {
         display: flex;
-        align-items: center;
         margin-bottom: 16px;
         font-size: 14px;
         .item-label {
           color: #333;
+          min-width: 80px;
           margin-right: 20px;
         }
         .item-value {
+          flex: 1;
+          line-height: 17px;
           color: #666;
         }
       }

@@ -40,14 +40,14 @@
 </template>
 
 <script>
-import { getTaskList, taskOffline } from "@/api/task";
+import { getTaskList, taskOffline, taskOnline } from "@/api/task";
 // import taskList from "@/mock/task";
 const taskStatusData = {
   '-1': '初始化',
   '-2': '初始化完成',
   '-3': '任务完成',
-  '0': '离线',
-  '1': '上线'
+  '0': '下线',
+  '1': '上线',
 } 
 export default {
   name: "TaskList",
@@ -120,36 +120,12 @@ export default {
         }
       ],
       total: 0,
-      data: [
-        // {
-        //   id: 38,
-        //   taskName: "task3",
-        //   taskRemark: "task1-desc",
-        //   taskType: 1,
-        //   markPointType: 1,
-        //   markPoint: 10,
-        //   reviewPoint: 10,
-        //   reviewScale: 0,
-        //   dataSetId: 17,
-        //   dataSetSnapshotId: 0,
-        //   markUserIds: [84],
-        //   reviewUserIds: [8],
-        //   taskStatus: 1,
-        //   taskItemTotal: 5,
-        //   taskItemUnMarkTotal: 5,
-        //   taskItemUnReviewTotal: 5,
-        //   taskItemReMarkTotal: 0,
-        //   taskItemReReviewTotal: 0,
-        //   creatorId: 8
-        // }
-      ]
+      data: []
     };
   },
 
   created() {
     this.getTasklistInfo();
-    // this.data = taskList.data.taskList;
-    // this.total = taskList.data.count;
   },
 
   methods: {
@@ -186,13 +162,17 @@ export default {
     //下线
     offLine(row) {
       taskOffline({taskId: row.id}).then( () => {
-        row.taskStatus = 2;
+        row.taskStatus = 0;
+        row.taskStatusDis = '下线'
+        this.$Message.success('任务下线成功');
       })
     },
 
     online(row) {
       taskOnline({taskId: row.id}).then( () => {
         row.taskStatus = 1;
+        row.taskStatusDis = '上线'
+        this.$Message.success('任务上线成功');
       })
     },
 

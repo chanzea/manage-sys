@@ -32,8 +32,8 @@ export async function getUserInfo(params) {
  * 用户注册
  * @param {Obiect} params 
  */
-export async function UserRegister(params) {
-  const data = await api(`/user/register`, 'POST', params)
+export async function UserAdd(params) {
+  const data = await api(`/user/add`, 'POST', params)
   return data
 }
 

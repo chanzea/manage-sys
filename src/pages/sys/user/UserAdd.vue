@@ -7,8 +7,8 @@
         <Button class="btn-list-item">返回</Button>
       </div>
       <div class="btn-list" v-else>
-        <Button class="btn-list-item" type="primary" @click="UserRegister">确定</Button>
-        <Button class="btn-list-item" type="primary"  @click="UserRegister(true)">确定并继续添加</Button>
+        <Button class="btn-list-item" type="primary" @click="UserAdd">确定</Button>
+        <Button class="btn-list-item" type="primary"  @click="UserAdd(true)">确定并继续添加</Button>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@ import {
   getListTree,
   getRoleList,
   getUserInfo,
-  UserRegister,
+  UserAdd,
   UserUpdate
 } from 'api/user'
 const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
@@ -244,7 +244,7 @@ export default {
       })
     },
     // 获取提交参数
-    UserRegister (isReset = false) {
+    UserAdd (isReset = false) {
       // 测试参数
       // const params = {"birthday":"2019-10-16T16:00:00.000Z","loginName":"abaaa","enable":1,"organizationIds":[21,40,41],"roleIds":[11,12],"userName":"aaaaa","sex":1,"loginPassword":"asdfqbwe123","phoneNum":"15912313212","certificateType":"ID_CARD","certificateId":"445124159123132129","qq":"159123132","email":"159123132@qq.com","maritalStatus":0,"address":"sss"}
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
@@ -254,7 +254,7 @@ export default {
             enable: this.formCustom.enable ? 1 : 0
           })
           console.log('提交参数', params)
-          UserRegister(params).then(res => {
+          UserAdd(params).then(res => {
             if(isReset) {
               this.$refs['formProp'].$refs['basicForm'].resetFields()
             } else {

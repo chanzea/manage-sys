@@ -59,6 +59,7 @@ export default {
         dateValue: ''
       },
       userlist:[],
+      taskType: taskType,
       currentTab: 'taskMission',
       tabLists: [{
         label: (h) => {
@@ -222,6 +223,7 @@ export default {
 
     //这个函数在minxin里面
     actionCallFn(params){
+      console.log('params', params)
         this.$router.push({
           path: '/task/type',
           query: {
