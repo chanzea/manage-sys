@@ -168,7 +168,8 @@ export default {
     getReturnTaskItemList(){
       let params = {
         page: this.page,
-        taskItemStatus: 4 // RETURN_REVIEW(4)
+        taskItemStatus: 3, // RETURN_REVIEW(4)   
+        tag: 'mark'
       }
       taskItemList(params).then( (res) => {
         let {userList, taskItemList, taskList} = res;

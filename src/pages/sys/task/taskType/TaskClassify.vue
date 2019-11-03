@@ -1,7 +1,7 @@
 <template>
   <div class="page-task-classify">
     <div class="task-classify-content">
-            <div class="task-classify-content-meta">
+      <div class="task-classify-content-meta">
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务名称:</span>
           <span class="item-value">aaaa</span>
@@ -28,7 +28,17 @@
           </span>
         </div>
       </div>
-      <div class="task-classify-content-opt">
+      <div class="task-classify-content-meta">
+        <div class="task-classify-content-meta-item" v-if="reviewInfo.name">
+          <span class="item-label">审核人:</span>
+          <span class="item-value">{{reviewInfo.name}}</span>
+        </div>
+        <div class="task-classify-content-meta-item" v-if="reviewInfo.advise">
+          <span class="item-label">审核意见:</span>
+          <span class="item-value">{{reviewInfo.advise}}</span>
+        </div>
+      </div>
+      <div class="task-classify-content-opt" v-if="!viewOnly">
         <Button class="opt-btn" type="primary" @click="isShowModal = true" :disabled="!isSelected">批量添加标注</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist" :disabled="!isNext">下一题</Button>
       </div>
@@ -83,7 +93,13 @@ export default {
         ]
       },
       formCustom: {},
-      isNext: true //是否有下一題
+      isNext: true, //是否有下一題
+      // 審核人員信息
+      reviewInfo: {
+
+      },
+      // 查看详情
+      viewOnly: false
     }
   },
   components: {
@@ -92,6 +108,7 @@ export default {
   created() {
     const taskId = this.$route.query.id;
     const taskItemId = this.$route.query.taskItemId
+    this.viewOnly = this.$route.query.viewOnly
     // 当前存在 taskItemId ，返工任务
     if (taskItemId) {
       this.taskItemDetail(taskId, taskItemId)
@@ -206,13 +223,19 @@ export default {
         taskItemId
       }).then(res => {
         console.log('res', res)
-        const {taskItemList, dataRecordList} = res
+        const {taskItemList, dataRecordList, userList} = res
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
           item.tag = item.taskData
           return item
         }) : []
+        taskItemList && taskItemList.forEach(item => {
+          this.reviewInfo = {
+            name: userList[item.reviewUserId].userName,
+            advise: item.reviewAdvise
+          }
+        })
         this.isNext = !!taskItemList
       })
     }
@@ -274,6 +297,9 @@ export default {
           font-size: 14px;
         }
       }
+    }
+    &-review {
+      margin-bottom: 20px;
     }
     &-opt {
       display: flex;

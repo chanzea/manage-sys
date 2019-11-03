@@ -1,6 +1,5 @@
 <template>
   <div class="page-user-add">
-    {{formCustom}}
     <div class="user-add-content">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
       <div class="btn-list" v-if="!!userId">
