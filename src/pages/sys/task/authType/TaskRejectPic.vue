@@ -146,7 +146,9 @@ export default {
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功');
-          next || this.taskItemAllotReview();
+          if(next){
+            this.taskItemAllotReview();
+          } 
         }).catch( () => {
           this.$Message.error("提交失败");
         })
