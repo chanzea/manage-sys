@@ -209,7 +209,7 @@ export default {
           query: {
             id: params.row.taskId,
             taskItemId: params.row.id,
-            type: taskType[params.row.taskItemType].type,
+            type: taskType[this.taskList[params.row.taskId].taskType].type,
             viewOnly:  this.currentTab == "taskComplete"
           }
         }) 

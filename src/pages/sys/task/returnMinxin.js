@@ -1,3 +1,26 @@
+let taskTypeMap = {
+    '1': {
+      label: '分类任务',
+      type: 'Classify'
+    }, 
+    '2': {
+      label: '标注任务',
+      type: 'Mark'
+    },
+    '3': {
+      label: '图片剔除任务',
+      type: 'RejectPic'
+    },
+    '4': {
+      label: '文件夹剔除任务',
+      type: 'RejectFolder'
+    },
+    '5': {
+      label: '分割任务',
+      type: 'Lasso'
+    }
+  }
+
 const mixin = {
     data: function () {
         return {
@@ -23,6 +46,26 @@ const mixin = {
                         //     return loginName
                         // }); 
                         return h('div', this.taskList[params.row.taskId] ? this.taskList[params.row.taskId].taskName : "");
+                    }
+                },
+                {
+                    title: '任务类型',
+                    key: 'taskType',
+                    render: (h, params) => {
+                        // console.log("TCL: params", params)
+                        // let arr = params.row.markUserIds.map( item => {
+                        //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
+                        //     return loginName
+                        // });
+                        // console.log(this.taskList[params.row.taskId].taskType)
+                        // this.taskList[params.row.taskId]
+                        let type;
+                        if(this.taskList[params.row.taskId]) {
+                            type = taskTypeMap[this.taskList[params.row.taskId].taskType].label;
+                        } else {
+                            type = ""
+                        }
+                        return h('div', type);
                     }
                 },
                 {
