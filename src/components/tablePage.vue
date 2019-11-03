@@ -7,7 +7,7 @@
       <div class="content-middle-table">
         <Table border :columns="columns" :data="data"></Table>
       </div>
-      <div class="content-middle-pages">
+      <div class="content-middle-pages" v-if="total">
         <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
       </div>
     </div>
