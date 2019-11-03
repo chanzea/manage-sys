@@ -169,13 +169,11 @@ export default {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功，下一题');
           this.taskItemReviewAdvise = ""
-          next && this.taskItemAllotReview();
+          next || this.taskItemAllotReview();
         }).catch( () => {
           this.$Message.error("提交失败");
         })
     },
-
-
 
   },
 }

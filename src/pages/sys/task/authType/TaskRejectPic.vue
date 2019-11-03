@@ -35,7 +35,7 @@
           <Input v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
           <div class="task-classify-content-opt">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
-            <Button class="opt-btn" type="primary" @click="taskItemAllotReview" :disabled="noMore">下一题</Button>
+            <Button class="opt-btn" type="primary" @click="submit(true)" :disabled="noMore">下一题</Button>
           </div>
       </div>
       
@@ -126,7 +126,7 @@ export default {
       })
     },
 
-    submit () {
+    submit (next) {
       let taskItemId = this.taskItemList.map( item => item.id)[0];
       const data = {
         taskId: this.$route.query.id,
@@ -140,7 +140,7 @@ export default {
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功，下一题');
-          this.taskItemAllotReview();
+          next || this.taskItemAllotReview();
         }).catch( () => {
           this.$Message.error("提交失败");
         })
