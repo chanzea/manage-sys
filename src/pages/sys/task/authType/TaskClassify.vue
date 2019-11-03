@@ -15,24 +15,25 @@
           <span class="item-value">为图片打上分类标签</span>
         </div>
       </div>
-      <div class="task-classify-content-list">
+      <div class="task-classify-content-list" v-if = "!noMore">
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
           <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
             <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
-          <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div>
+          <!-- <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div> -->
+          <span v-if="item.taskData" class="item-tag">
+            <Tag color="success" size="medium">{{item.taskData}}</Tag>
+          </span>
         </div>
-
-        <div style="font-size: 24px; font-weight: bold">
+      </div>
+      <div v-if="noMore" style="font-size: 24px; font-weight: bold">
           暂无需要审核的题目
         </div>
-
-      </div>
       <div v-if = "!noMore">
           <div style="margin: 10px 0;">
             <RadioGroup v-model="taskItemStatus">
                 <Radio  label="5">通过</Radio>
-                <Radio  label="4">不通过</Radio>
+                <Radio  label="3">不通过</Radio>
             </RadioGroup>
           </div>
           
@@ -127,7 +128,6 @@ export default {
         this.taskItemList = taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].fileUrl
           item.isSelected = false
-          item.tag = ''
           return item
         })
       })
