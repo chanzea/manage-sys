@@ -169,7 +169,7 @@ export default {
         console.log('res', res)
       }).then( () => {
           // this.$message.success("提交成功，下一题");
-          this.$Message.info('提交成功，下一题');
+          this.$Message.info('提交成功');
           this.taskItemReviewAdvise = ""
           next || this.taskItemAllotReview();
         }).catch( () => {
