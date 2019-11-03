@@ -37,7 +37,7 @@
             </RadioGroup>
           </div>
           
-          <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
+          <Input v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
 
           <div class="m_actionBtn">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
@@ -64,7 +64,7 @@ export default {
       isShowModal: false,
       BASEURL,
       taskItemStatus: "5",
-      taskItemReviewAdivse: "",
+      taskItemReviewAdvise: "",
       formProp: [
         {
           label: '快捷',
@@ -160,7 +160,7 @@ export default {
         taskId: this.$route.query.id,
         taskItemId: String(taskItemId),
         taskItemStatus: this.taskItemStatus,
-        taskItemReviewAdivse: this.taskItemReviewAdivse
+        taskItemReviewAdvise: this.taskItemReviewAdvise
       }
       console.log('data', data)
       taskItemReview(data).then(res => {
@@ -168,7 +168,7 @@ export default {
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功，下一题');
-          this.taskItemReviewAdivse = ""
+          this.taskItemReviewAdvise = ""
           // this.taskItemAllotReview();
         }).catch( () => {
           this.$Message.error("提交失败");
