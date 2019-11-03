@@ -41,8 +41,8 @@
           <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
 
           <div class="task-classify-content-opt">
-            <!-- <Button class="opt-btn" type="primary" @click="submit">提交</Button> -->
-            <Button class="opt-btn" type="primary" @click="submit" :disabled="noMore">确认并跳到下一题</Button>
+            <Button class="opt-btn" type="primary" @click="submit">提交</Button>
+            <Button class="opt-btn" type="primary" @click="taskItemAllotReview" :disabled="noMore">下一题</Button>
           </div>
       </div>
     </div>

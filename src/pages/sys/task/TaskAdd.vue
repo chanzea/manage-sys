@@ -2,13 +2,13 @@
   <div class="page-task-add">
     <div class="task-add-content">
       <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="100">
-        <!-- <FormItem label="任务编号" prop="taskId">
+        <!-- <FormItem label="任务编号:" prop="taskId">
           <Input v-model="formItem.taskId" placeholder="编号"></Input>
         </FormItem> -->
-        <FormItem label="任务名称" prop="taskName">
+        <FormItem label="任务名称:" prop="taskName">
           <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
         </FormItem>
-        <FormItem label="任务用途" prop="taskRemark">
+        <FormItem label="任务用途:" prop="taskRemark">
           <Input
             v-model="formItem.taskRemark"
             type="textarea"
@@ -16,27 +16,23 @@
             placeholder="描述"
           ></Input>
         </FormItem>
-        <FormItem label="标注任务积分" prop="markPointType" inline="true">
-          <!-- <div class="task-mark"> -->
-            <span style="margin-right:12px">按</span>
-            <Select class="task-mark-select" v-model="formItem.markPointType">
-              <Option value="1">每一题</Option>
-              <Option value="2">每个标注</Option>
-            </Select>
-            <span style="margin:0 12px">积分,每次</span>
-            <!-- <Input
-              class="task-mark-input"
-              type="number"
-              v-model="formItem.markPoint"
-              placeholder="积分"
-            ></Input> -->
-          <!-- </div> -->
-        </FormItem>
-        <FormItem prop="markPoint" inline="true">
-            <Input type="number" placeholder="积分" v-model="formItem.markPoint" />          
-        </FormItem>
+        <div>
+          <FormItem label="标注任务积分:" prop="markPointType" inline="true">
+            <!-- <div class="task-mark"> -->
+              <span style="margin-right:12px">按</span>
+              <Select class="task-mark-select" v-model="formItem.markPointType">
+                <Option value="1">每一题</Option>
+                <Option value="2">每个标注</Option>
+              </Select>
+              <span style="margin:0 12px">积分</span>
+          </FormItem>
+          <FormItem prop="markPoint" inline="true" label="每次积分:">
+              <Input type="number" placeholder="积分" v-model="formItem.markPoint" />          
+          </FormItem>
+        </div>
+        
 
-        <FormItem label="审核任务积分" prop="reviewPoint">
+        <FormItem label="审核任务积分:" prop="reviewPoint">
           <div class="task-mark">
             <span style="margin-right:12px">完成任务累计</span>
             <Input
@@ -47,22 +43,22 @@
             ></Input>
           </div>
         </FormItem>
-        <FormItem label="任务模版" prop="taskType">
+        <FormItem label="任务模版:" prop="taskType">
           <Select v-model="formItem.taskType">
             <Option :key="item.id" v-for=" (item) in taskType" :value="item.id">{{item.label}}</Option>
           </Select>
         </FormItem>
-        <FormItem label="数据源" prop="dataSetId">
+        <FormItem label="数据源:" prop="dataSetId">
           <Select v-model="formItem.dataSetId" placeholder="选择数据源">
             <Option  v-for=" item in dataSetList" :key="item.id"  :value="item.id">{{item.folderName}}({{item.folderDesc}})</Option>
           </Select>
         </FormItem>
-        <FormItem label="标注人员" prop="markUserIds">
+        <FormItem label="标注人员:" prop="markUserIds">
           <Select v-model="formItem.markUserIds" multiple filterable clearable>
             <Option :key="item.id" v-for=" (item) in userList" :value="item.id">{{item.userName}}</Option>
           </Select>
         </FormItem>
-        <FormItem label="审核人员" prop="reviewUserIds">
+        <FormItem label="审核人员:" prop="reviewUserIds">
           <Select v-model="formItem.reviewUserIds" multiple filterable clearable>
             <Option :key="item.id" v-for=" (item) in userList" :value="item.id">{{item.userName}}</Option>
           </Select>
