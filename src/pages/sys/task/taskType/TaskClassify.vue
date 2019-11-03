@@ -134,6 +134,8 @@ export default {
     },
     // 添加标注
     confirm () {
+      // 获取标签
+      this.tagClassifyList(this.$route.query.id)
       this.taskItemList.forEach(item => {
         if(this.selectedTaskItem.includes(item.id)) {
           item.tag = this.formCustom.name
@@ -189,11 +191,11 @@ export default {
       }).then(res => {
         console.log('tagClassifyList', res)
         const { list } = res
-        this.formProp[0].options = list.map(item => {
+        this.formProp[0].options = list ? list.map(item => {
           item.value = item.tagName;
           item.label = item.tagName;
           return item
-        })
+        }) : []
       })
     },
 

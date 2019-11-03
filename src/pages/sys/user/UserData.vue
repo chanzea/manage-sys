@@ -7,10 +7,10 @@
             <router-link to="/user/group">新增组</router-link>
           </Button>
           <Button>
-            <router-link to="/user/add">新增用户</router-link>
+            <router-link to="/user/create">新增用户</router-link>
           </Button>
           <Button>
-            <router-link to="/user/add">新增组用户</router-link>
+            <router-link to="/user/create">新增组用户</router-link>
           </Button>
         </div>
         <div class="content-header-search">

@@ -156,7 +156,8 @@ export default {
               } else {
                 callback()
               }
-          }}
+            }
+          }
         ],
         loginName: [
           {
@@ -171,6 +172,19 @@ export default {
             required: true,
             message: '请输入用户名'
           }
+        ],
+        email: [
+          {
+            trigger: 'blur',
+            required: true,
+            validator: (rule, value, callback) => {
+              if (value === '') {
+                callback(new Error('请输入邮箱'))
+              } else {
+                callback()
+              }
+            },
+          }
         ],        
         phoneNum: [
           {
@@ -178,14 +192,7 @@ export default {
             required: true,
             message: '请输入手机号码'
           }
-        ],        
-        email: [
-          {
-            trigger: 'blur',
-            required: true,
-            message: '请输入邮箱'
-          }
-        ],
+        ]
       },
       formCustom: {}
     }
@@ -268,6 +275,7 @@ export default {
     UserUpdate () {
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
+          console.log('adsadsd')
           this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''
           const params = Object.assign({}, this.formCustom, {
             enable: this.formCustom.enable ? 1 : 0,
@@ -276,6 +284,8 @@ export default {
           UserUpdate(params).then(res => {
             this.$Message.success('用户信息更新成功');
           })
+        } else {
+          console.log('false')
         }
       })
     },

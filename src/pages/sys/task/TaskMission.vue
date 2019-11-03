@@ -64,11 +64,6 @@ export default {
         label: (h) => {
           return h('div', [
             h('span', '任务大厅'),
-            h('Badge', {
-              props: {
-                count: 3
-              }
-            })
           ])
         },
         name: 'taskMission'
@@ -76,11 +71,6 @@ export default {
         label: (h) => {
           return h('div', [
             h('span', '返工任务'),
-            h('Badge', {
-              props: {
-                count: 3
-              }
-            })
           ])
         },
         name: 'taskRework'
@@ -88,11 +78,6 @@ export default {
         label: (h) => {
           return h('div', [
             h('span', '已完成任务'),
-            h('Badge', {
-              props: {
-                count: 3
-              }
-            })
           ])
         },
         name: 'taskComplete'
@@ -170,11 +155,11 @@ export default {
       getTaskList({ page, tag: 'mark' }).then(res => {
         console.log(res);
         const { taskList, count } = res
-        this.data = taskList.map(item => {
+        this.data = taskList ? taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
           item.taskTypeDis = taskType[item.taskType].label
           return item
-        })
+        }) : []
         this.total = count;
       });
     },
