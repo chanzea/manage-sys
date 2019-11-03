@@ -1,5 +1,6 @@
 <template>
   <div class="page-user-add">
+    {{formCustom}}
     <div class="user-add-content">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
       <div class="btn-list" v-if="!!userId">
@@ -177,13 +178,7 @@ export default {
           {
             trigger: 'blur',
             required: true,
-            validator: (rule, value, callback) => {
-              if (value === '') {
-                callback(new Error('请输入邮箱'))
-              } else {
-                callback()
-              }
-            },
+            message: '请输入邮箱'
           }
         ],        
         phoneNum: [
@@ -222,12 +217,12 @@ export default {
         }).then(data => {
           // 页面渲染
           this.formProp.forEach(item => {
-            this.formCustom[item.key] = this.user[item.key]
+            this.$set(this.formCustom, item.key, this.user[item.key])
             if (item.type === 'switch') {
-              this.formCustom[item.key] = !!this.user[item.key]
+              this.$set(this.formCustom, item.key, !!this.user[item.key])
             }
             if (item.type === 'treeSelect') {
-              this.formProp[1].options = this.formatTreeData(data, this.formCustom[item.key])
+              this.$set(this.formProp[1], 'options', this.formatTreeData(data, this.formCustom[item.key]))
             }
           })
         })
@@ -264,7 +259,7 @@ export default {
             if(isReset) {
               this.$refs['formProp'].$refs['basicForm'].resetFields()
             } else {
-              this.$router.push('/user/data')
+              this.$router.push('/user/list')
             }
             this.$Message.success('用户已成功注册');
           })
@@ -275,7 +270,6 @@ export default {
     UserUpdate () {
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
-          console.log('adsadsd')
           this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''
           const params = Object.assign({}, this.formCustom, {
             enable: this.formCustom.enable ? 1 : 0,
@@ -284,8 +278,6 @@ export default {
           UserUpdate(params).then(res => {
             this.$Message.success('用户信息更新成功');
           })
-        } else {
-          console.log('false')
         }
       })
     },
