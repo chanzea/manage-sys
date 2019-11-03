@@ -38,7 +38,7 @@
             <span class="item-value" style="color: red;vertical-align: middle;"><strong>(打勾的为剔除的文件)</strong></span>
           </div>
 
-          <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
+          <Input v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
 
           <div class="task-classify-content-opt">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
@@ -71,7 +71,7 @@ export default {
       isShowModal: false,
       noMore: false,
       taskItemStatus: "5",
-      taskItemReviewAdivse: "",
+      taskItemReviewAdvise: "",
       folderSrc: require('../../../../../static/assets/img/folder.png'),
       taskItemList: [],
       dataRecordList: [],
@@ -125,7 +125,7 @@ export default {
         taskId: this.$route.query.id,
         taskItemId: String(taskItemId),
         taskItemStatus: this.taskItemStatus,
-        taskItemReviewAdivse: this.taskItemReviewAdivse
+        taskItemReviewAdvise: this.taskItemReviewAdvise
       }
       console.log('data', data)
       taskItemReview(data).then(res => {

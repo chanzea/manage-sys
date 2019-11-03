@@ -37,11 +37,11 @@
             </RadioGroup>
           </div>
           
-          <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
+          <Input v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
 
           <div class="m_actionBtn">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
-            <Button class="opt-btn" type="primary" @click="taskItemAllotReview" :disabled="noMore">下一题</Button>
+            <Button class="opt-btn" type="primary" @click="submit(true)" :disabled="noMore">下一题</Button>
             <!-- <Button class="opt-btn" type="primary" >返回审核大厅</Button> -->
           </div>
       </div>
@@ -64,7 +64,7 @@ export default {
       isShowModal: false,
       BASEURL,
       taskItemStatus: "5",
-      taskItemReviewAdivse: "",
+      taskItemReviewAdvise: "",
       formProp: [
         {
           label: '快捷',
@@ -154,13 +154,13 @@ export default {
       })
     },
 
-    submit () {
+    submit(next) {
       let taskItemId = this.taskItemList.map( item => item.id)[0];
       const data = {
         taskId: this.$route.query.id,
         taskItemId: String(taskItemId),
         taskItemStatus: this.taskItemStatus,
-        taskItemReviewAdivse: this.taskItemReviewAdivse
+        taskItemReviewAdvise: this.taskItemReviewAdvise
       }
       console.log('data', data)
       taskItemReview(data).then(res => {
@@ -168,12 +168,15 @@ export default {
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功，下一题');
-          this.taskItemReviewAdivse = ""
-          // this.taskItemAllotReview();
+          this.taskItemReviewAdvise = ""
+          next && this.taskItemAllotReview();
         }).catch( () => {
           this.$Message.error("提交失败");
         })
     },
+
+
+
   },
 }
 </script>
