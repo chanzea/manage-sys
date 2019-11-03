@@ -29,6 +29,9 @@
           </div>
         </div>
       </div>
+      <div v-if="noMore" style="font-size: 24px; font-weight: bold">
+          暂无需要审核的题目
+      </div>
       <div v-if = "!noMore">
           <div style="margin: 10px 0;">
             <RadioGroup v-model="taskItemStatus">
@@ -42,7 +45,7 @@
 
           <div class="task-classify-content-opt">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
-            <Button class="opt-btn" type="primary" @click="taskItemAllotReview" :disabled="noMore">下一题</Button>
+            <Button v-if="!isReturnItem" class="opt-btn" type="primary" @click="submit(true)" :disabled="noMore">下一题</Button>
           </div>
       </div>
     </div>
@@ -63,8 +66,10 @@ import { taskItemAllotReview, taskItemReview, getFolderPic, taskItemDetail } fro
 import { 
   BASEURL
  } from "@/api/config.js";
+import minxin from "./minxin";
 export default {
   name: 'TaskRejectFolder',
+  mixins: [minxin],
   data() {
     return {
       BASEURL,
@@ -119,7 +124,7 @@ export default {
       })
     },
 
-    submit () {
+    submit (next) {
       let taskItemId = this.taskItemList.map( item => item.id)[0];
       const data = {
         taskId: this.$route.query.id,
@@ -132,8 +137,8 @@ export default {
         console.log('res', res)
       }).then( () => {
           // this.$message.success("提交成功，下一题");
-          this.$Message.info('提交成功，下一题');
-          this.taskItemAllotReview();
+          this.$Message.info('提交成功');
+          next || this.taskItemAllotReview();
         }).catch( () => {
           this.$Message.error("提交失败");
         })
