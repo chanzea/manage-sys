@@ -33,7 +33,7 @@
           <div style="margin: 10px 0;">
             <RadioGroup v-model="taskItemStatus">
                 <Radio  label="5">通过</Radio>
-                <Radio  label="4">不通过</Radio>
+                <Radio  label="3">不通过</Radio>
             </RadioGroup>
             <span class="item-value" style="color: red;vertical-align: middle;"><strong>(打勾的为剔除的文件)</strong></span>
           </div>

@@ -28,13 +28,11 @@
           <div style="margin: 10px 0;">
             <RadioGroup v-model="taskItemStatus">
                 <Radio  label="5">通过</Radio>
-                <Radio  label="4">不通过</Radio>
+                <Radio  label="3">不通过</Radio>
             </RadioGroup>
             <span class="item-value" style="color: red;vertical-align: middle;"><strong>(打勾的为剔除的图片)</strong></span>
           </div>
-
           <Input v-model="taskItemReviewAdivse" type="textarea" :rows="4" placeholder="审核意见" />
-
           <div class="task-classify-content-opt">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
             <Button class="opt-btn" type="primary" @click="taskItemAllotReview" :disabled="noMore">下一题</Button>
