@@ -139,6 +139,7 @@ export default {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功');
           if(next){
+            this.taskItemReviewAdvise = ""
             this.taskItemAllotReview();
           }
         }).catch( () => {

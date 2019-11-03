@@ -170,8 +170,8 @@ export default {
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功');
-          this.taskItemReviewAdvise = ""
           if(next){
+            this.taskItemReviewAdvise = ""
             this.taskItemAllotReview();
           }
         }).catch( () => {
