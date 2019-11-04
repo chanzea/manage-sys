@@ -65,15 +65,12 @@
       },
 
       getCurrentPath(data, path) {
-        console.log('data', data)
         const obj = data.find(item => {
           return path.indexOf(item.uiPath) !== -1
-        })
-        console.log('obj', obj)
-        const subObj = obj.children.filter(item => {
+        }) || {}
+        const subObj = obj.children && obj.children.filter(item => {
           return path.indexOf(item.uiPath) !== -1
-        })
-        console.log('subObj', subObj)
+        }) || []
         return [{
           url: obj.uiPath,
           title: obj.permissionName,

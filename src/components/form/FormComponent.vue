@@ -2,7 +2,7 @@
   <div class="component-form">
     <Form :label-width="80" ref="basicForm" :rules="ruleCustom" :model="formCustom">
       <FormItem :label="item.label" v-for="(item, index) in formProp" :key="index" :prop="item.key">
-        <Input v-if="['text', 'textarea', 'password'].includes(item.type)" :type="item.type" v-model="formCustom[item.key]" :placeholder="item.placeholder"></Input>
+        <Input v-if="['text', 'textarea', 'password'].includes(item.type)" :type="item.type" v-model="formCustom[item.key]" :placeholder="item.placeholder" :disabled="item.isDisabled"></Input>
 
         <TreeSelect v-if="item.type==='treeSelect'" :disabled="item.isDisabled" :ref="item.ref" v-model="formCustom[item.key]"
           :data="item.options"
@@ -11,7 +11,7 @@
           @on-change="(val)=>{if(item.onChange!=null){item.onChange(val,data,fromData,mData)}}">
         </TreeSelect>
 
-        <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="formCustom[item.key]" :placeholder="item.placeholder" @on-change="selectValue">
+        <Select v-if="item.type === 'select'" :multiple="item.isMultiple" v-model="formCustom[item.key]" :placeholder="item.placeholder" @on-change="selectValue" :disabled="item.isDisabled">
           <Option :value="subItem.value" v-for="(subItem, index) in item.options" :key="index">{{subItem.label}}</Option>
         </Select>
 

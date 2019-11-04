@@ -71,7 +71,7 @@ export default {
         },
         {
           title: '手机',
-          key: 'phone',
+          key: 'phoneNum',
           sortable: true
         },
         {
@@ -84,7 +84,7 @@ export default {
         },
         {
           title: '创建时间',
-          key: 'createtime'
+          key: 'createdTime'
         },{
           title: '操作',
           key: 'action',
@@ -149,6 +149,7 @@ export default {
       }).then(res => {
         const {organizationList,roleList,userList,count} = res
         this.data = userList.map(item => {
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
           item.roleName = item.roleIds && item.roleIds.map(item => {
             return roleList[item].roleName
           }).join(',')

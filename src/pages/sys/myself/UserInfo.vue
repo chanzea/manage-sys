@@ -11,15 +11,6 @@
         </div>
       </TabPane>
       <TabPane label="头像" name="avatar">头像</TabPane>
-      <TabPane label="修改密码" name="pwd">
-        <div class="reset-pwd-form">
-          <form-component ref="resetPwdForm" :formProp="resetPwdForm" :ruleCustom="ruleResetPwd" :formCustom="formResetPwd"></form-component>
-        </div>
-        <div class="btn-list">
-          <Button class="btn-list-item" type="primary" :loading="loading" :disabled="loading" @click="resetPwd">确定</Button>
-          <Button class="btn-list-item">取消</Button>
-        </div>
-      </TabPane>
     </Tabs>
   </div>
 </template>
@@ -27,8 +18,6 @@
 <script>
 import FormComponent from 'components/form/FormComponent.vue'
 import {
-  getListTree,
-  getRoleList,
   getUserInfo,
   UserUpdate
 } from 'api/user'
@@ -49,7 +38,7 @@ export default {
           key: 'enable'
         },{
           label: '所在组织',
-          type: 'treeSelect',
+          type: 'text',
           value: '',
           options: [],
           placeholder: '设置归属组织',
@@ -60,12 +49,12 @@ export default {
           isDisabled: true
         },{
           label: '系统角色',
-          type: 'select',
-          value: [],
-          options: [],
+          type: 'text',
+          value: '',
           isMultiple: true,
           placeholder: '系统角色',
-          key: 'roleIds'
+          key: 'roleIds',
+          isDisabled: true
         },{
           label: '姓名',
           type: 'text',
@@ -89,7 +78,8 @@ export default {
           type: 'text',
           value: '',
           placeholder: '登录名',
-          key: 'loginName'
+          key: 'loginName',
+          isDisabled: true
         },{
           label: '登录密码',
           type: 'password',
@@ -135,6 +125,7 @@ export default {
           value: '',
           placeholder: '常用联系邮箱',
           key: 'email',
+          isDisabled: true
         },{
           label: '婚姻状况',
           type: 'select',
@@ -172,67 +163,12 @@ export default {
         ]
       },
       formCustom: {},
-      user: {},
 
 
-      loading: false,
-      resetPwdForm: [{
-        label: '原密码',
-        type: 'password',
-        value: '',
-        placeholder: '请输入原密码',
-        key: 'originPassword'
-      },{
-        label: '新密码',
-        type: 'password',
-        value: '',
-        placeholder: '请输入新密码',
-        key: 'newPassword'
-      },{
-        label: '确认密码',
-        type: 'password',
-        value: '',
-        placeholder: '请再次输入新密码',
-        key: 'comfirmPassword'
-      }],
-
-      ruleResetPwd: {
-        originPassword: [{
-          required: true,
-          trigger: 'blur'
-        }],
-        newPassword: [{
-          required: true,
-          trigger: 'blur',
-          validator: (rule, value, callback) => {
-            if (!reg.test(value)) {
-              callback(new Error('要求至少8位数字加英文'))
-            } else {
-              callback()
-            }
-          }
-        }],
-        comfirmPassword: [{
-          required: true,
-          trigger: 'blur',
-          validator: (rule, value, callback) => {
-            if (!reg.test(value)) {
-              callback(new Error('要求至少8位数字加英文'))
-            } else {
-              if (value !== this.formResetPwd['newPassword']) {
-                callback(new Error('新密码输入不一致，请重新确认'))
-              } else {
-                callback()
-              }
-            }
-          }
-        }],
-      },
-      formResetPwd: {}
+      loading: false
     }
   },
   created () {
-    this.getRoleList()
     this.getUserInfo()
   },
   components: {
@@ -247,17 +183,20 @@ export default {
           userId
         }).then(res => {
           const {user, organizationList, roleList} = res
-          this.user = user
-          return this.getListTree()
-        }).then(data => {
-          // 页面渲染
           this.formProp.forEach(item => {
-            this.formCustom[item.key] = this.user[item.key]
+            this.$set(this.formCustom, item.key, user[item.key])
             if (item.type === 'switch') {
-              this.formCustom[item.key] = !!this.user[item.key]
+              this.$set(this.formCustom, item.key, !!user[item.key])
             }
-            if (item.type === 'treeSelect') {
-              this.formProp[1].options = this.formatTreeData(data, this.formCustom[item.key])
+            if (item.key === 'organizationIds' ) {
+              this.$set(this.formCustom, 'organizationIds', user['organizationIds'] ? user['organizationIds'].map(item => {
+                return organizationList[item].organizationName
+              }).join(',') : '未分组')
+            }
+            if (item.key === 'roleIds' ) {
+              this.$set(this.formCustom, 'roleIds', user['roleIds'] ? user['roleIds'].map(item => {
+                return roleList[item].roleName
+              }).join(',') : '暂无')
             }
           })
         })
@@ -266,68 +205,15 @@ export default {
     UserUpdate () {
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
-          this.formCustom.birthday = this.formCustom.birthday.Format('yyyy-MM-dd')
+          const userId = getMessage('userId')
+          this.formCustom.birthday = this.formCustom.birthday ?this.formCustom.birthday.Format('yyyy-MM-dd') : ''
           const params = Object.assign({}, this.formCustom, {
-            enable: this.formCustom.enable ? 1 : 0
+            enable: this.formCustom.enable ? 1 : 0,
+            userId
           })
           UserUpdate(params).then(res => {
             this.$Message.success('用户信息更新成功');
           })
-        }
-      })
-    },
-    // 获取角色列表
-    getRoleList () {
-      return new Promise((resolve) => {
-        getRoleList().then(res => {
-          this.formProp[2].options = res.list.map(item => {
-            item.value = item.id
-            item.label = item.roleName
-            return item
-          })
-          resolve()
-        })
-      })
-    },
-
-    // 获取组织树
-    getListTree () {
-      return new Promise((resolve) => {
-        getListTree().then(res => {
-          const { organization } = res
-          resolve(organization)
-        })
-      })
-    },
-
-    // 格式化数据
-    formatTreeData (item, selectArr) {
-      if (!item.children) {
-        item.selected = selectArr.includes(item.id)
-        item.checked = selectArr.includes(item.id)
-        item.title = item.organizationName
-        item.name = item.organizationName
-        return [item]
-      }
-      item.selected = selectArr.includes(item.id)
-      item.checked = selectArr.includes(item.id)
-      item.name = item.organizationName
-      item.title = item.organizationName
-      item.children.forEach(subItem => {
-        this.formatTreeData(subItem, selectArr)
-      })
-      return [item]
-    },
-
-    //重置密码
-    resetPwd () {
-      this.$refs['resetPwdForm'].$refs['basicForm'].validate((valid) => {
-        if (valid) {
-          console.log('重置密码')
-          this.loading = true
-          setTimeout(() => {
-            this.loading = false
-          }, 2000);
         }
       })
     }
