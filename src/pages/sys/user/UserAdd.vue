@@ -1,5 +1,6 @@
 <template>
   <div class="page-user-add">
+    {{formCustom}}
     <div class="user-add-content">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
       <div class="btn-list" v-if="!!userId">
@@ -24,6 +25,9 @@ import {
   UserAdd,
   UserUpdate
 } from 'api/user'
+import {
+  getMessage
+} from 'utils/tool.js'
 const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
 export default {
   name: 'UserAdd',
@@ -122,7 +126,7 @@ export default {
           type: 'text',
           value: '',
           placeholder: '常用联系邮箱',
-          key: 'email',
+          key: 'email'
         },{
           label: '婚姻状况',
           type: 'select',
@@ -197,6 +201,7 @@ export default {
   created () {
     this.userId = this.$route.query.userId || ''
     if (this.userId) {
+      this.init()
       this.getUserInfo()
     } else {
       this.getListTree()
@@ -204,6 +209,15 @@ export default {
     this.getRoleList()
   },
   methods: {
+    init () {
+      const _userId = getMessage('userId')  //当前登录用户ID 
+      const disabledData = ['organizationIds', 'roleIds', 'loginName', 'email']
+      this.formProp.forEach(item => {
+        if (this.userId === parseInt(_userId)) {
+          this.$set(item, 'isDisabled', disabledData.includes(item.key))
+        }
+      })
+    },
     // 获取用户信息
     getUserInfo () {
       return new Promise((resolve) => {
@@ -216,12 +230,14 @@ export default {
         }).then(data => {
           // 页面渲染
           this.formProp.forEach(item => {
+            if (item.type === 'treeSelect') {
+              const _data = this.formatTreeData(data, this.user[item.key])
+              console.log('data', _data)
+              this.$set(this.formProp[1], 'options', _data)
+            }
             this.$set(this.formCustom, item.key, this.user[item.key])
             if (item.type === 'switch') {
               this.$set(this.formCustom, item.key, !!this.user[item.key])
-            }
-            if (item.type === 'treeSelect') {
-              this.$set(this.formProp[1], 'options', this.formatTreeData(data, this.formCustom[item.key]))
             }
           })
         })
@@ -317,6 +333,7 @@ export default {
         return [item]
       }
       item.selected = selectArr.includes(item.id)
+      // item.selected = true
       item.checked = selectArr.includes(item.id)
       item.name = item.organizationName
       item.title = item.organizationName

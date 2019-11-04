@@ -221,11 +221,14 @@
         this.visible = !this.visible;
       },
       findSelected (val, data) {
+        console.log('data', data)
+        console.log('data', val)
         for (let i = 0; i < data.length; i++) {
           if (data[i][this.valField] == val) {
             data[i].selected = true;
             this.selected = data[i];
             this.selectedText = this.selected[this.textField].toString();
+            console.log('selectedText', this.selectedText)
             return;
           }
           if (data[i].children != null) {
@@ -239,6 +242,7 @@
     },
     watch: {
       value (newVal, oldVal) {
+        console.log('watch', this.value)
         this.unAllSelect();
         this.selected = null;
         this.findSelected(newVal, this.treeData);
