@@ -30,8 +30,6 @@
               <Input type="number" placeholder="积分" v-model="formItem.markPoint" />          
           </FormItem>
         </div>
-        
-
         <FormItem label="审核任务积分:" prop="reviewPoint">
           <div class="task-mark">
             <span style="margin-right:12px">完成任务累计</span>
@@ -43,6 +41,15 @@
             ></Input>
           </div>
         </FormItem>
+
+        <FormItem label="审核比例:" prop="reviewScale">
+          <Input
+            type="text"
+            v-model="formItem.reviewScale"
+            placeholder="比例"
+          ></Input>
+        </FormItem>
+
         <FormItem label="任务模版:" prop="taskType">
           <Select v-model="formItem.taskType">
             <Option :key="item.id" v-for=" (item) in taskType" :value="item.id">{{item.label}}</Option>
@@ -92,6 +99,7 @@ export default {
         markPoint: null,
         reviewPoint: null,
         dataSetId: null,
+        reviewScale: null,
         markUserIds: [],
         reviewUserIds: []
       },
