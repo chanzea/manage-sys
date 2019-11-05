@@ -130,7 +130,8 @@ export default {
           pageSize: this.page.pageSize,
           pageNum: this.page.pageNum
         },
-        taskItemStatus:this.taskItemStatus
+        taskItemStatus:this.taskItemStatus,
+        tag: 'mark',
       }).then(res => {
         console.log('res', res)
       })

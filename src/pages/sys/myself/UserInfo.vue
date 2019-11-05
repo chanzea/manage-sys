@@ -4,6 +4,7 @@
       <TabPane label="基本信息" name="info">
         <div class="user-form">
           <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
+          <span class="user-point" v-if="user.point">{{user.point}}分</span>
         </div>
         <div class="btn-list">
           <Button class="btn-list-item" type="primary" :loading="loading" @click="UserUpdate">保存</Button>
@@ -163,7 +164,7 @@ export default {
         ]
       },
       formCustom: {},
-
+      user: {},
 
       loading: false
     }
@@ -183,6 +184,7 @@ export default {
           userId
         }).then(res => {
           const {user, organizationList, roleList} = res
+          this.user = user
           this.formProp.forEach(item => {
             this.$set(this.formCustom, item.key, user[item.key])
             if (item.type === 'switch') {
@@ -232,6 +234,17 @@ export default {
   }
   .user-form {
     width: 550px;
+    position: relative;
+    .user-point {
+      position: absolute;
+      top: 8px;
+      left: 160px;
+      font-weight: bold;
+      &::before {
+        content: '积分:';
+        margin-right: 12px;
+      }
+    }
   }
   .reset-pwd-form {
     width: 320px;

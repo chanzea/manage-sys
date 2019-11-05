@@ -167,7 +167,6 @@
         this.$emit('on-change', this.selected);
       },
       checkChange (checked) {
-        console.log('checked', checked)
         if (checked == null || checked.length <= 0) {
           this.selected = null;
           this.selectedText = '';
@@ -183,8 +182,6 @@
           }
           this.selectedText = textArr.join(',');
           this.selected = checked;
-          console.log('valArr', valArr)
-          console.log('this.selected', this.selected)
           this.$emit('input', valArr);
         }
         this.$emit('on-change', this.selected);
@@ -221,15 +218,11 @@
         this.visible = !this.visible;
       },
       findSelected (val, data) {
-        console.log('data', data)
-        console.log('data', val)
         for (let i = 0; i < data.length; i++) {
-          if (data[i][this.valField] == val) {
+          if (val.includes(data[i][this.valField])) {
             data[i].selected = true;
             this.selected = data[i];
-            this.selectedText = this.selected[this.textField].toString();
-            console.log('selectedText', this.selectedText)
-            return;
+            this.selectedText = this.selectedText += `${this.selected[this.textField].toString()} `.replace(/\s+/g,",");
           }
           if (data[i].children != null) {
             this.findSelected(val, data[i].children);
@@ -242,9 +235,9 @@
     },
     watch: {
       value (newVal, oldVal) {
-        console.log('watch', this.value)
         this.unAllSelect();
         this.selected = null;
+        this.selectedText = ''
         this.findSelected(newVal, this.treeData);
       }
     },

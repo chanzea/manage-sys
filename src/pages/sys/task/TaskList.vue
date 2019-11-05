@@ -26,7 +26,13 @@
             <span class="opt-item" @click="show(row)">查看</span>
             <span class="opt-item" @click="jumpToPage('/task/itembank')">题库</span>
             <span class="opt-item">编辑</span>
-            <span class="opt-item">删除</span>
+            <Poptip
+              confirm
+              title="确认删除该任务?"
+              @on-ok="onDelete(row)"
+              @on-cancel="">
+              <span class="opt-item">删除</span>
+          </Poptip>
             <span class="opt-item" @click="offLine(row)">下线</span>
             <span class="opt-item" @click="online(row)">上线</span>
           </template>
@@ -185,6 +191,11 @@ export default {
       this.page.pageSize = pageSize
       this.getTasklistInfo()
     },
+    
+    // 删除任务
+    onDelete (row) {
+      console.log('row', row)
+    }
 
   }
 };
@@ -212,4 +223,10 @@ export default {
     }
   }
 }
+</style>
+
+<style lang="scss">
+  .ivu-poptip-body {
+    display: flex;
+  }
 </style>
