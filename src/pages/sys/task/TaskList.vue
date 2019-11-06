@@ -25,7 +25,12 @@
         <Table border :columns="columns" :data="data">
           <template slot-scope="{ row, index }" slot="action">
             <span class="opt-item" @click="show(row)">查看</span>
+<<<<<<< HEAD
             <span class="opt-item" @click="jumpToItembank('/task/itembank', row)">题库</span>
+=======
+            <span class="opt-item" @click="jumpToPage('/task/itembank')">题库</span>
+            <span class="opt-item">编辑</span>
+>>>>>>> 447fa585ad1f6061146dd8af56c649e0985203cd
             <Poptip
               confirm
               title="确认删除该任务?"

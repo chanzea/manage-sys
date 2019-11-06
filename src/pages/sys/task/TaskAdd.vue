@@ -42,7 +42,6 @@
             ></Input>
           </div>
         </FormItem>
-
         <FormItem label="审核比例:" prop="reviewScale" class="task-item">
           <Input
             type="number"
