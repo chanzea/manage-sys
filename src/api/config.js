@@ -44,6 +44,7 @@ export const api = (url, method, data = {}, contentType = 'application/json;char
           content: data.message || '系统错误',
           okText: '确定',
         })
+        reject()
       }
     }).catch(err => {
       console.log('err', err)

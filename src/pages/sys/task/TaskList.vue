@@ -1,5 +1,6 @@
 <template>
   <div class="page-task-list">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="content-header">
       <div class="content-header-form">
           <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
@@ -24,9 +25,14 @@
         <Table border :columns="columns" :data="data">
           <template slot-scope="{ row, index }" slot="action">
             <span class="opt-item" @click="show(row)">查看</span>
-            <span class="opt-item" @click="jumpToPage('/task/itembank')">题库</span>
-            <span class="opt-item">编辑</span>
-            <span class="opt-item">删除</span>
+            <span class="opt-item" @click="jumpToItembank('/task/itembank', row)">题库</span>
+            <Poptip
+              confirm
+              title="确认删除该任务?"
+              @on-ok="onDelete(row)"
+              @on-cancel="">
+              <span class="opt-item">删除</span>
+          </Poptip>
             <span class="opt-item" @click="offLine(row)">下线</span>
             <span class="opt-item" @click="online(row)">上线</span>
           </template>
@@ -53,6 +59,7 @@ export default {
   name: "TaskList",
   data() {
     return {
+      fullLoading: false,
       page: {
         pageNum: 1,
         pageSize: 10
@@ -130,6 +137,7 @@ export default {
 
   methods: {
     getTasklistInfo() {
+      this.fullLoading = true
       let page = this.page;
       getTaskList({ page, tag: 'mark' }).then(res => {
         const { taskList, dataSetList, userList } = res
@@ -140,19 +148,33 @@ export default {
           return item
         })
         this.total = res.count;
-      });
+        this.fullLoading = false
+      }).catch(() => {
+        this.fullLoading = false
+      })
     },
-
+    
+    // 新建任务
     jumpToPage(path) {
       this.$router.push({
         path
+      })
+    },
+    
+    // 跳转到题库
+    jumpToItembank(path, row) {
+      this.$router.push({
+        path,
+        query: {
+          taskId: row.id
+        }
       })
     },
 
     //查看
     show(row) {
       this.$router.push({
-        path: "/task/update",
+        path: "/task/add",
         query: {
           id: row.id
         }
@@ -185,6 +207,11 @@ export default {
       this.page.pageSize = pageSize
       this.getTasklistInfo()
     },
+    
+    // 删除任务
+    onDelete (row) {
+      console.log('row', row)
+    }
 
   }
 };
@@ -212,4 +239,10 @@ export default {
     }
   }
 }
+</style>
+
+<style lang="scss">
+  .ivu-poptip-body {
+    display: flex;
+  }
 </style>

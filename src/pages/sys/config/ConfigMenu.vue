@@ -17,7 +17,7 @@ import {
   permissonUpdate,
   permissonDelete
 } from 'api/sysConfig';
-import ConfigRoleVue from './ConfigRole.vue';
+// import ConfigRoleVue from './ConfigRole.vue';
 export default {
   components:{
     DeletePoptip
@@ -201,6 +201,10 @@ export default {
         })
         return;
       }
+      const parentKey = root.find(el => el === node).parent;
+      const parent = root.find(el => el.nodeKey === parentKey).node;
+      const index = parent.children.indexOf(data);
+      parent.children.splice(index, 1);
       
     },
     edit(root, node, data) {

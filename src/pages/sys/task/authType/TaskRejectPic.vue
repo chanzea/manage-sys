@@ -117,13 +117,6 @@ export default {
       }).then(res => {
         console.log('res', res)
         const {taskItemList, dataRecordList} = res
-        // this.taskItemList = taskItemList ? taskItemList.map(item => {
-        //   item.src = dataRecordList[item.dataRecordId].thumbnailUrl
-        //   item.isSelected = false
-        //   item.tag = item.taskData
-        //   return item
-        // }) : []
-        // this.isNext = !!taskItemList
         dataRecordList && Object.keys(dataRecordList).forEach(item => {
           dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item); 
           this.dataRecordList.push(dataRecordList[item])

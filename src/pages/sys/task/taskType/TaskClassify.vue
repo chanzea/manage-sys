@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="task-classify-content-opt" v-if="!viewOnly">
-        <Button class="opt-btn" type="primary" @click="isShowModal = true" :disabled="!isSelected">批量添加标注</Button>
+        <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
       </div>
@@ -116,7 +116,6 @@ export default {
     } else {
       this.taskItemAllotMark()
     }
-    this.tagClassifyList(taskId)    
   },
   computed: {
     isSelected () {
@@ -151,8 +150,6 @@ export default {
     },
     // 添加标注
     confirm () {
-      // 获取标签
-      this.tagClassifyList(this.$route.query.id)
       this.taskItemList.forEach(item => {
         if(this.selectedTaskItem.includes(item.id)) {
           item.tag = this.formCustom.name
@@ -202,11 +199,11 @@ export default {
     },
 
     // 获取分类标签
-    tagClassifyList (taskId) {
+    tagClassifyList () {
+      const taskId = this.$route.query.id;
       tagClassifyList({
         taskId
       }).then(res => {
-        console.log('tagClassifyList', res)
         const { list } = res
         this.formProp[0].options = list ? list.map(item => {
           item.value = item.tagName;
@@ -214,6 +211,7 @@ export default {
           return item
         }) : []
       })
+      this.isShowModal = true
     },
 
     taskItemDetail (taskId, taskItemId) {
@@ -232,7 +230,7 @@ export default {
         }) : []
         taskItemList && taskItemList.forEach(item => {
           this.reviewInfo = {
-            name: userList[item.reviewUserId].userName,
+            name: item.reviewUserId !== 0 ? userList[item.reviewUserId].userName : '',
             advise: item.reviewAdvise
           }
         })

@@ -94,13 +94,29 @@ export async function taskItemReview(params) {
     return data
 }
 
-
+// 添加标签
 export async function tagClassifyAdd(params) {
     const data = await api(`/tag/classify/add`, 'post', params)
     return data
 }
 
+// 获取题目详情
 export async function taskItemDetail(params) {
     const data = await api(`/taskItem/detail`, 'post', params)
     return data
 }
+
+// 获取任务详情
+export async function taskDetail(params) {
+    const data = await api(`/task/get`, 'post', params)
+    return data
+}
+
+
+// 更新任务
+export async function taskUpdate(params) {
+    const data = await api(`/task/update`, 'post', params)
+    return data
+}
+
+

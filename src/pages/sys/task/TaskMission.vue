@@ -23,28 +23,9 @@
 import TablePage from 'components/tablePage.vue';
 import { getTaskList, taskItemList } from "@/api/task";
 import returnMinxin from "./returnMinxin"
-const taskType = {
-  '1': {
-    label: '分类任务',
-    type: 'Classify'
-  }, 
-  '2': {
-    label: '标注任务',
-    type: 'Mark'
-  },
-  '3': {
-    label: '图片剔除任务',
-    type: 'RejectPic'
-  },
-  '4': {
-    label: '文件夹剔除任务',
-    type: 'RejectFolder'
-  },
-  '5': {
-    label: '分割任务',
-    type: 'Lasso'
-  }
-}
+import {
+  TASKTYPE
+} from 'utils/tool.js'
 export default {
   name: 'TaskMission',
   components: {
@@ -59,7 +40,6 @@ export default {
         dateValue: ''
       },
       userlist:[],
-      taskType: taskType,
       currentTab: 'taskMission',
       tabLists: [{
         label: (h) => {
@@ -158,7 +138,7 @@ export default {
         const { taskList, count } = res
         this.data = taskList ? taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
-          item.taskTypeDis = taskType[item.taskType].label
+          item.taskTypeDis = TASKTYPE[item.taskType].label
           return item
         }) : []
         this.total = count;
@@ -229,7 +209,7 @@ export default {
           query: {
             id: params.row.taskId,
             taskItemId: params.row.id,
-            type: taskType[this.taskList[params.row.taskId].taskType].type,
+            type: TASKTYPE[this.taskList[params.row.taskId].taskType].type,
             viewOnly:  this.currentTab == "taskComplete",
           }
         }) 
@@ -241,7 +221,7 @@ export default {
         path: '/task/type',
         query: {
           id: params.row.id,
-          type: taskType[params.row.taskType].type
+          type: TASKTYPE[params.row.taskType].type
         }
       })
     },

@@ -122,14 +122,6 @@ const routes = [
             name: '新建任务',
             id: 33,
           },{
-            path: 'update',
-            component: TaskAdd,
-            name: '查看任务',
-            id: 33,
-            meta: {
-              isUpdate: true
-            }
-          },{
             path: 'mission',
             component: TaskMission,
             name: '任务大厅',

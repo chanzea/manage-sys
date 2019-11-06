@@ -1,10 +1,9 @@
 <template>
   <div class="page-task-add">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="task-add-content">
+      {{formItem}}
       <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="100">
-        <!-- <FormItem label="任务编号:" prop="taskId">
-          <Input v-model="formItem.taskId" placeholder="编号"></Input>
-        </FormItem> -->
         <FormItem label="任务名称:" prop="taskName">
           <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
         </FormItem>
@@ -21,17 +20,17 @@
             <!-- <div class="task-mark"> -->
               <span style="margin-right:12px">按</span>
               <Select class="task-mark-select" v-model="formItem.markPointType">
-                <Option value="1">每一题</Option>
-                <Option value="2">每个标注</Option>
+                <Option :value="1">每一题</Option>
+                <Option :value="2">每个标注</Option>
               </Select>
               <span style="margin:0 12px">积分</span>
           </FormItem>
           <FormItem prop="markPoint" inline="true" label="每次积分:">
-              <Input type="number" placeholder="积分" v-model="formItem.markPoint" />          
+            <div class="task-mark">
+              <Input type="number" class="task-mark-input" placeholder="积分" v-model="formItem.markPoint" />          
+            </div>
           </FormItem>
         </div>
-        
-
         <FormItem label="审核任务积分:" prop="reviewPoint">
           <div class="task-mark">
             <span style="margin-right:12px">完成任务累计</span>
@@ -43,6 +42,16 @@
             ></Input>
           </div>
         </FormItem>
+
+        <FormItem label="审核比例:" prop="reviewScale" class="task-item">
+          <Input
+            type="number"
+            class="task-item-input"
+            v-model="formItem.reviewScale"
+            placeholder="比例"
+          ></Input>%
+        </FormItem>
+
         <FormItem label="任务模版:" prop="taskType">
           <Select v-model="formItem.taskType">
             <Option :key="item.id" v-for=" (item) in taskType" :value="item.id">{{item.label}}</Option>
@@ -66,7 +75,7 @@
       </Form>
       <div class="btn-list">
         <Button class="btn-list-item" type="primary" :loading="loading" @click="submit">提交</Button>
-        <Button class="btn-list-item">取消</Button>
+        <Button class="btn-list-item" @click="cancel">返回</Button>
       </div>
     </div>
   </div>
@@ -74,7 +83,7 @@
 
 <script>
 import { getUserList } from "@/api/user";
-import { taskAdd } from "@/api/task"
+import { taskAdd, taskDetail, taskUpdate } from "@/api/task"
 import {getDatasetList} from "@/api/data"
 // import { }
 
@@ -82,8 +91,8 @@ export default {
   name: "TaskAdd",
   data() {
     return {
+      fullLoading: false,
       loading: false,
-      isUpdate: false,
       formItem: {
         taskName: null,
         taskRemark: null,
@@ -92,8 +101,9 @@ export default {
         markPoint: null,
         reviewPoint: null,
         dataSetId: null,
-        markUserIds: [],
-        reviewUserIds: []
+        reviewScale: null,
+        markUserIds: null,
+        reviewUserIds: null
       },
 
       dataSetList: [],//数据源
@@ -122,13 +132,85 @@ export default {
            id: 5
          }
       },
-
+      taskId: '',
       ruleValidate: {
         taskName: [
           {
             required: true,
-            message: "The name cannot be empty",
+            message: "请输入任务名称",
             trigger: "blur"
+          }
+        ],
+        taskRemark: [
+          {
+            required: true,
+            message: "请输入任务描述",
+            trigger: "blur"
+          }
+        ],
+        // markPointType: [
+        //   {
+        //     required: true,
+        //     message: "请选择标注任务积分",
+        //     trigger: 'change'
+        //   }
+        // ],
+        markPoint: [
+          {
+            required: true,
+            message: "请输入积分",
+            trigger: "blur"
+          }
+        ],
+        reviewPoint: [
+          {
+            required: true,
+            message: "请输入审核任务积分",
+            trigger: "blur"
+          }
+        ],
+        // taskType: [
+        //   {
+        //     required: true,
+        //     message: "请选择任务模版",
+        //     trigger: "change"
+        //   }
+        // ],
+        // dataSetId: [
+        //   {
+        //     required: true,
+        //     message: "请选择数据源",
+        //     trigger: "change"
+        //   }
+        // ],
+        // markUserIds: [
+        //   {
+        //     required: true,
+        //     message: "请选择标注人员",
+        //     trigger: "change"
+        //   }
+        // ],
+        // reviewUserIds: [
+        //   {
+        //     required: true,
+        //     message: "请选择审核人员",
+        //     trigger: "change"
+        //   }
+        // ],
+        reviewScale: [
+          {
+            trigger: "blur",
+            validator (rule, value, callback) {
+              if (!value) {
+                callback(new Error('请输入审核比例'))
+              } else {
+                if (value < 0 || value > 100) {
+                  callback(new Error('请输入0 - 100之间的数字'))
+                } else {
+                  callback()
+                }
+              }
+            }
           }
         ]
       }
@@ -136,37 +218,60 @@ export default {
   },
 
   created() {
-    this.isUpdate = this.$route.meta.isUpdate;
+    this.taskId = this.$route.query.id || ''
+    document.title = this.taskId ? 'Tagging - 编辑任务' : 'Tagging - 新建任务'
+    this.taskId && this.taskDetail(this.taskId)
     this.getRenderData();
   },
 
   watch: {
-    '$route.path': function() {
-      this.isUpdate = this.$route.meta.isUpdate;
-    }
+
   },
 
   computed: {
-    // authorList: function() {
-    //   return this.userList.filter( i => i.)
-    // }
+
   },
 
   methods: {
+    // 获取任务详情
+    taskDetail (taskId) {
+      this.fullLoading = true
+      taskDetail({
+        taskId
+      }).then(res => {
+        console.log('taskDetail ===> res' ,res)
+        this.formItem = res;
+        this.fullLoading = false
+      }).catch(() => {
+        this.fullLoading = false
+      })
+    },
+
     submit() {
       this.$refs["taskForm"].validate(valid => {
         if (valid) {
           this.loading = true;
           let params = this.formItem;
           // params = {"taskName":"test","taskRemark":"test","taskType":1,"markPointType":"1","markPoint":"100","reviewPoint":"1000","dataSetId":17,"markUserIds":[7,8],"reviewUserIds":[9,10]};
-          // params.tokenId = sessionStorage.getItem("tokenId")
-          taskAdd(params).then(res => {
-            this.$Message.success('添加成功');
-            this.$router.push('/task/mission');
-            this.loading = false;
-          }).catch(() => {
-            this.loading = false
-          })
+          if (this.taskId) {
+            Object.assign(params, {taskId: this.taskId})
+            taskUpdate(params).then(res => {
+              this.$Message.success('更新成功');
+              this.$router.push('/task/mission');
+              this.loading = false;
+            }).catch(() => {
+              console.log('dsds')
+              this.loading = false
+            })
+          } else {
+            taskAdd(params).then(res => {
+              this.$Message.success('添加成功');
+              this.$router.push('/task/mission');
+              this.loading = false;
+            }).catch(() => {
+              this.loading = false
+            })
+          }
         }
       });
     },
@@ -183,11 +288,11 @@ export default {
         console.log(err)
       })
     },
-
-    //获取
-    getTaskInfo() {
-      
-    }
+    
+    // 返回
+    cancel () {
+      this.$router.go(-1)
+    },
   }
 };
 </script>
@@ -211,6 +316,15 @@ export default {
           top: 7px;
           right: -20px;
         }
+      }
+    }
+    .task-item {
+      /deep/ .ivu-form-item-content {
+        display: flex !important;
+      }
+      &-input {
+        width: 85px;
+        margin-right: 4px;
       }
     }
     .btn-list {

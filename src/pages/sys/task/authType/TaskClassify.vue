@@ -31,15 +31,15 @@
       </div>
       <div v-if = "!noMore">
           <div style="margin: 10px 0;">
-            <RadioGroup v-model="taskItemStatus">
-                <Radio  label="5">通过</Radio>
-                <Radio  label="3">不通过</Radio>
+            <RadioGroup v-model="taskItemStatus" :disabled="viewOnly">
+                <Radio :disabled="viewOnly" label="5">通过</Radio>
+                <Radio :disabled="viewOnly" label="3">不通过</Radio>
             </RadioGroup>
           </div>
           
           <Input v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
 
-          <div class="m_actionBtn">
+          <div class="m_actionBtn" v-if="!viewOnly">
             <Button class="opt-btn" type="primary" @click="submit">提交</Button>
             <Button v-if="!isReturnItem" class="opt-btn" type="primary" @click="submit(true)" :disabled="noMore">下一题</Button>
             <!-- <Button class="opt-btn" type="primary" >返回审核大厅</Button> -->
@@ -90,7 +90,8 @@ export default {
         }
       ],
       formCustom: {},
-      isNext: false //是否可点击下一题
+      isNext: false,//是否可点击下一题
+      viewOnly: false, //查看详情
     }
   },
   components: {
@@ -99,6 +100,7 @@ export default {
   created() {
     const taskId = this.$route.query.id
     const taskItemId = this.$route.query.taskItemId
+    this.viewOnly = this.$route.query.viewOnly;
     // 当前存在 taskItemId ，返工任务
     if (taskItemId) {
       this.taskItemDetail(taskId, taskItemId)
@@ -145,7 +147,10 @@ export default {
         taskItemId
       }).then(res => {
         console.log('res', res)
-        const {taskItemList, dataRecordList} = res
+        const {taskItemList, dataRecordList} = res;
+        if(this.viewOnly && taskItemList.length > 0) {
+          this.taskItemReviewAdvise = taskItemList[0].reviewAdvise
+        }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false

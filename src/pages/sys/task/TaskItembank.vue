@@ -1,5 +1,6 @@
 <template>
   <div class="page-task-ltembank">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
@@ -19,6 +20,9 @@
 <script>
 import { taskItemList } from "api/task.js";
 import TablePage from 'components/tablePage.vue';
+import {
+  TASKTYPE
+} from 'utils/tool.js'
 const taskItemStatusData = {
   '0': '待分发',
   '1': '待标注',
@@ -34,6 +38,7 @@ export default {
   },
   data () {
     return {
+      fullLoading: false,
       searchValue: '',
       status: '',
       options: [{
@@ -53,27 +58,24 @@ export default {
           align: 'center'
         },
         {
-          title: '图片编号',
-          key: 'picId',
-          sortable: true
-        },
-        {
-          title: '图片名称',
-          key: 'picName'
-        },
-        {
-          title: '任务编号',
+          title: '题目编号',
+          key: 'id'
+        },{
+          title: '所属任务编号',
           key: 'taskId'
         },{
-          title: '任务名称',
+          title: '所属任务名称',
           key: 'taskName'
+        },{
+          title: '所属任务类型',
+          key: 'taskTypeDis'
         },
         {
           title: '标注人员',
-          key: 'marker'
+          key: 'markUserName'
         },{
           title: '审核人员',
-          key: 'auditor'
+          key: 'reviewUserName'
         },{
           title: '状态',
           key: 'status'
@@ -100,23 +102,13 @@ export default {
           }
         }
       ],
-      data: [
-        {
-          picId: 'QD0001',
-          picName: '任务拉框',
-          taskId: 'QD0001',
-          taskName: '任务001',
-          marker: '张三',
-          auditor: '王二',
-          status: '完成'
-        },
-      ],
+      data: [],
       page: {
         pageNum: 1,
-        pageSize: 20
+        pageSize: 10
       },
       taskItemStatus: '', //状态
-      total: null
+      total: null,
     }
   },
   created() {
@@ -125,14 +117,29 @@ export default {
   methods: {
     // 获取题库列表
     taskItemList () {
+      this.fullLoading = true
       taskItemList({
         page: {
           pageSize: this.page.pageSize,
           pageNum: this.page.pageNum
         },
-        taskItemStatus:this.taskItemStatus
+        taskId: this.$route.query.taskId || ''
       }).then(res => {
         console.log('res', res)
+        const {count, taskItemList, taskList, userList} = res
+        this.data = taskItemList.map(item => {
+          item.taskName = taskList[item.taskId].taskName;
+          item.taskTypeDis = TASKTYPE[taskList[item.taskId].taskType].label;
+          item.taskType = taskList[item.taskId].taskType;
+          item.status = taskItemStatusData[item.taskItemType];
+          item.markUserName = item.markUserId !== 0 ? userList[item.markUserId].userName : '暂无';
+          item.reviewUserName = item.reviewUserId !== 0 ? userList[item.reviewUserId].userName : '暂无';
+          return item
+        })
+        this.total = count
+        this.fullLoading = false
+      }).catch(() => {
+        this.fullLoading = false
       })
     },
     changePage (page) {
@@ -145,8 +152,18 @@ export default {
       this.taskItemList()
     },
 
+    // 查看详情
     show (params) {
-
+      console.log('params', params)
+      this.$router.push({
+        path: '/task/type',
+        query: {
+          id: params.row.taskId,
+          taskItemId: params.row.id,
+          type: TASKTYPE[params.row.taskType].type,
+          viewOnly: true,
+        }
+      })
     },
   },
 }

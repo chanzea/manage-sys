@@ -1,8 +1,8 @@
 <template>
   <div class="page-user-add">
-    {{formCustom}}
     <div class="user-add-content">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
+      <span class="user-point" v-if="user.point !==''">{{user.point}}分</span>
       <div class="btn-list" v-if="!!userId">
         <Button class="btn-list-item" type="primary" @click="UserUpdate">保存</Button>
         <Button class="btn-list-item">返回</Button>
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       userId: '',
+      user: {},
       formProp: [
         {
           label: '状态',
@@ -200,6 +201,7 @@ export default {
   },
   created () {
     this.userId = this.$route.query.userId || ''
+    console.log('Ces ', this.$route.query.usd)
     if (this.userId) {
       this.init()
       this.getUserInfo()
@@ -351,6 +353,17 @@ export default {
   .user-add-content {
     width: 510px;
     padding: 8px;
+    position: relative;
+    .user-point {
+      position: absolute;
+      top: 16px;
+      left: 160px;
+      font-weight: bold;
+      &::before {
+        content: '积分:';
+        margin-right: 12px;
+      }
+    }
     .btn-list {
       padding-left: 80px;
       display: flex;

@@ -12,6 +12,9 @@
 </template>
 
 <script>
+
+import {getTaskList} from '@/api/task'
+
 import TablePage from 'components/tablePage.vue';
 
 export default {
@@ -80,6 +83,11 @@ export default {
           }
         }
       ],
+
+      page: {
+        pageNum: 1,
+        pageSize: 10
+      },
       data: [
         {
           taskId: 'QD0001',
@@ -93,6 +101,30 @@ export default {
         },
       ]
     }
+  },
+
+  created(){
+    this.getTaskList();
+  },
+
+  methods: {
+    getTaskList: function() {
+      let page = this.page;
+      let params = { page, taskStatus: -3 }
+      getTaskList(params).then( res => {
+        let {dataSetList, taskList, userList} = res;
+      })
+    },
+
+    changePage (page) {
+      this.page.pageNum = page
+      this.getTaskList()
+    },
+
+    changePageSize (pageSize) {
+      this.page.pageSize = pageSize
+      this.getTaskList()
+    },
   }
 }
 </script>

@@ -1,25 +1,5 @@
-let taskTypeMap = {
-    '1': {
-      label: '分类任务',
-      type: 'Classify'
-    }, 
-    '2': {
-      label: '标注任务',
-      type: 'Mark'
-    },
-    '3': {
-      label: '图片剔除任务',
-      type: 'RejectPic'
-    },
-    '4': {
-      label: '文件夹剔除任务',
-      type: 'RejectFolder'
-    },
-    '5': {
-      label: '分割任务',
-      type: 'Lasso'
-    }
-  }
+
+import { TASKTYPE } from 'utils/tool.js'
 
 const mixin = {
     data: function () {
@@ -61,7 +41,7 @@ const mixin = {
                         // this.taskList[params.row.taskId]
                         let type;
                         if(this.taskList[params.row.taskId]) {
-                            type = taskTypeMap[this.taskList[params.row.taskId].taskType].label;
+                            type = TASKTYPE[this.taskList[params.row.taskId].taskType].label;
                         } else {
                             type = ""
                         }
