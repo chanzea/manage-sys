@@ -37,32 +37,11 @@ export default {
           sortable: true
         },
         {
-          title: '任务名称',
-          key: 'taskName'
+          title: '数据源编号',
+          key: ''
         },
         {
-          title: '创建人',
-          key: 'creator'
-        },
-        {
-          title: '创建时间',
-          key: 'createtime'
-        },
-        {
-          title: '数量',
-          key: 'count'
-        },
-        {
-          title: '待标注',
-          key: 'mark'
-        },{
-          title: '待审核',
-          key: 'verify'
-        },{
-          title: '状态',
-          key: 'status'
-        },{
-          title: '操作',
+          title: '下载数据',
           key: 'action',
           width: 260,
           align: 'center',
