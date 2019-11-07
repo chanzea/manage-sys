@@ -30,6 +30,15 @@ export async function fileUpload(params) {
 }
 
 /**
+ * 上传文件
+ * @param {Obiect} params 
+ */
+export async function fileMerge(params) {
+  const data = await api(`/file/mergeFiles`, 'get', params)
+  return data
+} 
+
+/**
  * 新建源数据
  * @param {Obiect} params 
  */

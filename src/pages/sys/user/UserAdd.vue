@@ -2,11 +2,7 @@
   <div class="page-user-add">
     <div class="user-add-content">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
-<<<<<<< HEAD
       <span class="user-point" v-if="user.point !==''">{{user.point}}分</span>
-=======
-      <span class="user-point" v-if="user.point">{{user.point}}分</span>
->>>>>>> 447fa585ad1f6061146dd8af56c649e0985203cd
       <div class="btn-list" v-if="!!userId">
         <Button class="btn-list-item" type="primary" @click="UserUpdate">保存</Button>
         <Button class="btn-list-item">返回</Button>
