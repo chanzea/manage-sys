@@ -42,6 +42,7 @@ const ConfigMenu = resolve => require(['pages/sys/config/ConfigMenu'], resolve);
 
 //ps模块
 const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
+const PsDraw2 = resolve => require(['pages/sys/ps/ps1'], resolve);
 
 // 消息中心
 const MyselfPage = resolve => require(['pages/sys/myself/myself'], resolve);
@@ -223,6 +224,11 @@ const routes = [
     name: '登录',
     component: LoginPage
   },
+  { 
+    path: '/psdrawtool',
+    component: PsDraw2,
+    name: '标记插件',
+  }, 
   { path: '*', redirect: '/404', hidden: true }
 ];
 
