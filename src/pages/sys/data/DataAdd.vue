@@ -125,6 +125,10 @@ export default {
             console.log('res.chunkTotal', res.chunkTotal)
             _this.chunkUpload(0, 1, res.chunkTotal, file, res.fileId)
           } else {
+            const form = new FormData();
+            form.append('file', file);
+            form.append('fileId', res.fileId)
+            form.append('chunkNum', res.startChunkNumber)
             fileUpload(form).then(res => {
               _this.fileName.push(file.name)
             })
@@ -135,19 +139,22 @@ export default {
 
     // 分块上传
     chunkUpload (start, startChunkNumber, chunkTotal, file, fileId) {
+      const _this = this
       const fileSize = file.size
       console.log('文件大小', file.size)
       const chunkThreshold = 1024 * 1024; //块大小
       let end = start + chunkThreshold //
       let blob = null //二进制对象
+      console.log(`第${startChunkNumber}次`, 'start:', start)
       // 如果超出文件大小
       if (end > fileSize) {
-        blob = file.slice(start);
+        console.log('')
+        blob = file.slice(start, fileSize, file.type);
       } else {
-        blob = file.slice(start,end);
+        console.log(`第${startChunkNumber}次`, 'end大小:', end)
+        blob = file.slice(start, end, file.type);
       }
-      console.log(`第${startChunkNumber}次`, 'start:', start)
-      console.log(`第${startChunkNumber}次`, 'end大小:', end)
+      console.log('blob', blob)
       const form = new FormData();
       form.append('file', blob);
       form.append('fileId', fileId)
@@ -156,13 +163,14 @@ export default {
         if (startChunkNumber < chunkTotal) {
           this.chunkUpload(end, ++startChunkNumber, chunkTotal, file, fileId)
         } else {
-          console.log({
+          console.log('完成', {
             file_id: fileId
           })
           fileMerge({
             file_id: fileId
           }).then(res => {
             console.log('fileMerge', res)
+            _this.fileName.push(file.name)
           })
         }
       })

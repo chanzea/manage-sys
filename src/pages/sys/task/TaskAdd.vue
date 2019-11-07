@@ -279,6 +279,7 @@ export default {
     },
 
     submit() {
+      console.log('执行')
       this.$refs["taskForm"].validate(valid => {
         if (valid) {
           this.loading = true;
