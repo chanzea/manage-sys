@@ -2,7 +2,6 @@
   <div class="page-task-add">
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="task-add-content">
-      {{formItem}}
       <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="100">
         <FormItem label="任务名称:" prop="taskName">
           <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
@@ -42,6 +41,7 @@
             ></Input>
           </div>
         </FormItem>
+
         <FormItem label="审核比例:" prop="reviewScale" class="task-item">
           <Input
             type="number"
@@ -50,7 +50,6 @@
             placeholder="比例"
           ></Input>%
         </FormItem>
-
         <FormItem label="任务模版:" prop="taskType">
           <Select v-model="formItem.taskType">
             <Option :key="item.id" v-for=" (item) in taskType" :value="item.id">{{item.label}}</Option>
@@ -58,7 +57,7 @@
         </FormItem>
         <FormItem label="数据源:" prop="dataSetId">
           <Select v-model="formItem.dataSetId" placeholder="选择数据源">
-            <Option  v-for=" item in dataSetList" :key="item.id"  :value="item.id">{{item.folderName}}({{item.folderDesc}})</Option>
+            <Option v-for=" item in dataSetList" :key="item.id"  :value="item.id">{{item.folderName}}({{item.folderDesc}})</Option>
           </Select>
         </FormItem>
         <FormItem label="标注人员:" prop="markUserIds">
@@ -95,21 +94,21 @@ export default {
       formItem: {
         taskName: null,
         taskRemark: null,
-        taskType: null,
+        taskType: '',
         markPointType: null,
         markPoint: null,
         reviewPoint: null,
         dataSetId: null,
         reviewScale: null,
-        markUserIds: null,
-        reviewUserIds: null
+        markUserIds: [],
+        reviewUserIds: [],
       },
 
       dataSetList: [],//数据源
       userList: [],//用户列表
 
       taskType: {
-        "CLASSIFY": {
+        CLASSIFY: {
           label: "分类任务",
           id: 1,
         }, 
@@ -133,6 +132,9 @@ export default {
       },
       taskId: '',
       ruleValidate: {
+        city: [
+            { required: true, message: 'Please select the city', trigger: 'change' }
+        ],
         taskName: [
           {
             required: true,
@@ -147,13 +149,19 @@ export default {
             trigger: "blur"
           }
         ],
-        // markPointType: [
-        //   {
-        //     required: true,
-        //     message: "请选择标注任务积分",
-        //     trigger: 'change'
-        //   }
-        // ],
+        markPointType: [
+          {
+            required: true,
+            trigger: 'change',
+            validator(rule, value, callback) {
+              if (!value) {
+                callback(new Error('请选择标注任务积分'))
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
         markPoint: [
           {
             required: true,
@@ -168,34 +176,58 @@ export default {
             trigger: "blur"
           }
         ],
-        // taskType: [
-        //   {
-        //     required: true,
-        //     message: "请选择任务模版",
-        //     trigger: "change"
-        //   }
-        // ],
-        // dataSetId: [
-        //   {
-        //     required: true,
-        //     message: "请选择数据源",
-        //     trigger: "change"
-        //   }
-        // ],
-        // markUserIds: [
-        //   {
-        //     required: true,
-        //     message: "请选择标注人员",
-        //     trigger: "change"
-        //   }
-        // ],
-        // reviewUserIds: [
-        //   {
-        //     required: true,
-        //     message: "请选择审核人员",
-        //     trigger: "change"
-        //   }
-        // ],
+        taskType: [
+          {
+            required: true,
+            trigger: "change",
+            validator(rule, value, callback) {
+              if (!value) {
+                callback(new Error('请选择任务模版'))
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
+        dataSetId: [
+          {
+            required: true,
+            trigger: "change",
+            validator(rule, value, callback) {
+              if (!value) {
+                callback(new Error('请选择数据源'))
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
+        markUserIds: [
+          {
+            required: true,
+            trigger: "change",
+            validator(rule, value, callback) {
+              if (value.length === 0) {
+                callback(new Error('请选择标注人员'))
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
+        reviewUserIds: [
+          {
+            required: true,
+            trigger: "change",
+            validator(rule, value, callback) {
+              if (value.length === 0) {
+                callback(new Error('请选择审核人员'))
+              } else {
+                callback()
+              }
+            }
+          }
+        ],
         reviewScale: [
           {
             trigger: "blur",
@@ -281,7 +313,7 @@ export default {
         getUserList()
       ]
       let baseData = Promise.all(list).then( (list) => {
-        this.dataSetList = list[0].dataSetList;
+        this.dataSetList = list[0].dataSetList
         this.userList = list[1].userList;
       }).catch( err => {
         console.log(err)

@@ -50,7 +50,8 @@ import browserMD5File from '../../../utils/md5.js'
 import {
   fileUploadInfo,
   fileUpload,
-  dataSetCreate
+  dataSetCreate,
+  fileMerge
 } from 'api/data.js'
 import {
   orgainzationList
@@ -109,24 +110,62 @@ export default {
     beforeUpload (file) {
       const _this = this
       const form = new FormData();
-    
+      console.log('file', file)
       browserMD5File(file, function (err, md5) {
-        form.append('file', file);
         fileUploadInfo({
           fileMD5: md5,
           fileName: file.name,
           fileSize: file.size
         }).then(res => {
+          console.log('fileUploadInfo', res)
           _this.fileId = res.fileId
           _this.formItem.fileIds = [res.fileId]
           _this.startChunkNumber = res.startChunkNumber
-          form.append('fileId', res.fileId)
-          form.append('chunkNum', res.startChunkNumber)
-          return fileUpload(form)
-        }).then(res => {
-          _this.fileName.push(file.name)
+          if (res.chunkTotal > 1) {
+            console.log('res.chunkTotal', res.chunkTotal)
+            _this.chunkUpload(0, 1, res.chunkTotal, file, res.fileId)
+          } else {
+            fileUpload(form).then(res => {
+              _this.fileName.push(file.name)
+            })
+          }
         })
       });
+    },
+
+    // 分块上传
+    chunkUpload (start, startChunkNumber, chunkTotal, file, fileId) {
+      const fileSize = file.size
+      console.log('文件大小', file.size)
+      const chunkThreshold = 1024 * 1024; //块大小
+      let end = start + chunkThreshold //
+      let blob = null //二进制对象
+      // 如果超出文件大小
+      if (end > fileSize) {
+        blob = file.slice(start);
+      } else {
+        blob = file.slice(start,end);
+      }
+      console.log(`第${startChunkNumber}次`, 'start:', start)
+      console.log(`第${startChunkNumber}次`, 'end大小:', end)
+      const form = new FormData();
+      form.append('file', blob);
+      form.append('fileId', fileId)
+      form.append('chunkNum', startChunkNumber)
+      fileUpload(form).then(res => {
+        if (startChunkNumber < chunkTotal) {
+          this.chunkUpload(end, ++startChunkNumber, chunkTotal, file, fileId)
+        } else {
+          console.log({
+            file_id: fileId
+          })
+          fileMerge({
+            file_id: fileId
+          }).then(res => {
+            console.log('fileMerge', res)
+          })
+        }
+      })
     },
 
     // 提交源数据

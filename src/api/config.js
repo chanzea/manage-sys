@@ -13,7 +13,7 @@ export const api = (url, method, data = {}, contentType = 'application/json;char
     return;
   }
   url = BASEURL + url
-  const query = method === 'get' ? 'params' : 'data'
+  const query = method.toLowerCase() === 'get' ? 'params' : 'data'
   const obj = {
     url,
     method,
