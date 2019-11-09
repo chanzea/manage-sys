@@ -155,7 +155,12 @@ const routes = [
             path: 'review',
             component: AuthType,
             name: "审核分类"
-          }
+          },
+          { 
+            path: 'psdrawtool',
+            component: PsDraw2,
+            name: '标记插件',
+          },
         ]
       },{
         path: 'tag',
@@ -224,11 +229,7 @@ const routes = [
     name: '登录',
     component: LoginPage
   },
-  { 
-    path: '/psdrawtool',
-    component: PsDraw2,
-    name: '标记插件',
-  }, 
+   
   { path: '*', redirect: '/404', hidden: true }
 ];
 
