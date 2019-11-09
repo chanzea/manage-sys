@@ -32,7 +32,7 @@ export const api = (url, method, data = {}, contentType = 'application/json;char
         saveMessage('tokenId', '')
         copyIview.Modal.warning({
           title: '提示',
-          content: '请重新登录',
+          content: '登录态已过期，请重新登录',
           okText: '确定',
           onOk: () => {
             window.location.reload(); //刷新页面

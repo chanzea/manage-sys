@@ -165,15 +165,27 @@ export default {
         markPoint: [
           {
             required: true,
-            message: "请输入积分",
-            trigger: "blur"
+            trigger: "blur",
+            validator(rule, value, callback) {
+              if (value === '') {
+                callback(new Error('请输入积分'))
+              } else {
+                callback()
+              }
+            }
           }
         ],
         reviewPoint: [
           {
             required: true,
-            message: "请输入审核任务积分",
-            trigger: "blur"
+            trigger: "blur",
+            validator(rule, value, callback) {
+              if (value === '') {
+                callback(new Error('请输入审核任务积分'))
+              } else {
+                callback()
+              }
+            }
           }
         ],
         taskType: [
