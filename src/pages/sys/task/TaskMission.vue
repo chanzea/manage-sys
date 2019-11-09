@@ -221,7 +221,7 @@ export default {
         path: '/task/type',
         query: {
           id: params.row.id,
-          type: TASKTYPE[params.row.taskType].type
+          type: TASKTYPE[params.row.taskType].type,
         }
       })
     },

@@ -1,10 +1,10 @@
 <template>
   <div class="ps-draw">
     <div class="actionBtn">
-      <Button type="info" @click="convertCanvasToImage" size = "small">提交</Button>
+      <Button type="info" @click="taskItemMark" size = "small">提交</Button>
       <Button type="success" @click="taskItemAllotMark" size = "small">下一题</Button>
     </div>
-    <img src="data:image/png;base64,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" alt="">
+    <!-- <img :src="imgSrc" alt=""> -->
     <div id="toolId" style="position: relative; height: 600px; width: 100%;"></div>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script>
 
 
-import { taskItemAllotMark, itemTaskUpload, taskItemMarklist, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
+import { taskItemAllotMark, itemTaskUpload, taskItemMark, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -22,7 +22,8 @@ export default {
   name: "PsDraw2",
   data() {
     return {
-      taskItemList: []
+      taskItemList: [],
+      imgSrc: null
     };
   },
 
@@ -49,10 +50,15 @@ export default {
       this.taskItemList = []
       taskItemAllotMark({
         taskId
-      }).then(res => {
+      }).then( res => {
         const {taskItemList, dataRecordList, userList} = res;
+
+        if(!taskItemList || taskItemList.length == 0){
+          this.$Message.warning("没有下一题了");
+        }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src =  BASEURL + dataRecordList[item.dataRecordId].thumbnailUrl
+          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].thumbnailUrl;
           return item
         }) : []
         this.isNext = !!taskItemList;
@@ -63,23 +69,24 @@ export default {
       })
     },
 
-    taskItemMarklist (next) {
-      const markDataList = []
+    taskItemMark (next) {
+      let markData = {}
       this.taskItemList.forEach(item => {
-        markDataList.push({
+        markData = {
           taskItemId: item.id,
-          markData: item.tag
-        })
+          markData: JSON.stringify(ShapeCanvas.getData()) 
+        }
       })
       const data = {
         taskId: this.$route.query.id,
-        markDataList
+        markData
       }
-      taskItemMarklist(data).then(res => {
+      this.convertCanvasToImage(markData.taskItemId);
+      taskItemMark(data).then(res => {
         if (next) {
           this.taskItemAllotMark()
         }
-      })
+      });
     },
 
     taskItemDetail (taskId, taskItemId) {
@@ -91,7 +98,7 @@ export default {
         console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
+          item.src = dataRecordList[item.dataRecordId].fileUrl
           item.isSelected = false
           item.tag = item.taskData
           return item
@@ -116,7 +123,7 @@ export default {
         }
       });
       ShapeCanvas.setImage(
-        img ||  "https://f12.baidu.com/it/u=2661567341,837532549&fm=72"
+        img
       );
     },
 
@@ -124,27 +131,19 @@ export default {
       ShapeCanvas.setData({"imgSrc":"https://f12.baidu.com/it/u=2661567341,837532549&fm=72","bgColor":"#FFFFFF","items":[{"title":"11","desc":"222","type":"rect","color":"red","children":[],"x":94,"y":57,"cx":0,"cy":0,"cx2":0,"cy2":0,"tx":0,"ty":0,"width":163,"height":93,"r":0,"fill":false}]})
     },
 
-    next(){
-      this.init("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1573149572657&di=13e671d9b913409425d8e1b3606eaf14&imgtype=0&src=http%3A%2F%2Fwww.dsn-gj.com%2Fuploadfile%2F2019%2F0216%2F20190216104802798.jpg");
-    },
-    
-    submit(){
-      let data =  ShapeCanvas.getData();
-
-      console.log(JSON.stringify(data))
-
-      console.log("TCL: submit -> data", data);   
-    },
-
-    convertCanvasToImage() {
+    convertCanvasToImage(itemId,) {
         let canvas = ShapeCanvas.canvas;
         var image = new Image();
+
+        console.log(canvas);
+
         image.src = canvas.toDataURL("image/png");
+        this.imgSrc = image.src;
         let blob = this.dataURItoBlob(image.src);
 
         let params = new FormData() ; //创建一个form对象,必须是form对象否则后端接受不到数据
-          params.append('file', blob, "小鸡吧.png"); 
-          params.append('taskItemId', 1);  //append 向form表单添加数据
+          params.append('file', blob, `${itemId}.png`); 
+          params.append('taskItemId', itemId);  //append 向form表单添加数据
           let config = {
             headers:{'Content-Type':'multipart/form-data'}
           };
@@ -158,6 +157,23 @@ export default {
 
         console.log(image);
         return image;
+    },
+
+    getBase64Image(url, callback){
+        //通过构造函数来创建的 img 实例，在赋予 src 值后就会立刻下载图片，相比 createElement() 创建 <img> 省去了 append()，也就避免了文档冗余和污染
+        var Img = new Image(),
+            dataURL='';
+        Img.src=url;
+        Img.onload=function(){ //要先确保图片完整获取到，这是个异步事件
+            var canvas = document.createElement("canvas"), //创建canvas元素
+                width=Img.width, //确保canvas的尺寸和图片一样
+                height=Img.height;
+            canvas.width=width;
+            canvas.height=height;
+            canvas.getContext("2d").drawImage(Img,0,0,width,height); //将图片绘制到canvas中
+            dataURL=canvas.toDataURL('image/jpeg'); //转换图片为dataURL
+            callback?callback(dataURL):null; //调用回调函数
+        };
     },
 
     dataURItoBlob(base64Data) {
