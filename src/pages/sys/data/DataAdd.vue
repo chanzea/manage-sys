@@ -16,13 +16,19 @@
         <FormItem label="上传文件">
           <div class="file-upload">
             <span style="margin-bottom: 10px;">支持扩展名：.zip,.jpg..</span>
+            <div class="upload-item" v-if="percent !== 0">
+              <Circle class="upload-circle" :size="24" :percent="percent" :stroke-color="color">
+                <Icon v-if="percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
+              </Circle>
+              <span style="font-size:12px;color: #2db7f5">文件上传中: {{ percent }}%</span>
+            </div>
             <div v-if="fileName.length !== 0" style="margin-bottom: 10px;display: flex;align-items: center">
               <div v-for="(item, index) in fileName" :key="index" style="margin-left: 8px;color: #2d8cf0">
                 <Icon type="ios-paper-outline" /><span style="margin-left: 8px;color: #2d8cf0">{{item}}</span>
               </div>
             </div>
             <Upload
-              multiple
+              class="upload-comp"
               type="drag"
               :before-upload="beforeUpload"
               action="">
@@ -30,12 +36,12 @@
                 <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
                 <p>点击或将文件拖到这里上传</p>
               </div>
-          </Upload>
+            </Upload>
           </div>
         </FormItem>
       </Form>
       <div class="btn-list">
-        <Button class="btn-list-item" type="primary" :disabled="!isDisabled"  @click="handleSubmit('formItem')">提交</Button>
+        <Button class="btn-list-item" :loading="loading" type="primary" :disabled="!isDisabled"  @click="handleSubmit('formItem')">提交</Button>
       </div>
     </div>
   </div>
@@ -60,6 +66,8 @@ export default {
   name: 'DataAdd',
   data () {
     return {
+      percent: 0,
+      loading: false,
       organizationsList: [],
       formItem: {
 
@@ -95,6 +103,13 @@ export default {
   computed: {
     isDisabled() {
       return this.fileId !== '' && this.startChunkNumber > 0
+    },
+    color () {
+      let color = '#2db7f5';
+      if (this.percent === 100) {
+          color = '#5cb85c';
+      }
+      return color;
     }
   },
   methods: {
@@ -110,20 +125,21 @@ export default {
     beforeUpload (file) {
       const _this = this
       const form = new FormData();
-      console.log('file', file)
+      _this.percent = 0 //清空进度
       browserMD5File(file, function (err, md5) {
         fileUploadInfo({
           fileMD5: md5,
           fileName: file.name,
           fileSize: file.size
         }).then(res => {
-          console.log('fileUploadInfo', res)
           _this.fileId = res.fileId
           _this.formItem.fileIds = [res.fileId]
           _this.startChunkNumber = res.startChunkNumber
           if (res.chunkTotal > 1) {
             console.log('res.chunkTotal', res.chunkTotal)
-            _this.chunkUpload(0, 1, res.chunkTotal, file, res.fileId)
+            _this.chunkUpload(0, 1, res.chunkThreshold, res.chunkTotal, file, res.fileId)
+            // const chunkTotal = Math.ceil(file.size / 131072) //测试用
+            // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
           } else {
             const form = new FormData();
             form.append('file', file);
@@ -138,17 +154,15 @@ export default {
     },
 
     // 分块上传
-    chunkUpload (start, startChunkNumber, chunkTotal, file, fileId) {
+    chunkUpload (start, startChunkNumber, chunkThreshold, chunkTotal, file, fileId) {
       const _this = this
       const fileSize = file.size
       console.log('文件大小', file.size)
-      const chunkThreshold = 1024 * 1024; //块大小
-      let end = start + chunkThreshold //
       let blob = null //二进制对象
+      let end = start + chunkThreshold //
       console.log(`第${startChunkNumber}次`, 'start:', start)
       // 如果超出文件大小
       if (end > fileSize) {
-        console.log('')
         blob = file.slice(start, fileSize, file.type);
       } else {
         console.log(`第${startChunkNumber}次`, 'end大小:', end)
@@ -160,12 +174,12 @@ export default {
       form.append('fileId', fileId)
       form.append('chunkNum', startChunkNumber)
       fileUpload(form).then(res => {
-        if (startChunkNumber < chunkTotal) {
-          this.chunkUpload(end, ++startChunkNumber, chunkTotal, file, fileId)
+        if (startChunkNumber < chunkTotal) {        
+          _this.percent = (end / fileSize).toFixed(2) * 100; //进度条比例
+          console.log('当前进度', _this.percent)
+          _this.chunkUpload(end, ++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
         } else {
-          console.log('完成', {
-            file_id: fileId
-          })
+          _this.percent = 100 //进度条完成
           fileMerge({
             file_id: fileId
           }).then(res => {
@@ -180,9 +194,13 @@ export default {
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
+          this.loading = true
           dataSetCreate(this.formItem).then(res => {
+            this.loading = false
             this.$Message.success('上传成功');
             this.$router.push('/dataSet/list')
+          }).catch(() => {
+            this.loading = false
           })
         }
       })
@@ -202,6 +220,19 @@ export default {
     .file-upload {
       display: flex;
       flex-direction: column;
+      .upload-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        .upload-circle {
+          margin-right: 12px;
+        }
+      }
+      .upload-comp {
+        & /deep/ .ivu-upload-list {
+          display: none !important;
+        }
+      }
     }
     .btn-list {
       padding-left: 100px;
