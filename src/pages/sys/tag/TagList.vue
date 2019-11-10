@@ -1,6 +1,6 @@
 <template>
   <div class="page-tag-list">
-    <table-page :columns="columns" :data="data">
+    <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字: 名称|文件|路径" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -13,7 +13,7 @@
 
 <script>
 
-import {getTaskList} from '@/api/task'
+import {getTaskList, taskDownload} from '@/api/task'
 
 import TablePage from 'components/tablePage.vue';
 
@@ -33,28 +33,42 @@ export default {
         },
         {
           title: '任务编号',
-          key: 'taskId',
-          sortable: true
-        },
-        {
-          title: '数据源编号',
-          key: ''
+          key: 'id',
+        },{
+          title: '任务名称',
+          key: 'taskName',
+        },{
+          title: '标注积分',
+          key: 'markPoint',
+        },{
+          title: '审核积分',
+          key: 'reviewPoint',
+        },{
+          title: '标注人员',
+          key: 'markUser',
+        },{
+          title: '审核人员',
+          key: 'reviewUser',
+        },{
+          title: '创建人',
+          key: 'creator'
         },
         {
           title: '下载数据',
           key: 'action',
           width: 260,
           align: 'center',
-          render: (h, params) => {
+          render: (h, {row}) => {
             return h('div', [
               h('span', {
                 style: {
                   color: '#2d8cf0',
-                  marginRight: '12px'
+                  marginRight: '12px',
+                  cursor: 'pointer'
                 },
                 on: {
                   click: () => {
-                      this.show(params)
+                      this.taskDownload(row)
                   }
                 }
               }, '查看')
@@ -67,17 +81,18 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      total: null,
       data: [
-        {
-          taskId: 'QD0001',
-          taskName: '任务拉框',
-          creator: '张三',
-          createtime: '2019-09-15',
-          count: '1000',
-          mark: '500',
-          verify: '800',
-          status: '草稿'
-        },
+        // {
+        //   taskId: 'QD0001',
+        //   taskName: '任务拉框',
+        //   creator: '张三',
+        //   createtime: '2019-09-15',
+        //   count: '1000',
+        //   mark: '500',
+        //   verify: '800',
+        //   status: '草稿'
+        // },
       ]
     }
   },
@@ -92,6 +107,16 @@ export default {
       let params = { page, taskStatus: -3 }
       getTaskList(params).then( res => {
         let {dataSetList, taskList, userList} = res;
+        this.data = taskList.map(item => {
+          item.markUser = item.markUserIds ? item.markUserIds.map(id => {
+            return userList[id].userName
+          }).join(',') : '暂无标注人员';
+          item.reviewUser = item.reviewUserIds ? item.reviewUserIds.map(id => {
+            return userList[id].userName
+          }).join(',') : '暂无审核人员';
+          item.creator = userList[item.creatorId].userName
+          return item
+        })
       })
     },
 
@@ -104,6 +129,18 @@ export default {
       this.page.pageSize = pageSize
       this.getTaskList()
     },
+
+    taskDownload (row) {
+      // const params = new URLSearchParams();
+      // params.append('taskId', row.id)
+      const params = {
+        taskId: row.id
+      } 
+      console.log('params', params)
+      taskDownload(params).then(res => {
+        console.log('res', res)
+      })
+    }
   }
 }
 </script>
