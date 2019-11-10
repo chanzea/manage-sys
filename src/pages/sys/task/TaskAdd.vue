@@ -35,7 +35,7 @@
             <span style="margin-right:12px">完成任务累计</span>
             <Input
               class="task-mark-input"
-              type="text"
+              type="number"
               v-model="formItem.reviewPoint"
               placeholder="积分"
             ></Input>
@@ -167,7 +167,7 @@ export default {
             required: true,
             trigger: "blur",
             validator(rule, value, callback) {
-              if (value === '') {
+              if (!value) {
                 callback(new Error('请输入积分'))
               } else {
                 callback()
@@ -180,7 +180,7 @@ export default {
             required: true,
             trigger: "blur",
             validator(rule, value, callback) {
-              if (value === '') {
+              if (!value) {
                 callback(new Error('请输入审核任务积分'))
               } else {
                 callback()
