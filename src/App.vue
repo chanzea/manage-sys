@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :key="appKey">
     <transition name="bounce">
       <router-view></router-view>
     </transition>
@@ -11,6 +11,16 @@
 <script>
 export default {
   name: 'app',
+  data(){
+    return {
+      appKey: 1,
+    }
+  },
+  watch: {
+    '$route': function() {
+      this.appKey = new Date().getTime();
+    }
+  }
 }
 </script>
 

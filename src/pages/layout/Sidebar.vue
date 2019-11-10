@@ -60,8 +60,9 @@
       },
 
       jumpToPage (item, subItem) {
+        // console.log(item,subItem);
         this.$router.push(subItem.uiPath)
-        this.$store.dispatch('setCurrentMenu', [item, subItem])
+        // this.$store.dispatch('setCurrentMenu', [item, subItem])
       },
 
       getCurrentPath(data, path) {

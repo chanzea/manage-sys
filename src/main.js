@@ -34,6 +34,7 @@ Vue.use(iView);
 window.copyIview = iView
 window.routes = routes
 const router = new VueRouter({
+  mode: 'history',
   routes
 });
 
