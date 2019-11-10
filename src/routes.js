@@ -54,7 +54,7 @@ const routes = [
     path: '/',
     component: Main,
     hidden: true,
-    name: '首页',
+    // name: '首页',
     children: [
       { path: '/index', component: IndexPage, name: '首页' },
       { path: '/404', component: Err404Page, hidden: true, name: '找不到页面' },
@@ -182,7 +182,7 @@ const routes = [
       },{
         path: 'config',
         component: ConfigPage,
-        name: '源数据管理',
+        name: '系统主页',
         redirect: '/config/role',
         id: 5,
         children: [{
@@ -210,7 +210,7 @@ const routes = [
       { 
         path: 'myself',
         component: MyselfPage,
-        name: '消息中心',
+        name: '消息中心主页',
         redirect: '/myself/message',
         children: [{
           path: 'message',

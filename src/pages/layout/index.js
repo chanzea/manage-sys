@@ -4,7 +4,7 @@ export { default as Sidebar } from './Sidebar';
 
 export { default as Levelbar } from './Levelbar';
 
-export { default as Content } from './Content';
+export { default as ContentComponent } from './ContentComponent';
 
 export { default as Main } from './Main.vue';
 

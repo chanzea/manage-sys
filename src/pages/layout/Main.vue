@@ -37,14 +37,14 @@
       <div class="ease-in-out" :class="menuSmall?'layout-right-small':'layout-right'">
         <Navbar :toggleClick="toggleClick"></Navbar>
         <!-- <Levelbar :showTabs="true"></Levelbar> -->
-        <Content :menuSmall="menuSmall"></Content>
+        <ContentComponent :menuSmall="menuSmall"></ContentComponent>
         <Footer></Footer>
       </div>
     </Row>
   </div>
 </template>
 <script>
-  import {Navbar, Sidebar, Content, Levelbar, Footer} from './index.js';
+  import {Navbar, Sidebar, ContentComponent, Levelbar, Footer} from './index.js';
   import Emitter from '@/utils/mixins/emitter';
 
   export default {
@@ -75,7 +75,7 @@
     components: {
       Navbar,
       Sidebar,
-      Content,
+      ContentComponent,
       Levelbar,
       Footer
     }
