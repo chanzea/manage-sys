@@ -21,7 +21,7 @@
 
         <DatePicker v-if="item.type === 'datePicker'" format="yyyy年MM月dd日" type="date" :placeholder="item.placeholder" v-model="formCustom[item.key]"></DatePicker>
 
-        <i-switch  v-if="item.type === 'switch'" v-model="formCustom[item.key]" size="large">
+        <i-switch  v-if="item.type === 'switch'" v-model="formCustom[item.key]" size="large" :disabled="item.isDisabled">
           <span slot="open"></span>
           <span slot="close"></span>
         </i-switch>

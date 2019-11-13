@@ -34,7 +34,8 @@
 import TablePage from 'components/tablePage.vue';
 import {
   getDatasetList,
-  dataSetUpdate
+  dataSetUpdate,
+  dataSetDelete
 } from 'api/data.js';
 import {
   orgainzationList
@@ -119,9 +120,21 @@ export default {
                       this.show(params)
                   }
                 }
+              }, '查看'),
+              h('span', {
+                style: {
+                  color: '#2d8cf0',
+                  marginRight: '12px',
+                  cursor: 'pointer'
+                },
+                on: {
+                  click: () => {
+                      this.edit(params)
+                  }
+                }
               }, '编辑'),
               renderDeletePop(h, '您确定要删除吗', {
-                confirmFn: function(){
+                confirmFn: () => {
                   this.deleteData(params)
                 } 
               })
@@ -223,8 +236,16 @@ export default {
       this.isShowModal = true
     },
 
+    edit(params) {
+
+    },
+
     deleteData (params) {
-      console.log('params', params)
+      dataSetDelete({
+        dataSetId: params.row.id
+      }).then(() => {
+        this.$Message.success('删除成功');
+      })
     },
   }
 }

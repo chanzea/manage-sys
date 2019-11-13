@@ -9,8 +9,8 @@
           <Button>
             <router-link to="/user/create">新增用户</router-link>
           </Button>
-          <Button>
-            <router-link to="/user/create">新增组用户</router-link>
+          <Button @click="addGroup">
+            <span style="color: #2d8cf0">新增组用户</span>
           </Button>
         </div>
         <div class="content-header-search">
@@ -51,6 +51,7 @@ export default {
     return {
       split: 0.15,
       treeOrganization: [],
+      isSelectGroup: false,
       userName: '',
       enable: 1,
       organizationId: 0,
@@ -209,6 +210,15 @@ export default {
       this.page.pageSize = pageSize
       this.getUserList()
     },
+
+    addGroup () {
+      this.$router.push({
+        path: '/user/create',
+        query: {
+          orgId: this.organizationId
+        }
+      })
+    }
   }
 }
 </script>

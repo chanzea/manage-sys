@@ -90,9 +90,6 @@
               </Button>
             </FormItem>
           </div>
-          <div style="padding: 0px 8px;">
-            Username:<b>admin</b> Password:<b>admin1234</b>
-          </div>
         </Form>
         <Form ref="formRegister" :model="formRegister" :rules="ruleRegister" v-else>
           <FormItem prop="username">
@@ -115,7 +112,6 @@
         </Form>
       </div>
     </div>
-    <div class="layout-footer">{{footerText}}</div>
   </div>
 </template>
 <script>
@@ -136,7 +132,6 @@
         captchaEnable: config.captchaEnable,
         loading: false,
         isLogin: true,
-        footerText: config.footerText,
         formLogin: {
           username: '',
           password: '',

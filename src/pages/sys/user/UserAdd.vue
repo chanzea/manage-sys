@@ -201,7 +201,6 @@ export default {
   },
   created () {
     this.userId = this.$route.query.userId || ''
-    console.log('Ces ', this.$route.query.usd)
     if (this.userId) {
       this.init()
       this.getUserInfo()
@@ -319,6 +318,11 @@ export default {
           const { organization } = res
           if (!this.userId) { //非編輯狀態時，需要格式化组织树
             this.formProp[1].options = this.formatTreeData(organization, [])
+          }
+          // 新增组用户过来
+          if (this.$route.query.orgId !== '' && this.$route.query.orgId !== undefined) {
+            this.$set(this.formCustom, 'organizationIds', [parseInt(this.$route.query.orgId)])
+            this.formProp[1].isDisabled = true
           }
           resolve(organization)
         })
