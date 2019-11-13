@@ -46,6 +46,7 @@
                :placeholder="placeholder"
                @on-click.stop="iconClick"
                :disabled="disabled"
+               :title="selectedText"
                readonly>
 
       </i-input>
@@ -53,7 +54,7 @@
     <DropdownMenu slot="list">
       <div class="tree-panel">
         <Tree v-model="value" :showCheckbox="showCheckbox" :multiple="multiple" :data="treeData"
-              @on-select-change="selectChange" @on-check-change="checkChange"></Tree>
+              @on-select-change="selectChange" @on-check-change="checkChange" :check-strictly="checkStrictly"></Tree>
       </div>
     </DropdownMenu>
   </Dropdown>
@@ -87,6 +88,10 @@
       multiple: {
         type: Boolean,
         default: false
+      },
+      checkStrictly: {
+        type: Boolean,
+        default: true
       },
       showCheckbox: {
         type: Boolean,
@@ -219,7 +224,7 @@
       },
       findSelected (val, data) {
         for (let i = 0; i < data.length; i++) {
-          if (val.includes(data[i][this.valField])) {
+          if (val && val.includes(data[i][this.valField])) {
             data[i].selected = true;
             this.selected = data[i];
             this.selectedText = this.selectedText += `${this.selected[this.textField].toString()} `.replace(/\s+/g,",");

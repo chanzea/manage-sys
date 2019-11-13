@@ -1,11 +1,12 @@
 <template>
   <div class="page-user-add">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="user-add-content">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom"></form-component>
       <span class="user-point" v-if="user.point && user.point !==''">{{user.point}}分</span>
       <div class="btn-list" v-if="!!userId">
         <Button class="btn-list-item" type="primary" @click="UserUpdate">保存</Button>
-        <Button class="btn-list-item">返回</Button>
+        <Button class="btn-list-item" @click="goBack">返回</Button>
       </div>
       <div class="btn-list" v-else>
         <Button class="btn-list-item" type="primary" @click="UserAdd">确定</Button>
@@ -33,8 +34,10 @@ export default {
   name: 'UserAdd',
   data() {
     return {
+      fullLoading: false,
       userId: '',
       user: {},
+      organization: [],
       formProp: [
         {
           label: '状态',
@@ -221,6 +224,7 @@ export default {
     },
     // 获取用户信息
     getUserInfo () {
+      this.fullLoading = true
       return new Promise((resolve) => {
         getUserInfo({
           userId: this.userId
@@ -241,29 +245,25 @@ export default {
               this.$set(this.formCustom, item.key, !!this.user[item.key])
             }
           })
+          this.fullLoading = false
+        }).catch(() => {
+          this.fullLoading = false
         })
       })
     },
     // 重置表单
     ResetFormData () {
-      this.formProp.map(item => {
-        if (item.ref) {
-          this.$refs['formProp'].$refs[item.ref][0].selectedText = ''
-          this.$refs['formProp'].$refs[item.ref][0].selected = null
+      this.$set(this.formProp[1], 'options', this.formatTreeData(this.organization, []))
+      this.formProp.forEach(item => {
+        if (item.type === 'switch') {
+          this.$set(this.formCustom, item.key, false)
         } else {
-          if (item.type === 'switch') {
-            item.value = false
-          } else {
-            item.value = ''
-          }
+          this.$set(this.formCustom, item.key, '')
         }
-        return item
       })
     },
     // 获取提交参数
     UserAdd (isReset = false) {
-      // 测试参数
-      // const params = {"birthday":"2019-10-16T16:00:00.000Z","loginName":"abaaa","enable":1,"organizationIds":[21,40,41],"roleIds":[11,12],"userName":"aaaaa","sex":1,"loginPassword":"asdfqbwe123","phoneNum":"15912313212","certificateType":"ID_CARD","certificateId":"445124159123132129","qq":"159123132","email":"159123132@qq.com","maritalStatus":0,"address":"sss"}
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
           this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''
@@ -274,6 +274,7 @@ export default {
           UserAdd(params).then(res => {
             if(isReset) {
               this.$refs['formProp'].$refs['basicForm'].resetFields()
+              this.ResetFormData()
             } else {
               this.$router.push('/user/list')
             }
@@ -316,13 +317,14 @@ export default {
       return new Promise((resolve) => {
         getListTree().then(res => {
           const { organization } = res
+          this.organization = organization
           if (!this.userId) { //非編輯狀態時，需要格式化组织树
             this.formProp[1].options = this.formatTreeData(organization, [])
           }
           // 新增组用户过来
           if (this.$route.query.orgId !== '' && this.$route.query.orgId !== undefined) {
             this.$set(this.formCustom, 'organizationIds', [parseInt(this.$route.query.orgId)])
-            this.formProp[1].isDisabled = true
+            this.$set(this.formProp[1], 'options', this.formatTreeData(organization, [parseInt(this.$route.query.orgId)]))
           }
           resolve(organization)
         })
@@ -332,15 +334,14 @@ export default {
     // 格式化数据
     formatTreeData (item, selectArr) {
       if (!item.children) {
-        item.selected = selectArr.includes(item.id)
-        item.checked = selectArr.includes(item.id)
+        this.$set(item, 'selected', selectArr.includes(item.id))
+        this.$set(item, 'checked', selectArr.includes(item.id))
         item.title = item.organizationName
         item.name = item.organizationName
         return [item]
       }
-      item.selected = selectArr.includes(item.id)
-      // item.selected = true
-      item.checked = selectArr.includes(item.id)
+      this.$set(item, 'selected', selectArr.includes(item.id))
+      this.$set(item, 'checked', selectArr.includes(item.id))
       item.name = item.organizationName
       item.title = item.organizationName
       item.children.forEach(subItem => {
@@ -348,6 +349,10 @@ export default {
       })
       return [item]
     },
+
+    goBack () {
+      this.$router.go(-1)
+    }
   }
 }
 </script>

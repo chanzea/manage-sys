@@ -80,6 +80,11 @@ const routes = [
             component: UserGroup,
             name: '组织管理',
             id: 13,
+          },{
+            path: 'data',
+            component: UserData,
+            name: '用户列表',
+            id: 14,
           },
         ]
       },{
