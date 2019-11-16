@@ -37,21 +37,27 @@ export default {
         },{
           title: '任务名称',
           key: 'taskName',
-        },{
-          title: '标注积分',
-          key: 'markPoint',
-        },{
-          title: '审核积分',
-          key: 'reviewPoint',
-        },{
-          title: '标注人员',
-          key: 'markUser',
-        },{
-          title: '审核人员',
-          key: 'reviewUser',
-        },{
+        },
+        // {
+        //   title: '标注积分',
+        //   key: 'markPoint',
+        // },{
+        //   title: '审核积分',
+        //   key: 'reviewPoint',
+        // },{
+        //   title: '标注人员',
+        //   key: 'markUser',
+        // },{
+        //   title: '审核人员',
+        //   key: 'reviewUser',
+        // },
+        {
           title: '创建人',
           key: 'creator'
+        },
+        {
+          title: '创建时间',
+          key: 'createdTime'
         },
         {
           title: '下载数据',
@@ -82,18 +88,7 @@ export default {
         pageSize: 10
       },
       total: null,
-      data: [
-        // {
-        //   taskId: 'QD0001',
-        //   taskName: '任务拉框',
-        //   creator: '张三',
-        //   createtime: '2019-09-15',
-        //   count: '1000',
-        //   mark: '500',
-        //   verify: '800',
-        //   status: '草稿'
-        // },
-      ]
+      data: []
     }
   },
 
@@ -108,13 +103,14 @@ export default {
       getTaskList(params).then( res => {
         let {dataSetList, taskList, userList} = res;
         this.data = taskList.map(item => {
-          item.markUser = item.markUserIds ? item.markUserIds.map(id => {
-            return userList[id].userName
-          }).join(',') : '暂无标注人员';
-          item.reviewUser = item.reviewUserIds ? item.reviewUserIds.map(id => {
-            return userList[id].userName
-          }).join(',') : '暂无审核人员';
+          // item.markUser = item.markUserIds ? item.markUserIds.map(id => {
+          //   return userList[id].userName
+          // }).join(',') : '暂无标注人员';
+          // item.reviewUser = item.reviewUserIds ? item.reviewUserIds.map(id => {
+          //   return userList[id].userName
+          // }).join(',') : '暂无审核人员';
           item.creator = userList[item.creatorId].userName
+          item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd')
           return item
         })
       })
