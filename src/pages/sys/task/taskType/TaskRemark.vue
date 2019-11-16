@@ -7,8 +7,12 @@
 </template>
 
 <script>
+import tagTool from 'components/tagtool'
 export default {
   name: 'TaskRemark',
+  components: {
+    tagTool
+  },
   data () {
     return {
       tagData: [
@@ -40,8 +44,8 @@ export default {
 
     }
   },
-  components: {
-    
+  mounted () {
+    this.$refs.tool.setImage('http://sc.68design.net/qita7/HappyChildhood/images/RTYD_1003.jpg')
   }
 }
 </script>

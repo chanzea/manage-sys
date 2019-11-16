@@ -13,12 +13,12 @@
             <Button>重置</Button>
           </ButtonGroup>
         </div>
-        <ButtonGroup class="btns">
+        <!-- <ButtonGroup class="btns">
           <Button type="primary" @click="jumpToPage('/task/add')">新建</Button>
           <Button type="primary">删除</Button>
           <Button type="primary">上线</Button>
           <Button type="primary">下线</Button>
-        </ButtonGroup>
+        </ButtonGroup> -->
     </div>
     <div class="content-middle">
       <div class="content-middle-table">
@@ -31,7 +31,7 @@
               title="确认删除该任务?"
               @on-ok="onDelete(row)"
               @on-cancel="">
-              <span class="opt-item">删除</span>
+              <!-- <span class="opt-item">删除</span> -->
           </Poptip>
             <span class="opt-item" @click="offLine(row)">下线</span>
             <span class="opt-item" @click="online(row)">上线</span>
@@ -81,11 +81,11 @@ export default {
         }
       ],
       columns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
+        // {
+        //   type: "selection",
+        //   width: 60,
+        //   align: "center"
+        // },
         {
           title: "任务编号",
           key: "id",

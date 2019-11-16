@@ -1,5 +1,6 @@
 <template>
   <div class="page-data-list">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
@@ -15,7 +16,7 @@
       @on-cancel="isShowModal=false">
       <Form ref="formItem" :rules="ruleValidate" :model="formItem" :label-width="100">
         <FormItem label="文件夹名称" prop="folderName">
-          <Input v-model="formItem.folderName" placeholder="名称"></Input>
+          <Input v-model="formItem.folderName" placeholder="名称" :disabled="true"></Input>
         </FormItem>
         <FormItem label="文件夹描述" prop="folderDesc">
           <Input v-model="formItem.folderDesc" type="textarea" placeholder="描述"></Input>
@@ -50,6 +51,7 @@ export default {
   },
   data () {
     return {
+      fullLoading: false,
       isShowModal: false,
       ruleValidate: {
         folderName: [
@@ -74,7 +76,7 @@ export default {
       organizationList: [],
       formItem: {},
       searchKey: '',
-      value: '',
+      value: ['', ''],
       columns: [
         {
           type: 'selection',
@@ -101,7 +103,7 @@ export default {
         },
         {
           title: '创建时间',
-          key: '_createdTime'
+          key: 'createdTime'
         },{
           title: '操作',
           key: 'action',
@@ -198,25 +200,32 @@ export default {
       })
     },
     getDatasetList () {
-      getDatasetList({
+      console.log('value', this.value)
+      this.fullLoading = true
+      const params = {
         searchKey: this.searchKey,
-        startTime: this.value.length !== 0 ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
-        endTime: this.value.length !== 0 ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
+        startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
+        endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
         page: {
           pageNum: this.page.pageNum,
           pageSize: this.page.pageSize,
         }
-      }).then(res => {
+      }
+      console.log('params', params)
+      getDatasetList(params).then(res => {
         const {organizationList,dataSetList,userList,count} = res
         this.data = dataSetList.map(item => {
           item.userName = userList[item.creatorId].userName
           item.dataPath = item.organizationIds ? item.organizationIds.map(item => {
             return organizationList[item].organizationName
           }).join(',') : '未分组'
-          item._createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
           return item
         })
         this.total = count
+        this.fullLoading = false
+      }).catch(() => {
+        this.fullLoading = false
       })
     },
 
@@ -230,13 +239,13 @@ export default {
       this.getDatasetList()
     },
 
-    show(params) {
+    edit(params) {
       console.log('params', params)
       this.$set(this, 'formItem', params.row);
       this.isShowModal = true
     },
 
-    edit(params) {
+    show(params) {
 
     },
 
@@ -245,6 +254,7 @@ export default {
         dataSetId: params.row.id
       }).then(() => {
         this.$Message.success('删除成功');
+        this.getDatasetList()
       })
     },
   }
