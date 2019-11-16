@@ -49,6 +49,10 @@ const MyselfPage = resolve => require(['pages/sys/myself/myself'], resolve);
 const MessageCenter = resolve => require(['pages/sys/myself/MessageCenter'], resolve);
 const UserInfoCenter = resolve => require(['pages/sys/myself/UserInfo'], resolve);
 
+
+const TaskRemark = resolve => require(['pages/sys/task/taskType/TaskRemark.vue'], resolve);
+
+
 const routes = [
   {
     path: '/',
@@ -166,6 +170,10 @@ const routes = [
             component: PsDraw2,
             name: '标记插件',
           },
+          { 
+            path: 'test', 
+            component: TaskRemark 
+          },
         ]
       },{
         path: 'tag',
@@ -235,7 +243,7 @@ const routes = [
     component: LoginPage
   },
    
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
 ];
 
 export default routes;
