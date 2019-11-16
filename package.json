@@ -23,6 +23,7 @@
     "lodash": "^4.17.4",
     "nprogress": "^0.2.0",
     "quill-image-extend-module": "^1.1.2",
+    "tagtool": "https://github.com/longcms/tagtool.git",
     "vue": "^2.5.2",
     "vue-fabric": "^0.1.25",
     "vue-fullcalendar": "^1.0.9",

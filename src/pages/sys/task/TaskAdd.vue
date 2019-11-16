@@ -35,7 +35,7 @@
             <span style="margin-right:12px">完成任务累计</span>
             <Input
               class="task-mark-input"
-              type="text"
+              type="number"
               v-model="formItem.reviewPoint"
               placeholder="积分"
             ></Input>
@@ -48,15 +48,16 @@
             class="task-item-input"
             v-model="formItem.reviewScale"
             placeholder="比例"
+            :disabled="isDisabled"
           ></Input>%
         </FormItem>
         <FormItem label="任务模版:" prop="taskType">
-          <Select v-model="formItem.taskType">
+          <Select v-model="formItem.taskType" :disabled="isDisabled">
             <Option :key="item.id" v-for=" (item) in taskType" :value="item.id">{{item.label}}</Option>
           </Select>
         </FormItem>
         <FormItem label="数据源:" prop="dataSetId">
-          <Select v-model="formItem.dataSetId" placeholder="选择数据源">
+          <Select v-model="formItem.dataSetId" placeholder="选择数据源" :disabled="isDisabled">
             <Option v-for=" item in dataSetList" :key="item.id"  :value="item.id">{{item.folderName}}({{item.folderDesc}})</Option>
           </Select>
         </FormItem>
@@ -167,7 +168,7 @@ export default {
             required: true,
             trigger: "blur",
             validator(rule, value, callback) {
-              if (value === '') {
+              if (!value) {
                 callback(new Error('请输入积分'))
               } else {
                 callback()
@@ -180,7 +181,7 @@ export default {
             required: true,
             trigger: "blur",
             validator(rule, value, callback) {
-              if (value === '') {
+              if (!value) {
                 callback(new Error('请输入审核任务积分'))
               } else {
                 callback()
@@ -267,12 +268,10 @@ export default {
     this.getRenderData();
   },
 
-  watch: {
-
-  },
-
   computed: {
-
+    isDisabled() {
+      return !!this.taskId
+    }
   },
 
   methods: {
@@ -296,7 +295,6 @@ export default {
         if (valid) {
           this.loading = true;
           let params = this.formItem;
-          // params = {"taskName":"test","taskRemark":"test","taskType":1,"markPointType":"1","markPoint":"100","reviewPoint":"1000","dataSetId":17,"markUserIds":[7,8],"reviewUserIds":[9,10]};
           if (this.taskId) {
             Object.assign(params, {taskId: this.taskId})
             taskUpdate(params).then(res => {

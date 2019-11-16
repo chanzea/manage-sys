@@ -8,7 +8,7 @@
         </div>
         <div class="btn-list">
           <Button class="btn-list-item" type="primary" :loading="loading" @click="UserUpdate">保存</Button>
-          <Button class="btn-list-item">返回</Button>
+          <Button class="btn-list-item" @click="goBack">返回</Button>
         </div>
       </TabPane>
       <TabPane label="头像" name="avatar">头像</TabPane>
@@ -36,7 +36,8 @@ export default {
           label: '状态',
           type: 'switch',
           value: false,
-          key: 'enable'
+          key: 'enable',
+          isDisabled: true
         },{
           label: '所在组织',
           type: 'text',
@@ -213,11 +214,17 @@ export default {
             enable: this.formCustom.enable ? 1 : 0,
             userId
           })
+          delete params.organizationIds //这两个不提交
+          delete params.roleIds
           UserUpdate(params).then(res => {
             this.$Message.success('用户信息更新成功');
           })
         }
       })
+    },
+
+    goBack () {
+      this.$router.go(-1)
     }
   }
 }

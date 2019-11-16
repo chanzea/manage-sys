@@ -140,14 +140,14 @@ export default {
       this.fullLoading = true
       let page = this.page;
       getTaskList({ page, tag: 'mark' }).then(res => {
-        const { taskList, dataSetList, userList } = res
-        this.data = res.taskList.map(item => {
+        const { taskList, dataSetList, userList, count } = res
+        this.data = taskList.map(item => {
           item.creatorName = userList[item.creatorId].userName
-          item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd')
+          item.createdTime = dataSetList[item.dataSetId] ? new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd') : '-'
           item.taskStatusDis = taskStatusData[item.taskStatus]
           return item
         })
-        this.total = res.count;
+        this.total = count;
         this.fullLoading = false
       }).catch(() => {
         this.fullLoading = false

@@ -121,8 +121,12 @@ export async function taskUpdate(params) {
 
 
 //标注任务
-
 export async function itemTaskUpload(params) {
     const data = await api(`/taskItem/uploadMarkPic`, 'post', params, "multipart/form-data")
+    return data
+}
+
+export async function taskDownload(params) {
+    const data = await api(`/task/download`, 'get', params, "application/x-www-form-urlencoded; charset=UTF-8")
     return data
 }

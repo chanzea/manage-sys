@@ -16,7 +16,7 @@
         <FormItem label="上传文件">
           <div class="file-upload">
             <span style="margin-bottom: 10px;">支持扩展名：.zip,.jpg..</span>
-            <div class="upload-item" v-if="percent !== 0">
+            <div class="upload-item" v-if="startUpload">
               <Circle class="upload-circle" :size="24" :percent="percent" :stroke-color="color">
                 <Icon v-if="percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
               </Circle>
@@ -66,6 +66,7 @@ export default {
   name: 'DataAdd',
   data () {
     return {
+      startUpload: false, //开始上传
       percent: 0,
       loading: false,
       organizationsList: [],
@@ -125,6 +126,7 @@ export default {
     beforeUpload (file) {
       const _this = this
       const form = new FormData();
+      _this.startUpload = false
       _this.percent = 0 //清空进度
       browserMD5File(file, function (err, md5) {
         fileUploadInfo({
@@ -136,6 +138,7 @@ export default {
           _this.formItem.fileIds = [res.fileId]
           _this.startChunkNumber = res.startChunkNumber
           if (res.chunkTotal > 1) {
+            _this.startUpload = true
             console.log('res.chunkTotal', res.chunkTotal)
             _this.chunkUpload(0, 1, res.chunkThreshold, res.chunkTotal, file, res.fileId)
             // const chunkTotal = Math.ceil(file.size / 131072) //测试用

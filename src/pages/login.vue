@@ -90,9 +90,6 @@
               </Button>
             </FormItem>
           </div>
-          <div style="padding: 0px 8px;">
-            Username:<b>admin</b> Password:<b>admin1234</b>
-          </div>
         </Form>
         <Form ref="formRegister" :model="formRegister" :rules="ruleRegister" v-else>
           <FormItem prop="username">
@@ -115,7 +112,6 @@
         </Form>
       </div>
     </div>
-    <div class="layout-footer">{{footerText}}</div>
   </div>
 </template>
 <script>
@@ -136,7 +132,6 @@
         captchaEnable: config.captchaEnable,
         loading: false,
         isLogin: true,
-        footerText: config.footerText,
         formLogin: {
           username: '',
           password: '',
@@ -238,7 +233,7 @@
             saveMessage('tokenId', data.data.tokenId)
             saveMessage('userId', data.data.userId)
             saveMessage('permissionList', JSON.stringify(data.data.permissionList))
-            this.$router.push({path: '/user'});
+            this.$router.push({path: data.data.permissionList[0].uiPath});
           } else {
             this.$Message.warning(data.message);
             this.changeCaptcha(); //更新验证码
