@@ -16,7 +16,7 @@ import './styles/index.scss';
 import config from './config';
 // import http from './utils/HttpUtils';
 import 'vue-fabric/dist/vue-fabric.min.css';
-import tagtool from 'tagtool/src/components/tagtool'
+// import tagtool from 'tagtool/src/components/tagtool'
 import { Fabric } from 'vue-fabric';
 import {
   getMessage
@@ -32,7 +32,7 @@ Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.use(iView);
-Vue.component('tag-tool', tagtool)
+// Vue.component('tag-tool', tagtool)
 window.copyIview = iView
 const router = new VueRouter({
   mode: 'history',

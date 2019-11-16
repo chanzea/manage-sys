@@ -8,6 +8,10 @@
 import TaskClassify from './TaskClassify'
 import TaskRejectPic from './TaskRejectPic'
 import TaskRejectFolder from './TaskRejectFolder'
+
+import TaskMark from '../tagtoolMain/src/views/reviewMark'
+import TaskLasso from '../tagtoolMain/src/views/reviewMark'
+
 export default {
   name: 'TaskType',
   data: {
@@ -19,7 +23,8 @@ export default {
   components: {
     TaskClassify,
     TaskRejectPic,
-    TaskRejectFolder
+    TaskRejectFolder,
+    TaskMark
   }
 }
 </script>

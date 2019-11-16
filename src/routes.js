@@ -21,6 +21,7 @@ const TaskList = resolve => require(['pages/sys/task/TaskList'], resolve);
 const TaskItembank = resolve => require(['pages/sys/task/TaskItembank'], resolve);
 const TaskAdd = resolve => require(['pages/sys/task/TaskAdd'], resolve);
 const TaskMission = resolve => require(['pages/sys/task/TaskMission'], resolve);
+
 // const TaskAuth = resolve => require(['pages/sys/task/TaskAuth'], resolve);
 const TaskAuth = resolve => require(['pages/sys/task/TaskAuthMission'], resolve);
 const TaskMonitor = resolve => require(['pages/sys/task/TaskMonitor'], resolve);

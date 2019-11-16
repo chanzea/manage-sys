@@ -8,8 +8,8 @@
 import TaskClassify from './TaskClassify'
 import TaskRejectPic from './TaskRejectPic'
 import TaskRejectFolder from './TaskRejectFolder'
-import TaskMark from '../../ps/ps1'
-import TaskLasso from '../../ps/ps1'
+import TaskMark from '../tagtoolMain/src/views/Mark'
+import TaskLasso from '../tagtoolMain/src/views/Mark'
 export default {
   name: 'TaskType',
   data() {
