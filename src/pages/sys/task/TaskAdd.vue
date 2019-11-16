@@ -73,7 +73,7 @@
         </FormItem>
       </Form>
       <div class="btn-list">
-        <Button class="btn-list-item" type="primary" :loading="loading" @click="submit">提交</Button>
+        <Button class="btn-list-item" type="primary" :loading="loading" @click.native="submit">提交</Button>
         <Button class="btn-list-item" @click="cancel">返回</Button>
       </div>
     </div>
