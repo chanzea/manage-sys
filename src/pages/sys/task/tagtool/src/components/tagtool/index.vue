@@ -241,6 +241,7 @@ export default {
 
   &-tab {
     &-title {
+      display: flex;
       position: relative;
       background-color: #000000;
       font-size: 14px;

@@ -1,5 +1,6 @@
 <template>
   <div class="page-tag-list">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字: 名称|文件|路径" />
@@ -16,7 +17,9 @@
 import {getTaskList, taskDownload} from '@/api/task'
 
 import TablePage from 'components/tablePage.vue';
-
+import { 
+  BASEURL
+ } from "@/api/config.js";
 export default {
   name: 'DataList',
   components: {
@@ -24,6 +27,7 @@ export default {
   },
   data () {
     return {
+      fullLoading: false,
       searchValue: '',
       columns: [
         {
@@ -100,6 +104,7 @@ export default {
     getTaskList: function() {
       let page = this.page;
       let params = { page, taskStatus: -3 }
+      this.fullLoading = true
       getTaskList(params).then( res => {
         let {dataSetList, taskList, userList} = res;
         this.data = taskList.map(item => {
@@ -113,6 +118,9 @@ export default {
           item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd')
           return item
         })
+        this.fullLoading = false
+      }).catch(() => {
+        this.fullLoading = false
       })
     },
 
@@ -127,15 +135,14 @@ export default {
     },
 
     taskDownload (row) {
-      // const params = new URLSearchParams();
-      // params.append('taskId', row.id)
-      const params = {
-        taskId: row.id
-      } 
-      console.log('params', params)
-      taskDownload(params).then(res => {
-        console.log('res', res)
-      })
+      // const params = {
+      //   taskId: row.id
+      // } 
+      // console.log('params', params)
+      // taskDownload(params).then(res => {
+      //   console.log('res', res)
+      // })
+      window.open(`${BASEURL}/task/download?taskId=${row.id}`)
     }
   }
 }

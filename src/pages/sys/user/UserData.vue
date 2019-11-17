@@ -1,5 +1,6 @@
 <template>
   <div class="page-user-data">
+    <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="user-data-content">
       <div class="content-header">
         <div class="content-header-btn-lists">
@@ -49,6 +50,7 @@ export default {
   name: 'UserData',
   data () {
     return {
+      fullLoading: false,
       split: 0.15,
       treeOrganization: [],
       isSelectGroup: false,
@@ -128,11 +130,14 @@ export default {
   methods: {
     // 获取组织树结构数据
     getListTree () {
+      this.fullLoading = true
       getListTree().then(res => {
         const { organization } = res
         this.treeOrganization = this.formatTreeData(organization)
         this.organizationId = this.treeOrganization[0].id
         this.getUserList()
+      }).catch(() => {
+        this.fullLoading = false
       })
     },
     // 获取表格数据
@@ -160,6 +165,9 @@ export default {
           return item
         })
         this.total = count
+        this.fullLoading = false
+      }).catch(() => {
+        this.fullLoading = false
       })
     },
     // 格式化数据
@@ -187,7 +195,6 @@ export default {
     },
 
     deleteData(params) {
-      console.log('params', params)
       deleteUser({
         userId: params.row.id,
         organizationId: this.organizationId

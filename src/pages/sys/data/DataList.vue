@@ -372,7 +372,7 @@ export default {
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .ivu-modal-body {
   display: flex;
   justify-content: center;
