@@ -22,7 +22,7 @@
 <script>
 import tagTool from '../components/tagtool'
 import demoData from './demo'
-import { taskItemAllotMark, tagMarkList, itemTaskUpload, taskItemMark, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
+import { taskItemAllotMark, tagMarkAdd, tagMarkList, itemTaskUpload, taskItemMark, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
