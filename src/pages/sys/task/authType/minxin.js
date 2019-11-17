@@ -7,6 +7,11 @@ const minxin = {
     created() {
         this.isReturnItem = this.$route.query.taskItemId;
     },
+
+    convertTagData(){
+        
+    }
+
 }
 
 export default minxin;

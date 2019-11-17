@@ -71,6 +71,12 @@ export async function tagClassifyList(params) {
     return data
 }
 
+//标注标签列举
+export async function tagMarkList(params) {
+    const data = await api(`/tag/mark/list`, 'get', params)
+    return data
+}
+
 //提交剔除图片
 export async function taskItemMark(params) {
     const data = await api(`/taskItem/mark`, 'post', params)
@@ -97,6 +103,12 @@ export async function taskItemReview(params) {
 // 添加标签
 export async function tagClassifyAdd(params) {
     const data = await api(`/tag/classify/add`, 'post', params)
+    return data
+}
+
+//添加标注标签
+export async function tagMarkAdd(params) {
+    const data = await api(`/tag/mark/add`, 'post', params)
     return data
 }
 
