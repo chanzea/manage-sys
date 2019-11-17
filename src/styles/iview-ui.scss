@@ -42,6 +42,12 @@
   border-bottom: 1px solid #f5f7f9;
 }
 
+.ivu-modal-wrap {
+  .ivu-icon-ios-close {
+    font-size: 31px !important;
+  }
+}
+
 //.ivu-tag-closable,.ivu-tag{
 //  -webkit-transition:all 0.5s ease-in-out;
 //  -moz-transition:all 0.5s ease-in-out;

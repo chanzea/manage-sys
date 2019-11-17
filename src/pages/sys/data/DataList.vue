@@ -28,15 +28,34 @@
         </FormItem>
       </Form>
     </Modal>
+    <Modal
+      v-model="isShowFileModal"
+      title="查看源文件"
+      width="620">
+      <div class="modal-content">
+        <div class="modal-content-list">
+          <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
+            <img :src="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" slot="footer">
+        <Button type="primary" @click="isNext ? preView() : closeModal()">{{isNext ? '返回' : '关闭'}}</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import TablePage from 'components/tablePage.vue';
+import { 
+  BASEURL
+ } from "@/api/config.js";
 import {
   getDatasetList,
   dataSetUpdate,
-  dataSetDelete
+  dataSetDelete,
+  listDataRecord
 } from 'api/data.js';
 import {
   orgainzationList
@@ -51,8 +70,10 @@ export default {
   },
   data () {
     return {
+      BASEURL,
       fullLoading: false,
       isShowModal: false,
+      isShowFileModal: false,
       ruleValidate: {
         folderName: [
           {
@@ -149,12 +170,23 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      total: null
+      total: null,
+      src: {
+        2: require('../../../../static/assets/img/zip.png'),
+        3: require('../../../../static/assets/img/folder.png'),
+      },
+      fileList: [],
+      preFileList: [] //上一级的文件列表
     }
   },
   created () {
     this.getDatasetList()
     this.orgainzationList ()
+  },
+  computed: {
+    isNext () {
+      return this.preFileList.length > 1
+    }
   },
   methods: {
     // 获取用户详情,所属平台组织
@@ -200,7 +232,6 @@ export default {
       })
     },
     getDatasetList () {
-      console.log('value', this.value)
       this.fullLoading = true
       const params = {
         searchKey: this.searchKey,
@@ -211,7 +242,6 @@ export default {
           pageSize: this.page.pageSize,
         }
       }
-      console.log('params', params)
       getDatasetList(params).then(res => {
         const {organizationList,dataSetList,userList,count} = res
         this.data = dataSetList.map(item => {
@@ -245,8 +275,23 @@ export default {
       this.isShowModal = true
     },
 
-    show(params) {
-
+    show(params, folderId = '') {
+      this.preFileList = [] //清空
+      this.listDataRecord('a' ,params.row.id) //只要不为1就行
+    },
+    
+    listDataRecord (fileType, dataSetId, folderId = '') {
+      if (fileType === 1) {
+        return
+      }
+      listDataRecord({
+        dataSetId,
+        folderId
+      }).then(res => {
+        this.fileList = res.list
+        this.preFileList.push(this.fileList)
+        this.isShowFileModal = true
+      })
     },
 
     deleteData (params) {
@@ -257,6 +302,16 @@ export default {
         this.getDatasetList()
       })
     },
+
+    preView () {
+      let len = this.preFileList.length
+      this.$set(this, 'fileList', this.preFileList[len - 2])
+      this.preFileList.pop()
+    },
+
+    closeModal () {
+      this.isShowFileModal = false
+    }
   }
 }
 </script>
@@ -288,5 +343,38 @@ export default {
       }
     }
   }
+}
+.modal-content {
+  &-list {
+    max-height: 400px;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    &-item {
+      margin-bottom: 12px;
+      margin-right: 20px;
+      width: 120px;
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      &.not-allow {
+        cursor: not-allowed;
+      }
+      &.allow {
+        cursor: pointer;
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.ivu-modal-body {
+  display: flex;
+  justify-content: center;
 }
 </style>
