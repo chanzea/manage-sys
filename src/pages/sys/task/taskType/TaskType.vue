@@ -10,6 +10,7 @@ import TaskRejectPic from './TaskRejectPic'
 import TaskRejectFolder from './TaskRejectFolder'
 import TaskMark from '../tagtool/src/views/Mark'
 import TaskLasso from '../tagtool/src/views/Mark'
+
 export default {
   name: 'TaskType',
   data() {

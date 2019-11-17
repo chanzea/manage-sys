@@ -66,7 +66,7 @@ export async function dataSetUpdate(params) {
 }
 
 /**
- * 新建源数据
+ * 查看源文件
  * @param {Obiect} params 
  */
 export async function listDataRecord(params) {

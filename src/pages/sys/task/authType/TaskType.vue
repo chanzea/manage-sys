@@ -12,6 +12,7 @@ import TaskRejectFolder from './TaskRejectFolder'
 import TaskMark from '../tagtool/src/views/ReviewMark'
 import TaskLasso from '../tagtool/src/views/ReviewMark'
 
+
 export default {
   name: 'TaskType',
   data: {

@@ -3,14 +3,14 @@
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="content-header">
       <div class="content-header-form">
-          <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
-          <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-          <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
+          <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字" />
+          <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
+          <Select class="form-item" v-model="status" style="width:120px" placeholder="状态">
             <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <ButtonGroup>
-            <Button type="primary">查询</Button>
-            <Button>重置</Button>
+            <Button type="primary" @click="getTaskList">查询</Button>
+            <Button @click="reset">重置</Button>
           </ButtonGroup>
         </div>
         <!-- <ButtonGroup class="btns">
@@ -38,7 +38,7 @@
           </template>
         </Table>
       </div>
-      <div class="content-middle-pages">
+      <div class="content-middle-pages" v-if="total">
         <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
       </div>
     </div>
@@ -64,20 +64,21 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      searchValue: "",
+      searchKey: "",
       status: "",
+      value: ['', ''],
       options: [
         {
-          label: "草稿",
-          value: 0
+          label: "完成",
+          value: '-3'
         },
         {
           label: "上线",
-          value: 1
+          value: '1'
         },
         {
           label: "下线",
-          value: 2
+          value: '0'
         }
       ],
       columns: [
@@ -132,21 +133,29 @@ export default {
   },
 
   created() {
-    this.getTasklistInfo();
+    this.getTaskList();
   },
 
   methods: {
-    getTasklistInfo() {
+    getTaskList() {
       this.fullLoading = true
       let page = this.page;
-      getTaskList({ page, tag: 'mark' }).then(res => {
+      getTaskList({
+        page,
+        tag: 'mark',
+        searchKey: this.searchKey,
+        taskStatus: this.status,
+        startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
+        endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : ''
+      }).then(res => {
+        console.log('res', res)
         const { taskList, dataSetList, userList, count } = res
-        this.data = taskList.map(item => {
+        this.data = taskList ? taskList.map(item => {
           item.creatorName = userList[item.creatorId].userName
           item.createdTime = dataSetList[item.dataSetId] ? new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd') : '-'
           item.taskStatusDis = taskStatusData[item.taskStatus]
           return item
-        })
+        }) : []
         this.total = count;
         this.fullLoading = false
       }).catch(() => {
@@ -200,19 +209,24 @@ export default {
 
     changePage (page) {
       this.page.pageNum = page
-      this.getTasklistInfo()
+      this.getTaskList()
     },
 
     changePageSize (pageSize) {
       this.page.pageSize = pageSize
-      this.getTasklistInfo()
+      this.getTaskList()
     },
     
     // 删除任务
     onDelete (row) {
       console.log('row', row)
-    }
+    },
 
+    reset () {
+      this.searchKey = ''
+      this.status = ''
+      this.value = ['', '']
+    }
   }
 };
 </script>
