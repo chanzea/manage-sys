@@ -88,6 +88,8 @@ export default {
         this.setTagData({})
         return this.$Message.warning("没有下一题了");
       }
+
+
       taskItemAllotMark({
         taskId
       }).then( res => {
@@ -98,13 +100,15 @@ export default {
           this.$Message.warning("没有下一题了");
         }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src =  BASEURL + dataRecordList[item.dataRecordId].filelUrl
-          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].filelUrl;
+          item.src =  BASEURL + dataRecordList[item.dataRecordId].fileUrl
+          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].fileUrl;
           return item
         }) : []
         this.isNext = !!taskItemList;
-        console.log()
+        console.log("====")
+        console.log(res)
         if(taskItemList.length > 0) {
+          console.log(this.taskItemList[0].src)
           this.setImage(this.taskItemList[0].src);//设置图片
         }
       })
@@ -146,7 +150,7 @@ export default {
       }).then(res => {
         const {taskItemList, dataRecordList} = res;
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].filelUrl
+          item.src = dataRecordList[item.dataRecordId].fileUrl
           item.tag = item.taskData
           return item
         }) : []
@@ -159,15 +163,6 @@ export default {
         }
       })
     },
-
-    // getTagMarkList(){
-    //   let params = {
-    //     taskId: this.$route.query.id
-    //   }
-    //   tagMarkList(params).then(res => {
-    //     console.log(params)
-    //   })
-    // },
 
     getTagMarkList () {
       let taskId = parseInt(this.$route.query.id); 
@@ -211,7 +206,6 @@ export default {
           }
         })
       }
-
       return JSON.stringify(data)
     },
     saveTagData (data) {
