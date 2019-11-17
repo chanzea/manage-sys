@@ -117,7 +117,7 @@ export default {
           this.taskItemStatus = String(taskItemList[0].itemStatus)
         }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
+          item.src = dataRecordList[item.dataRecordId].filelUrl
           item.tag = item.taskData
           return item
         }) : []

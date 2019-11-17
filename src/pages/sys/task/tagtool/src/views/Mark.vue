@@ -99,7 +99,7 @@ export default {
         }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src =  BASEURL + dataRecordList[item.dataRecordId].filelUrl
-          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].thumbnailUrl;
+          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].filelUrl;
           return item
         }) : []
         this.isNext = !!taskItemList;
@@ -146,7 +146,7 @@ export default {
       }).then(res => {
         const {taskItemList, dataRecordList} = res;
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
+          item.src = dataRecordList[item.dataRecordId].filelUrl
           item.tag = item.taskData
           return item
         }) : []
