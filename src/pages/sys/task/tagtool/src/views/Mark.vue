@@ -98,7 +98,7 @@ export default {
           this.$Message.warning("没有下一题了");
         }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src =  BASEURL + dataRecordList[item.dataRecordId].thumbnailUrl
+          item.src =  BASEURL + dataRecordList[item.dataRecordId].filelUrl
           this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].thumbnailUrl;
           return item
         }) : []
