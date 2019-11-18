@@ -223,6 +223,9 @@
         this.visible = !this.visible;
       },
       findSelected (val, data) {
+        if (!Array.isArray(val)) {
+          val = [val]
+        }
         for (let i = 0; i < data.length; i++) {
           if (val && val.includes(data[i][this.valField])) {
             data[i].selected = true;

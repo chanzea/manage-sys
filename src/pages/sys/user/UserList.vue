@@ -1,43 +1,44 @@
 <template>
-  <div class="page-user-data">
+  <div class="page-user-list">
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="user-data-content">
       <div class="content-header">
-        <div class="content-header-btn-lists">
-          <Button>
-            <router-link to="/user/group">新增组</router-link>
-          </Button>
-          <Button>
-            <router-link to="/user/create">新增用户</router-link>
-          </Button>
-          <Button @click="addGroup">
-            <span style="color: #2d8cf0">新增组用户</span>
-          </Button>
+        <div class="content-header-select">
+          <Select v-model="enable" style="width:200px" placeholder="选择用户状态">
+            <Option v-for="item in status" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+        </div>
+        <div class="content-header-tree-select">
+          <TreeSelect :disabled="false" ref="TreeSelect" v-model="organizationId"
+            :data="treeOrganization"
+            :multiple="false"
+            :showCheckbox="false"
+            placeholder="选择组织"
+            @on-change="selectOrg">
+          </TreeSelect>
         </div>
         <div class="content-header-search">
-          <Input search enter-button="搜索" v-model="userName" @on-search="searchUserList" placeholder="关键字" />
+          <Input v-model="userName" placeholder="关键字" />
         </div>
+        <Button type="primary" @click="searchUserList" style="margin-right: 8px">搜索</Button>
+        <Button type="primary" @click="reset">重置</Button>
       </div>
       <div class="content-middle">
-        <Split v-model="split" min="200px">
-          <div  slot="left" class="content-middle-left">
-            <Tree :data="treeOrganization" @on-select-change="selectNode"></Tree>
+        <div class="content-middle-right">
+          <div class="content-middle-right-table">
+            <Table border :columns="columns" :data="data"></Table>
           </div>
-          <div  slot="right" class="content-middle-right">
-            <div class="content-middle-right-table">
-              <Table border :columns="columns" :data="data"></Table>
-            </div>
-            <div class="content-middle-right-pages">
-              <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
-            </div>
+          <div class="content-middle-right-pages">
+            <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
           </div>
-        </Split>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import TreeSelect from './../../../components/form/TreeSelect'
   import {
     getListTree,
     getUserList,
@@ -47,16 +48,21 @@
     renderDeletePop
   } from 'utils/tool.js'
 export default {
-  name: 'UserData',
+  name: 'UserList',
   data () {
     return {
       fullLoading: false,
-      split: 0.15,
       treeOrganization: [],
-      isSelectGroup: false,
       userName: '',
       enable: '',
-      organizationId: 0,
+      status: [{
+        value: 1,
+        label: '开启'
+      },{
+        value: 0,
+        label: '关闭'
+      },],
+      organizationId: '',
       columns: [
         {
           type: 'selection',
@@ -124,24 +130,24 @@ export default {
       total: null
     }
   },
+  components: {
+    TreeSelect
+  },
   created () {
     this.getListTree()
+    this.getUserList()
   },
   methods: {
     // 获取组织树结构数据
     getListTree () {
-      this.fullLoading = true
       getListTree().then(res => {
         const { organization } = res
-        this.treeOrganization = this.formatTreeData(organization)
-        this.organizationId = this.treeOrganization[0].id
-        this.getUserList()
-      }).catch(() => {
-        this.fullLoading = false
+        this.treeOrganization = this.formatTreeData(organization, [])
       })
     },
     // 获取表格数据
     getUserList () {
+      this.fullLoading = true
       this.data = []
       getUserList({
         enable: this.enable,
@@ -169,17 +175,21 @@ export default {
         this.fullLoading = false
       })
     },
-    // 格式化数据
-    formatTreeData (item) {
+
+    formatTreeData (item, selectArr) {
       if (!item.children) {
+        this.$set(item, 'selected', selectArr.includes(item.id))
+        this.$set(item, 'checked', selectArr.includes(item.id))
         item.title = item.organizationName
+        item.name = item.organizationName
         return [item]
       }
+      this.$set(item, 'selected', selectArr.includes(item.id))
+      this.$set(item, 'checked', selectArr.includes(item.id))
+      item.name = item.organizationName
       item.title = item.organizationName
-      item.children = item.children
-      item.expand = !!item.children
       item.children.forEach(subItem => {
-        this.formatTreeData(subItem)
+        this.formatTreeData(subItem, selectArr)
       })
       return [item]
     },
@@ -195,15 +205,14 @@ export default {
 
     deleteData(params) {
       deleteUser({
-        userId: params.row.id,
-        organizationId: this.organizationId
+        userId: params.row.id
       }).then(res => {
         this.getUserList()
       })
     },
 
-    selectNode (data, node) {
-      this.organizationId = node.id
+    selectOrg (data) {
+      this.organizationId = data.id
       this.getUserList()
     },
     // 改变页码
@@ -217,26 +226,22 @@ export default {
       this.getUserList()
     },
 
-    // 添加组用户
-    addGroup () {
-      this.$router.push({
-        path: '/user/create',
-        query: {
-          orgId: this.organizationId
-        }
-      })
-    },
-
     searchUserList () {
       this.page.pageNum = 1
       this.getUserList()
+    },
+
+    reset () {
+      this.enable = false;
+      this.userName = ''
+      this.organizationId = ''
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.page-user-data {
+.page-user-list {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -247,8 +252,21 @@ export default {
     .content-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      // justify-content: space-between;
       margin-bottom: 12px;
+      &-select {
+        margin-right: 12px;
+      }
+      &-tree-select {
+        width: 400px;
+        margin-right: 12px;
+        & /deep/ .ivu-select-dropdown {
+          width: 400px;
+        }
+      }
+      &-search {
+        margin-right: 12px;
+      }
     }
     .content-middle {
       flex: 1;

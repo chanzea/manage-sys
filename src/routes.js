@@ -9,6 +9,7 @@ const UserPage = resolve => require(['pages/sys/user/user'], resolve);
 const UserData = resolve => require(['pages/sys/user/UserData'], resolve);
 const UserAdd = resolve => require(['pages/sys/user/UserAdd'], resolve);
 const UserGroup = resolve => require(['pages/sys/user/UserGroup'], resolve);
+const UserList = resolve => require(['pages/sys/user/UserList'], resolve);
 
 // 源数据
 const DataPage = resolve => require(['pages/sys/data/data'], resolve);
@@ -87,7 +88,7 @@ const routes = [
             id: 13,
           },{
             path: 'data',
-            component: UserData,
+            component: UserList,
             name: '用户列表',
             id: 14,
           },

@@ -9,7 +9,7 @@
             <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <ButtonGroup>
-            <Button type="primary" @click="getTaskList">查询</Button>
+            <Button type="primary" @click="searchTaskList">查询</Button>
             <Button @click="reset">重置</Button>
           </ButtonGroup>
         </div>
@@ -163,6 +163,11 @@ export default {
       })
     },
     
+    searchTaskList () {
+      this.page.pageNum = page
+      this.getTaskList()
+    },
+
     // 新建任务
     jumpToPage(path) {
       this.$router.push({

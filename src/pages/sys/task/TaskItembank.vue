@@ -2,7 +2,7 @@
   <div class="page-task-ltembank">
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
-      <div class="content-header" slot="form">
+      <!-- <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
         <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
@@ -12,7 +12,7 @@
           <Button type="primary">查询</Button>
           <Button>重置</Button>
         </ButtonGroup>
-      </div>
+      </div> -->
     </table-page>
   </div>
 </template>
@@ -52,11 +52,11 @@ export default {
         value: 2
       },],
       columns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
+        // {
+        //   type: 'selection',
+        //   width: 60,
+        //   align: 'center'
+        // },
         {
           title: '题目编号',
           key: 'id'
