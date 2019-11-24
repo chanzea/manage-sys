@@ -20,20 +20,6 @@
     box-shadow: 0px 0px 100px rgba(255, 255, 255, 0.4);
   }
 
-  .captchaImage {
-    float: right;
-    padding: 0px 1px;
-    border-radius: 4px 4px 4px 4px;
-    height: 28px;
-    position: absolute;
-    right: 1px;
-    top: 3px;
-  }
-
-  .captchaImage:hover {
-    cursor: pointer;
-  }
-
   .login-title {
     padding-bottom: 12px;
     display: flex;
@@ -57,7 +43,15 @@
     justify-content: center;
     top: 0;
   }
+</style>
 
+<style lang="scss" scoped>
+.captchaItem {
+  & /deep/ .ivu-input-group-append {
+    padding: 0 !important;
+    border: none !important;
+  }
+}
 </style>
 
 <template>
@@ -77,12 +71,10 @@
               <i-input v-model="formLogin.password" type="password" placeholder="密码" style="width: 100%"></i-input>
             </FormItem>
 
-            <FormItem v-if="captchaEnable" prop="captcha" class="captchaItem">
-              <i-input v-model="formLogin.captcha" type="text" @change="toUpperCase(val)" :maxlength="4" placeholder="验证码"
-                      style="width: 100%;">
-                <!--<span slot="append"></span>-->
+            <FormItem prop="captcha" class="captchaItem">
+              <i-input v-model="formLogin.captcha" type="text" :maxlength="4" placeholder="验证码" style="width: 100%;">
+                <div id="v_container" class="captcha-ipt" slot="append" style="width: 100px;height: 30px;"></div>
               </i-input>
-              <img class="captchaImage" :src="captchaUrl" @click="changeCaptcha()" title="点击更换验证码">
             </FormItem>
             <FormItem>
               <Button type="primary" style="width: 100%" @click="handleSubmit('formLogin')" long :loading="loading">
@@ -121,15 +113,13 @@
     BASEURL
   } from 'api/config'
   import {
-    getMessage,
     saveMessage
   } from 'utils/tool.js'
   const reg = /^(?=.*?\d)(?=.*?[A-Za-z])[\dA-Za-z]{8,}$/ //检验密码
   export default {
     data () {
+      let _this = this
       return {
-        captchaUrl: this.captchaUrl = HOST + config.api.captcha + new Date().getTime(),
-        captchaEnable: config.captchaEnable,
         loading: false,
         isLogin: true,
         formLogin: {
@@ -142,7 +132,20 @@
             {required: true, message: '请填写用户名', trigger: 'blur'}
           ],
           captcha: [
-            {required: true, message: '请填写验证码', trigger: 'blur'}
+            {
+              trigger: 'blur',
+              validator: (rule, value, callback) => {
+                if (!value) {
+                  callback(new Error('请填写验证码'))
+                } else {
+                  if (!_this.$verify.validate(value)) {
+                    callback(new Error('请输入正确的验证码'))
+                  } else {
+                    callback()
+                  }
+                }
+              }
+            }
           ],
           password: [
             {required: true, message: '请填写密码', trigger: 'blur'},
@@ -275,13 +278,11 @@
       },
       changeCaptcha () {
         this.formLogin.captcha = '';
-        this.captchaUrl = HOST + config.api.captcha + new Date().getTime();
+        this.$verify.refresh()
       },
-      toUpperCase (val) {
-        console.log(val);
-      }
     },
     mounted () {
+      this.$verify.gverify('v_container'); //验证码初始化
       window.addEventListener('keyup', (e) => {
         if (e.keyCode === 13) {
           this.handleSubmit('formLogin');

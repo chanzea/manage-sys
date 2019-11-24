@@ -14,9 +14,8 @@ import zhLocale from 'iview/src/locale/lang/zh-CN';
 import enLocale from 'iview/src/locale/lang/en-US';
 import './styles/index.scss';
 import config from './config';
-// import http from './utils/HttpUtils';
 import 'vue-fabric/dist/vue-fabric.min.css';
-// import tagtool from 'tagtool/src/components/tagtool'
+import verify from './plugins/gVerify';
 import { Fabric } from 'vue-fabric';
 import {
   getMessage
@@ -32,7 +31,7 @@ Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.use(iView);
-// Vue.component('tag-tool', tagtool)
+Vue.use(verify);
 window.copyIview = iView
 const router = new VueRouter({
   mode: 'history',

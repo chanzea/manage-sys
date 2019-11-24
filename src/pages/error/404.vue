@@ -1,11 +1,16 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .wscn-http404 {
+    display: flex;
     position: relative;
     width: 100%;
     margin: 20px auto 60px;
     padding: 0 100px;
     overflow: hidden;
+    .back {
+      cursor: pointer;
+      color: #2d8cf0;
+    }
     .pic-404 {
       position: relative;
       float: left;
@@ -200,27 +205,34 @@
       </div>
       <div class="bullshit">
         <div class="bullshit__oops">OOPS!</div>
-        <div class="bullshit__info">版权所有<a class='link-type' href='#' target='_blank'>{{footerText}}</a></div>
         <div class="bullshit__headline">{{ message }}</div>
-        <div class="bullshit__info">请检查您输入的网址是否正确，请点击以下按钮返回主页或者发送错误报告</div>
-        <router-link to="/">返回首页</router-link>
+        <div @click="back" class="back">
+          返回首页
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import config from '@/config';
-
+  import {
+    getMessage,
+  } from 'utils/tool.js'
   export default {
     data () {
       return {
-        footerText: config.footerText
+        message: '找不到这个页面......'
       };
     },
-    computed: {
-      message () {
-        return '找不到这个页面......';
+    methods: {
+      back () {
+        const list = JSON.parse(getMessage('permissionList'))
+        if (list.length !== 0) {
+          const uiPath = list[0].uiPath
+          this.$router.replace(uiPath)
+        } else {
+          return
+        }
       }
     }
   };

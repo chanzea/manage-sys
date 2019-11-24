@@ -41,18 +41,20 @@ const ConfigPage = resolve => require(['pages/sys/config/config'], resolve);
 const ConfigIndex = resolve => require(['pages/sys/config/ConfigIndex'], resolve);
 const ConfigRole = resolve => require(['pages/sys/config/ConfigRole'], resolve);
 const ConfigMenu = resolve => require(['pages/sys/config/ConfigMenu'], resolve);
+//系统日志
+const LogPage = resolve => require(['pages/sys/log/log'], resolve);
+const LogSystem = resolve => require(['pages/sys/log/LogSystem'], resolve);
+const LogTask = resolve => require(['pages/sys/log/LogTask'], resolve);
 
 //ps模块
-const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
-const PsDraw2 = resolve => require(['pages/sys/ps/ps1'], resolve);
+// const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
+// const PsDraw2 = resolve => require(['pages/sys/ps/ps1'], resolve);
 
 // 消息中心
 const MyselfPage = resolve => require(['pages/sys/myself/myself'], resolve);
 const MessageCenter = resolve => require(['pages/sys/myself/MessageCenter'], resolve);
 const UserInfoCenter = resolve => require(['pages/sys/myself/UserInfo'], resolve);
 
-
-const TaskRemark = resolve => require(['pages/sys/task/taskType/TaskRemark.vue'], resolve);
 
 
 const routes = [
@@ -167,15 +169,11 @@ const routes = [
             component: AuthType,
             name: "审核分类"
           },
-          { 
-            path: 'psdrawtool',
-            component: PsDraw2,
-            name: '标记插件',
-          },
-          { 
-            path: 'test', 
-            component: TaskRemark 
-          },
+          // { 
+          //   path: 'psdrawtool',
+          //   component: PsDraw2,
+          //   name: '标记插件',
+          // },
         ]
       },{
         path: 'tag',
@@ -216,13 +214,24 @@ const routes = [
           name: '权限配置',
           id: 53,
         },]
-      },
-      { 
-        path: 'psdraw',
-        component: PsDraw,
-        name: '标记',
-      },
-      { 
+      },{
+        path: 'log',
+        component: LogPage,
+        name: '系统日志',
+        redirect: '/log/system',
+        id: 6,
+        children: [{
+          path: 'system',
+          component: LogSystem,
+          name: '系统操作日志',
+          id: 61
+        },{
+          path: 'mission',
+          component: LogTask,
+          name: '任务操作日志',
+          id: 62
+        }]
+      },{ 
         path: 'myself',
         component: MyselfPage,
         name: '消息中心主页',
