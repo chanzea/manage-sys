@@ -34,6 +34,17 @@
         </Split>
       </div>
     </div>
+    <Modal v-model="isShowmodal" fullscreen title="新增组用户">
+      <div style="margin-bottom: 12px;width: 300px">
+          <Input search enter-button="搜索" v-model="orgUserName" @on-search="searchOrgUserList" placeholder="关键字" />
+        </div>
+      <div style="margin-bottom: 12px">
+        <Table border :columns="orgColumns" :data="orgData"></Table>
+      </div>
+      <div class="content-middle-right-pages">
+        <Page :total="orgTotal" size="small" show-elevator show-sizer @on-change="changeOrgPage" @on-page-size-change="changeOrgPage" />
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -57,6 +68,7 @@ export default {
       userName: '',
       enable: '',
       organizationId: 0,
+      isShowmodal: false,
       columns: [
         {
           type: 'selection',
@@ -121,7 +133,38 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      total: null
+      total: null,
+      orgColumns: [
+        {
+          title: '姓名',
+          key: 'userName',
+          sortable: true
+        },
+        {
+          title: '登录名',
+          key: 'loginName'
+        },
+        {
+          title: '手机',
+          key: 'phoneNum',
+          sortable: true
+        },
+        {
+          title: '权限',
+          key: 'roleName'
+        },
+        {
+          title: '创建时间',
+          key: 'createdTime'
+        }
+      ],
+      orgData: [],
+      orgTotal: null,
+      orgPage: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      orgUserName: ''
     }
   },
   created () {
@@ -217,19 +260,58 @@ export default {
       this.getUserList()
     },
 
+    // 改变页码
+    changeOrgPage (page) {
+      this.orgPage.pageNum = page
+      this.getUserList()
+    },
+    // 改变页面条数
+    changeOrgPageSize (pageSize) {
+      this.orgPage.pageSize = pageSize
+      this.getUserList()
+    },
+
     // 添加组用户
     addGroup () {
-      this.$router.push({
-        path: '/user/create',
-        query: {
-          orgId: this.organizationId
+      this.orgData = []
+      getUserList({
+        enable: this.enable,
+        nonOrganizationId: this.organizationId,
+        userName: this.orgUserName,
+        page: {
+          pageNum: this.orgPage.pageNum,
+          pageSize: this.orgPage.pageSize,
         }
+      }).then(res => {
+        const {organizationList,roleList,userList,count} = res
+        this.orgData = userList.map(item => {
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
+          item.roleName = item.roleIds && item.roleIds.map(item => {
+            return roleList[item].roleName
+          }).join(',')
+          return item
+        })
+        this.orgTotal = count
+        this.isShowmodal = true
       })
     },
+    // addGroup () {
+    //   this.$router.push({
+    //     path: '/user/create',
+    //     query: {
+    //       orgId: this.organizationId
+    //     }
+    //   })
+    // },
 
     searchUserList () {
       this.page.pageNum = 1
       this.getUserList()
+    },
+
+    searchOrgUserList () {
+      this.orgPage.pageNum = 1
+      this.addGroup()
     }
   }
 }
