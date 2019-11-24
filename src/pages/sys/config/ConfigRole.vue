@@ -67,11 +67,7 @@ export default {
         ]
       },
       columns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
+        
         {
           title: "角色",
           key: "roleName"

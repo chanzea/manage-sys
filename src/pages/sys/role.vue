@@ -80,7 +80,7 @@
     updateUrl: '/sys/role/update',
     param: {},
     columns: [
-      {type: 'selection', width: 60, align: 'center'},
+      { width: 60, align: 'center'},
       {key: 'name', title: '角色名', align: 'center', width: 180},
       {
         key: 'status',

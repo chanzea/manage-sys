@@ -57,7 +57,7 @@
   let self = null;
 
   const logColumns = [
-    {type: 'selection', width: 60, align: 'center'},
+    { width: 60, align: 'center'},
     {key: 'name', title: '任务名称', minWidth: 200},
     {key: 'beanName', title: 'bean名称', minWidth: 250},
     {key: 'methodName', title: '方法名称', minWidth: 200},
@@ -136,7 +136,7 @@
     updateUrl: '/sys/schedule/update',
     param: {},
     columns: [
-      {type: 'selection', width: 60, align: 'center'},
+      { width: 60, align: 'center'},
       {key: 'name', title: '任务名称', width: 200},
       {key: 'beanName', title: 'bean名称', width: 250},
       {key: 'methodName', title: '方法名称', width: 200},

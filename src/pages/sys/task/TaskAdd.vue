@@ -299,16 +299,16 @@ export default {
             Object.assign(params, {taskId: this.taskId})
             taskUpdate(params).then(res => {
               this.$Message.success('更新成功');
-              this.$router.push('/task/mission');
+              this.$router.push('/task/list');
               this.loading = false;
-            }).catch(() => {
-              console.log('dsds')
+            }).catch((e) => {
+              console.log(e)
               this.loading = false
             })
           } else {
             taskAdd(params).then(res => {
               this.$Message.success('添加成功');
-              this.$router.push('/task/mission');
+              this.$router.push('/task/list');
               this.loading = false;
             }).catch(() => {
               this.loading = false
