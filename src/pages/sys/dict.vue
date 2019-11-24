@@ -74,7 +74,7 @@
     updateUrl: '/sys/dict/update',
     param: {},
     columns: [
-      {type: 'selection', width: 60, align: 'center'},
+      { width: 60, align: 'center'},
       {key: 'dictTypeId', dataFromTree: true, title: '分类', width: 120},
       {key: 'code', title: '编号', width: 120},
       {key: 'name', title: '名称', width: 120},

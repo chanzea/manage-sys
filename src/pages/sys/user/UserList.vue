@@ -64,11 +64,7 @@ export default {
       },],
       organizationId: '',
       columns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
+        
         {
           title: '姓名',
           key: 'userName',

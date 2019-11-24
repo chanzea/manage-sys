@@ -234,7 +234,7 @@ export default {
         console.log(val);
         this.columns =  [
           {
-            type: 'selection',
+            
             width: 60,
             align: 'center'
           },

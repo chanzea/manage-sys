@@ -70,11 +70,7 @@ export default {
       organizationId: 0,
       isShowmodal: false,
       columns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
+        
         {
           title: '姓名',
           key: 'userName',

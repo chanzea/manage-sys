@@ -103,7 +103,7 @@
     updateUrl: '/sys/user/update',
     param: {},
     columns: [
-      {type: 'selection', width: 60, align: 'center'},
+      { width: 60, align: 'center'},
       {key: 'username', title: '用户名', width: 150},
       {key: 'name', title: '姓名', width: 150},
       {key: 'roleId', title: '角色', dataFromTree: true, width: 150},

@@ -64,11 +64,7 @@ export default {
         name: 'taskComplete'
       }],
       missionColumns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center'
-        },
+        
         {
           title: '任务编号',
           key: 'id',

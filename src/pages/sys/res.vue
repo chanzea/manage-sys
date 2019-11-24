@@ -95,7 +95,7 @@
     updateUrl: '/sys/res/update',
     param: {},
     columns: [
-      {type: 'selection', width: 60, align: 'center'},
+      { width: 60, align: 'center'},
       {key: 'name', title: '资源名', minWidth: 160, maxWidth: 280},
       {
         key: 'resType',
