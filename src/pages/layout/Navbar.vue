@@ -142,8 +142,6 @@
 </template>
 
 <script>
-  import DateUtils from 'utils/DateUtils';
-  import config from '@/config';
   import Emitter from '@/utils/mixins/emitter';
   import {PopupEdit} from 'components/';
   import { mapGetters } from 'vuex'
@@ -175,56 +173,11 @@
     props: ['toggleClick'],
     data () {
       return {
-        label1: (h) => {
-          return h('div', [
-            h('Badge', {
-              props: {
-                dot: this.$store.state.warning.length > 0
-              }
-            }, [h('span', '报 警')])
-          ]);
-        },
-        label2: (h) => {
-          return h('div', [
-            h('Badge', {
-              props: {
-                dot: this.$store.state.backlog.length > 0
-              }
-            }, [h('span', '待 办')])
-          ]);
-        },
-        label3: (h) => {
-          return h('div', [
-            h('Badge', {
-              props: {
-                dot: false
-              }
-            }, [h('span', '消 息')])
-          ]);
-        },
         userData: '',
         tableRefOptions,
-        tabIndex: 0,
-        DateUtils
       };
     },
     computed: {
-      warningList () {
-        return this.$store.state.warning;
-      },
-      backlogList () {
-        if (this.$store.state.backlog != null) {
-          return this.$store.state.backlog.slice(0, 4);
-        }
-        return this.$store.state.backlog;
-      },
-      isNewMsg () {
-        if (this.$store.state.backlog.length > 0 || this.$store.state.warning.length > 0) {
-          return true;
-        } else {
-          return false;
-        }
-      },
       // ...mapGetters([
       //   'currentMenu',
       // ])
@@ -249,23 +202,6 @@
           params: {
             backLog: item
           }
-        });
-      },
-      gotoWarning (warning) {
-
-      },
-      tabPopperShow () {
-        if (this.$store.state.warning.length > 0) {
-          this.tabIndex = 'name1';
-        } else if (this.$store.state.backlog.length > 0) {
-          this.tabIndex = 'name2';
-        }
-      },
-      passwd () {
-        this.$refs.tablePopupEdit.dynamic[0][0].value = this.userData.userName;
-        this.$refs.tablePopupEdit.open({
-          title: '修改密码',
-          postUrl: '/sys/user/respwd'
         });
       },
       logout () {

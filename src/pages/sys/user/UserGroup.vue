@@ -106,14 +106,14 @@ export default {
               style: {
                 display: "inline-block",
                 float: "right",
-                marginRight: "32px"
+                marginRight: "400px"
               }
             },
             [
               h("Button", {
                 props: Object.assign({}, this.buttonProps, {
                   icon: "ios-create-outline",
-                  size: "small"
+                  size: "default"
                 }),
                 style: {
                   marginRight: "8px"
@@ -127,7 +127,7 @@ export default {
               h("Button", {
                 props: Object.assign({}, this.buttonProps, {
                   icon: "ios-add",
-                  size: "small"
+                  size: "default"
                 }),
                 style: {
                   marginRight: "8px"
@@ -143,7 +143,7 @@ export default {
                 {
                   props:{
                     content: "确定删除？",
-                    size: "small", 
+                    size: "default", 
                     icon: 'ios-remove'
                   },
                   on: {

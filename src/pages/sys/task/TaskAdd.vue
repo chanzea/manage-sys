@@ -2,7 +2,7 @@
   <div class="page-task-add">
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="task-add-content">
-      <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="100">
+      <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="120">
         <FormItem label="任务名称:" prop="taskName">
           <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
         </FormItem>
@@ -290,7 +290,6 @@ export default {
     },
 
     submit() {
-      console.log('执行')
       this.$refs["taskForm"].validate(valid => {
         if (valid) {
           this.loading = true;
@@ -299,16 +298,15 @@ export default {
             Object.assign(params, {taskId: this.taskId})
             taskUpdate(params).then(res => {
               this.$Message.success('更新成功');
-              this.$router.push('/task/mission');
+              this.$router.push('/task/list');
               this.loading = false;
             }).catch(() => {
-              console.log('dsds')
               this.loading = false
             })
           } else {
             taskAdd(params).then(res => {
               this.$Message.success('添加成功');
-              this.$router.push('/task/mission');
+              this.$router.push('/task/list');
               this.loading = false;
             }).catch(() => {
               this.loading = false
