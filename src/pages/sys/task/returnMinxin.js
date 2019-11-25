@@ -15,11 +15,6 @@ const mixin = {
                     title: '任务名称',
                     key: 'taskName',
                     render: (h, params) => {
-                        // console.log("TCL: params", params)
-                        // let arr = params.row.markUserIds.map( item => {
-                        //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
-                        //     return loginName
-                        // }); 
                         return h('div', this.taskList[params.row.taskId] ? this.taskList[params.row.taskId].taskName : "");
                     }
                 },
@@ -51,6 +46,13 @@ const mixin = {
                     }
                 },
                 {
+                    title: '获得积分',
+                    key: this.$route.path.indexOf('auth') ? 'reviewPoint' : 'markPoint',
+                    // render: (h, params) => {
+                    //     return h('div', this.userList[params.row.reviewUserId] ? this.userList[params.row.reviewUserId].loginName : "");
+                    // }
+                },
+                {
                     title: '操作',
                     key: 'action',
                     width: 260,
@@ -79,6 +81,19 @@ const mixin = {
     created() {
         
     },
+
+    computed: {
+        computeCol: function(){
+            let columns = [];
+            if(this.currentTab == 'taskRework'){
+                columns = this.returnColumns.filter( col => col.title != '获得积分')
+            } else {
+                columns = this.returnColumns
+            }
+            return columns
+        }
+    },
+    
 
 }
 export default mixin;

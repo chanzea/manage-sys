@@ -14,7 +14,7 @@
             </div>
           </table-page>
 
-          <table-page v-else :columns="returnColumns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+          <table-page v-else :columns="computeCol" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
               <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
