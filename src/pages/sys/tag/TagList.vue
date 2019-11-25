@@ -3,10 +3,9 @@
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
-        <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字: 名称|文件|路径" />
-        <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-        <Button type="primary">查询</Button>
-        <Button style="float: right" type="primary" icon="md-add">新建数据源</Button>
+        <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
+        <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
+        <Button type="primary" @click="searchTaskList">查询</Button>
       </div>
     </table-page>
   </div>
@@ -28,7 +27,8 @@ export default {
   data () {
     return {
       fullLoading: false,
-      searchValue: '',
+      searchKey: '',
+      value: ['', ''],
       columns: [
         
         {
@@ -99,7 +99,13 @@ export default {
   methods: {
     getTaskList: function() {
       let page = this.page;
-      let params = { page, taskStatus: -3 }
+      let params = {
+        page,
+        taskStatus: -3,
+        startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
+        endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
+        searchKey: this.searchKey,
+      }
       this.fullLoading = true
       getTaskList(params).then( res => {
         let {dataSetList, taskList, userList} = res;
@@ -127,6 +133,11 @@ export default {
 
     changePageSize (pageSize) {
       this.page.pageSize = pageSize
+      this.getTaskList()
+    },
+
+    searchTaskList () {
+      this.page.pageNum = 1
       this.getTaskList()
     },
 

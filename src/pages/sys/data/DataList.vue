@@ -33,10 +33,13 @@
       title="查看源文件"
       width="620">
       <div class="modal-content">
-        <div class="modal-content-list">
+        <div class="modal-content-list" v-if="fileList.length !== 0">
           <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
             <img :src="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
           </div>
+        </div>
+        <div v-else style="text-align:center;padding: 8px 0;">
+          暂无数据
         </div>
       </div>
       <div class="modal-footer" slot="footer">
@@ -202,7 +205,6 @@ export default {
     },
     getOrganizationName (organizationIds) {
       const organizationList = [...this.organizationList]
-      console.log('organizationList', organizationList)
       const path = organizationList.filter(item => {
         return organizationIds.includes(item.id)
       }).map(item => {

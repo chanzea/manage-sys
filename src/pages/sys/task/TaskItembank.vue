@@ -2,17 +2,17 @@
   <div class="page-task-ltembank">
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
-      <!-- <div class="content-header" slot="form">
-        <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字" />
-        <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-        <Select class="form-item" v-model="status" style="width:60px" placeholder="状态">
+      <div class="content-header" slot="form">
+        <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字" />
+        <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
+        <Select class="form-item" v-model="status" style="width:120px" placeholder="任务类型">
           <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
-        <ButtonGroup>
-          <Button type="primary">查询</Button>
-          <Button>重置</Button>
-        </ButtonGroup>
-      </div> -->
+        <!-- <ButtonGroup> -->
+          <Button type="primary" @click="searchTaskItemList">查询</Button>
+          <Button type="primary" @click="reset">重置</Button>
+        <!-- </ButtonGroup> -->
+      </div>
     </table-page>
   </div>
 </template>
@@ -31,6 +31,23 @@ const taskItemStatusData = {
   '4': '返工标注审核',
   '5': '已完成'
 }
+
+const taskType = [{
+  value: 'Classify',
+  label: '分类任务'
+},{
+  value: 'Mark',
+  label: '标注任务'
+},{
+  value: 'RejectPic',
+  label: '图片剔除任务'
+},{
+  value: 'RejectFolder',
+  label: '文件夹剔除任务'
+},{
+  value: 'Lasso',
+  label: '分割任务'
+}]
 export default {
   name: 'TaskList',
   components: {
@@ -39,18 +56,10 @@ export default {
   data () {
     return {
       fullLoading: false,
-      searchValue: '',
+      searchKey: '',
+      value: ['', ''],
       status: '',
-      options: [{
-        label: '草稿',
-        value: 0
-      },{
-        label: '上线',
-        value: 1
-      },{
-        label: '下线',
-        value: 2
-      },],
+      options: taskType,
       columns: [
         // {
         //   
@@ -123,7 +132,12 @@ export default {
           pageSize: this.page.pageSize,
           pageNum: this.page.pageNum
         },
-        taskId: this.$route.query.taskId || ''
+        taskId: this.$route.query.taskId || '',
+        startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
+        endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
+        searchKey: this.searchKey,
+        markUserId: '',
+        reviewUserId: ''
       }).then(res => {
         console.log('res', res)
         const {count, taskItemList, taskList, userList} = res
@@ -149,6 +163,17 @@ export default {
 
     changePageSize (pageSize) {
       this.page.pageSize = pageSize
+      this.taskItemList()
+    },
+
+    reset () {
+      this.searchKey = '';
+      this.value = ['', ''];
+      this.status = ''
+    },
+
+    searchTaskItemList () {
+      this.page.pageNum = 1
       this.taskItemList()
     },
 

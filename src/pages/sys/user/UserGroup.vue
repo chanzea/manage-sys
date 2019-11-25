@@ -46,18 +46,6 @@ export default {
     },
     // 格式化数据
     formatTreeData (item) {
-      // if (!item.children) {
-      //   item.title = item.organizationName
-      //   return [item]
-      // }
-      // item.title = item.organizationName
-      // item.children = item.children
-      // item.expand = !!item.children
-      // item.children.forEach(subItem => {
-      //   this.formatTreeData(subItem)
-      // })
-      // return [item]
-
       if (!item.children) {
         item.isEdit = false;
         item.expand = true;
@@ -106,14 +94,14 @@ export default {
               style: {
                 display: "inline-block",
                 float: "right",
-                marginRight: "400px"
+                marginRight: "30px"
               }
             },
             [
               h("Button", {
                 props: Object.assign({}, this.buttonProps, {
                   icon: "ios-create-outline",
-                  size: "default"
+                  size: "small"
                 }),
                 style: {
                   marginRight: "8px"
@@ -127,7 +115,7 @@ export default {
               h("Button", {
                 props: Object.assign({}, this.buttonProps, {
                   icon: "ios-add",
-                  size: "default"
+                  size: "small"
                 }),
                 style: {
                   marginRight: "8px"
@@ -143,7 +131,7 @@ export default {
                 {
                   props:{
                     content: "确定删除？",
-                    size: "default", 
+                    size: "small", 
                     icon: 'ios-remove'
                   },
                   on: {
@@ -156,11 +144,6 @@ export default {
                   }
                 }
               )
-              // renderDeletePop(h, '您确定要删除该用户吗', {
-              //   confirmFn: () => {
-              //     this.remove(root, node, data);
-              //   } 
-              // })
             ]
           )
         ]

@@ -228,7 +228,7 @@ export default {
     },
 
     reset () {
-      this.enable = false;
+      this.enable = '';
       this.userName = ''
       this.organizationId = ''
     }

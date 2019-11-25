@@ -289,9 +289,12 @@ export default {
         }
         .item-isselect {
           position: absolute;
-          font-size: 36px;
+          font-size: 36px !important;
           left: -2px;
           top: -14px;
+          i {
+            font-size: 36px !important;
+          }
         }
         .item-tag {
           color: #666;

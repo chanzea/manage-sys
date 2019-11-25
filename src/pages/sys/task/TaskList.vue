@@ -13,12 +13,6 @@
             <Button @click="reset">重置</Button>
           </ButtonGroup>
         </div>
-        <!-- <ButtonGroup class="btns">
-          <Button type="primary" @click="jumpToPage('/task/add')">新建</Button>
-          <Button type="primary">删除</Button>
-          <Button type="primary">上线</Button>
-          <Button type="primary">下线</Button>
-        </ButtonGroup> -->
     </div>
     <div class="content-middle">
       <div class="content-middle-table">
