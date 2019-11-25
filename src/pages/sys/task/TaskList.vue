@@ -138,7 +138,7 @@ export default {
       let page = this.page;
       getTaskList({
         page,
-        tag: 'mark',
+        // tag: 'mark',
         searchKey: this.searchKey,
         taskStatus: this.status,
         startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',

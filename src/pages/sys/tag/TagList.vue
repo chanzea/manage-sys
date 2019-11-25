@@ -5,8 +5,7 @@
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchValue" placeholder="关键字: 名称|文件|路径" />
         <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
-        <Button type="primary">查询</Button>
-        <Button style="float: right" type="primary" icon="md-add">新建数据源</Button>
+        <Button size="small" type="primary">查询</Button>
       </div>
     </table-page>
   </div>

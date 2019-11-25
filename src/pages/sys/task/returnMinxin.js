@@ -7,11 +7,6 @@ const mixin = {
             actionText: "返工审核",
             returnColumns: [
                 {
-                    
-                    width: 60,
-                    align: 'center'
-                },
-                {
                     title: '任务编号',
                     key: 'id',
                     sortable: true
@@ -20,6 +15,11 @@ const mixin = {
                     title: '任务名称',
                     key: 'taskName',
                     render: (h, params) => {
+                        // console.log("TCL: params", params)
+                        // let arr = params.row.markUserIds.map( item => {
+                        //     let loginName = this.userList[item] ? this.userList[item].loginName : "";
+                        //     return loginName
+                        // }); 
                         return h('div', this.taskList[params.row.taskId] ? this.taskList[params.row.taskId].taskName : "");
                     }
                 },

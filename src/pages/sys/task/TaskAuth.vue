@@ -71,7 +71,6 @@ export default {
         name: 'taskComplete'
       }],
       columns: [
-        
         {
           title: '任务编号',
           key: 'taskId',

@@ -178,6 +178,9 @@ export default {
     },
 
     changeTab(value){
+      this.userList = [];
+      this.data = [];
+      this.taskList = [];
       this.currentTab = value;
       this.page = {
         pageNum: 1,
@@ -198,7 +201,6 @@ export default {
         taskRework: this.getReturnTaskItemList,
         taskComplete: this.getCompleteTaskItemList
       }
-      console.log(getDataMap[this.currentTab])
       getDataMap[this.currentTab]();
     },
     
@@ -233,11 +235,6 @@ export default {
       handler (val) {
         console.log(val);
         this.columns =  [
-          {
-            
-            width: 60,
-            align: 'center'
-          },
           {
             title: '任务编号',
             key: 'id',

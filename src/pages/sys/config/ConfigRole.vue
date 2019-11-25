@@ -2,9 +2,7 @@
   <div class="page-config-role">
     <div class="config-role-content">
       <div class="content-header">
-        <Input placeholder="输入角色名称">
-          <Button slot="append" icon="md-add" @click="createRoleAction">新增角色</Button>
-        </Input>
+        <Button icon="md-add" @click="createRoleAction">新增角色</Button>
       </div>
       <div class="content-middle">
         <Table :columns="columns" :data="data"></Table>
