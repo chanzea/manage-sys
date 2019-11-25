@@ -9,7 +9,7 @@
         <Button class="btn-list-item" @click="goBack">返回</Button>
       </div>
       <div class="btn-list" v-else>
-        <Button class="btn-list-item" type="primary" @click="UserAdd">确定</Button>
+        <Button class="btn-list-item" type="primary" @click="UserAdd(false)">确定</Button>
         <Button class="btn-list-item" type="primary"  @click="UserAdd(true)">确定并继续添加</Button>
       </div>
     </div>
@@ -237,7 +237,6 @@ export default {
           this.formProp.forEach(item => {
             if (item.type === 'treeSelect') {
               const _data = this.formatTreeData(data, this.user[item.key])
-              console.log('data', _data)
               this.$set(this.formProp[1], 'options', _data)
             }
             this.$set(this.formCustom, item.key, this.user[item.key])
@@ -270,7 +269,6 @@ export default {
           const params = Object.assign({}, this.formCustom, {
             enable: this.formCustom.enable ? 1 : 0
           })
-          console.log('提交参数', params)
           UserAdd(params).then(res => {
             if(isReset) {
               this.$refs['formProp'].$refs['basicForm'].resetFields()

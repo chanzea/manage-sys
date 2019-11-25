@@ -10,7 +10,7 @@
           <Button>
             <router-link to="/user/create">新增用户</router-link>
           </Button>
-          <Button @click="addGroup">
+          <Button @click="getOrgGroup">
             <span style="color: #2d8cf0">新增组用户</span>
           </Button>
         </div>
@@ -34,6 +34,17 @@
         </Split>
       </div>
     </div>
+    <Modal v-model="isShowmodal" fullscreen :title="'当前组织名称: ' + organizationName" ok-text="确定添加" @on-ok="addToGroup">
+      <div style="margin-bottom: 12px;width: 300px">
+          <Input search enter-button="搜索" v-model="orgUserName" @on-search="searchOrgUserList" placeholder="关键字" />
+        </div>
+      <div style="margin-bottom: 12px">
+        <Table border :loading="loading" :columns="orgColumns" :data="orgData" @on-select="selectUser" @on-select-all="selectAll" @on-select-cancel="cancelSelectUser" @on-select-all-cancel="cancelSelectAll"></Table>
+      </div>
+      <div class="content-middle-right-pages">
+        <Page :total="orgTotal" size="small" show-elevator show-sizer @on-change="changeOrgPage" @on-page-size-change="changeOrgPage" />
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -41,7 +52,8 @@
   import {
     getListTree,
     getUserList,
-    deleteUser
+    deleteUser,
+    organizationAddUser
   } from 'api/user';
   import {
     renderDeletePop
@@ -56,7 +68,9 @@ export default {
       isSelectGroup: false,
       userName: '',
       enable: '',
-      organizationId: 0,
+      organizationId: '',
+      organizationName: '',
+      isShowmodal: false,
       columns: [
         
         {
@@ -117,7 +131,45 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      total: null
+      total: null,
+      orgColumns: [
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: '姓名',
+          key: 'userName',
+          sortable: true
+        },
+        {
+          title: '登录名',
+          key: 'loginName'
+        },
+        {
+          title: '手机',
+          key: 'phoneNum',
+          sortable: true
+        },
+        {
+          title: '权限',
+          key: 'roleName'
+        },
+        {
+          title: '创建时间',
+          key: 'createdTime'
+        }
+      ],
+      orgData: [],
+      orgTotal: null,
+      orgPage: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      orgUserName: '',
+      selection: [],
+      loading: false,
     }
   },
   created () {
@@ -131,6 +183,7 @@ export default {
         const { organization } = res
         this.treeOrganization = this.formatTreeData(organization)
         this.organizationId = this.treeOrganization[0].id
+        this.organizationName = this.treeOrganization[0].organizationName
         this.getUserList()
       }).catch(() => {
         this.fullLoading = false
@@ -200,6 +253,7 @@ export default {
 
     selectNode (data, node) {
       this.organizationId = node.id
+      this.organizationName = node.organizationName
       this.getUserList()
     },
     // 改变页码
@@ -213,19 +267,99 @@ export default {
       this.getUserList()
     },
 
-    // 添加组用户
-    addGroup () {
-      this.$router.push({
-        path: '/user/create',
-        query: {
-          orgId: this.organizationId
-        }
-      })
-    },
-
     searchUserList () {
       this.page.pageNum = 1
       this.getUserList()
+    },
+
+    // 添加组用户
+    getOrgGroup () {
+      this.orgData = []
+      getUserList({
+        enable: this.enable,
+        nonOrganizationId: this.organizationId,
+        userName: this.orgUserName,
+        page: {
+          pageNum: this.orgPage.pageNum,
+          pageSize: this.orgPage.pageSize,
+        }
+      }).then(res => {
+        const {organizationList,roleList,userList,count} = res
+        this.orgData = userList.map(item => {
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
+          item.roleName = item.roleIds && item.roleIds.map(item => {
+            return roleList[item].roleName
+          }).join(',')
+          return item
+        })
+        this.orgTotal = count
+        this.isShowmodal = true
+        this.selection = []
+      })
+    },
+    // getOrgGroup () {
+    //   this.$router.push({
+    //     path: '/user/create',
+    //     query: {
+    //       orgId: this.organizationId
+    //     }
+    //   })
+    // },
+    
+    // 改变页码
+    changeOrgPage (page) {
+      this.orgPage.pageNum = page
+      this.getUserList()
+    },
+    // 改变页面条数
+    changeOrgPageSize (pageSize) {
+      this.orgPage.pageSize = pageSize
+      this.getUserList()
+    },
+
+    searchOrgUserList () {
+      this.orgPage.pageNum = 1
+      this.getOrgGroup()
+    },
+
+    // 选择用户
+    selectUser (selection) {
+      this.selection = selection
+    },
+
+    // 全选
+    selectAll (selection) {
+      this.selection = selection
+    },
+
+    // 取消选择用户
+    cancelSelectUser (selection) {
+      this.selection = selection
+    },
+
+    // 取消多选
+    cancelSelectAll (selection) {
+      this.selection = []
+    },
+    
+    addToGroup () {
+      if (this.selection.length === 0) {
+        return
+      }
+      this.loading = true
+      Promise.all(this.selection.forEach(item => {
+        organizationAddUser({
+          organizationId: this.organizationId,
+          userId: item.id
+        })
+      })).then((res) => {
+        this.loading = false
+        this.isShowmodal = false
+        this.getUserList() //重新更新用户列表
+      }).catch(() => {
+        this.loading = false
+        this.isShowmodal = false
+      })
     }
   }
 }
