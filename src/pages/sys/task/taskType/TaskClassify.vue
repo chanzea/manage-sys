@@ -39,6 +39,7 @@
         </div>
       </div>
       <div class="task-classify-content-opt" v-if="!viewOnly">
+        <Button class="opt-btn" type="primary" @click="selectAll">全选</Button>
         <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
@@ -47,8 +48,7 @@
     <Modal
       v-model="isShowModal"
       title="分类标注"
-      @on-ok="confirm"
-      @on-cancel="">
+      @on-ok="confirm">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" @on-change="selectTag" />
     </Modal>
   </div>
@@ -169,6 +169,14 @@ export default {
     //選擇標簽
     selectTag (val) {
       this.formCustom.name = val
+    },
+
+    // 全选
+    selectAll () {
+      this.taskItemList.map(item => {
+        item.isSelected = true
+        return item
+      })
     },
 
     // 提交任务
