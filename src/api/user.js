@@ -92,3 +92,12 @@ export async function organizationDelete(params) {
   const data = await api(`/organization/delete`, 'post', params)
   return data
 }
+
+/**
+ * 添加用户到组织
+ * @param {Obiect} params 
+ */
+export async function organizationAddUser(params) {
+  const data = await api(`/organization/addUser`, 'post', params)
+  return data
+}
