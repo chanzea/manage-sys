@@ -14,7 +14,7 @@
             </div>
           </table-page>
 
-          <table-page v-else :columns="returnColumns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+          <table-page v-else :columns="computeCol" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
               <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
@@ -178,6 +178,9 @@ export default {
     },
 
     changeTab(value){
+      this.userList = [];
+      this.data = [];
+      this.taskList = [];
       this.currentTab = value;
       this.page = {
         pageNum: 1,
@@ -198,7 +201,6 @@ export default {
         taskRework: this.getReturnTaskItemList,
         taskComplete: this.getCompleteTaskItemList
       }
-      console.log(getDataMap[this.currentTab])
       getDataMap[this.currentTab]();
     },
     
@@ -233,11 +235,6 @@ export default {
       handler (val) {
         console.log(val);
         this.columns =  [
-          {
-            
-            width: 60,
-            align: 'center'
-          },
           {
             title: '任务编号',
             key: 'id',

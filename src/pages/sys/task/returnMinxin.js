@@ -7,11 +7,6 @@ const mixin = {
             actionText: "返工审核",
             returnColumns: [
                 {
-                    
-                    width: 60,
-                    align: 'center'
-                },
-                {
                     title: '任务编号',
                     key: 'id',
                     sortable: true
@@ -51,6 +46,13 @@ const mixin = {
                     }
                 },
                 {
+                    title: '获得积分',
+                    key: this.$route.path.indexOf('auth') ? 'reviewPoint' : 'markPoint',
+                    // render: (h, params) => {
+                    //     return h('div', this.userList[params.row.reviewUserId] ? this.userList[params.row.reviewUserId].loginName : "");
+                    // }
+                },
+                {
                     title: '操作',
                     key: 'action',
                     width: 260,
@@ -79,6 +81,19 @@ const mixin = {
     created() {
         
     },
+
+    computed: {
+        computeCol: function(){
+            let columns = [];
+            if(this.currentTab == 'taskRework'){
+                columns = this.returnColumns.filter( col => col.title != '获得积分')
+            } else {
+                columns = this.returnColumns
+            }
+            return columns
+        }
+    },
+    
 
 }
 export default mixin;

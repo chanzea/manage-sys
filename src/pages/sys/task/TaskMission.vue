@@ -173,7 +173,7 @@ export default {
     changeTab(value){
       this.data = [];
       this.currentTab = value;
-      this.columns =  value == "taskMission" ? this.missionColumns : this.returnColumns;
+      this.columns =  value == "taskMission" ? this.missionColumns : this.computeCol;
       if(this.currentTab == "taskRework"){
         this.actionText = "重做任务"
       } else {
