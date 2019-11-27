@@ -9,10 +9,10 @@
           <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         <Select class="form-item" v-model="markUserId" filterable style="width:160px" placeholder="根据标注人员搜索">
-          <Option v-for="item in userList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
         </Select>
         <Select class="form-item" v-model="reviewUserId" filterable style="width:160px" placeholder="根据审核人员搜索">
-          <Option v-for="item in userList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
         </Select>
         <!-- <ButtonGroup> -->
           <Button type="primary" @click="searchTaskItemList">查询</Button>
@@ -129,8 +129,19 @@ export default {
   },
   created() {
     this.taskItemList()
+    this.getUserList()
   },
   methods: {
+    // 获取表格数据
+    getUserList () {
+      this.userList = []
+      getUserList({
+        enable: 1
+      }).then(res => {
+        const {userList} = res
+        this.userList = userList
+      })
+    },
     // 获取题库列表
     taskItemList () {
       this.fullLoading = true
@@ -177,6 +188,8 @@ export default {
       this.searchKey = '';
       this.value = ['', ''];
       this.status = ''
+      this.reviewUserId = ''
+      this.markUserId = ''
     },
 
     searchTaskItemList () {
