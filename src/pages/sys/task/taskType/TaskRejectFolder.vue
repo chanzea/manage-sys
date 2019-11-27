@@ -4,15 +4,15 @@
       <div class="task-reject-folder-content-meta">
         <div class="task-reject-folder-content-meta-item">
           <span class="item-label">任务名称:</span>
-          <span class="item-value">aaaa</span>
+          <span class="item-value">{{detail.taskName}}</span>
         </div>
         <div class="task-reject-folder-content-meta-item">
           <span class="item-label">任务模版:</span>
-          <span class="item-value">图片剔除模版</span>
+          <span class="item-value">文件夹剔除任务</span>
         </div>
         <div class="task-reject-folder-content-meta-item">
           <span class="item-label">任务描述:</span>
-          <span class="item-value"><strong>请选择与大多数文件夹不同的少数派,在文件夹下面打勾</strong></span>
+          <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
       <div class="task-reject-folder-content-list">
@@ -75,6 +75,14 @@ export default {
       viewOnly: false,
       reviewInfo: {
 
+      }
+    }
+  },
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
       }
     }
   },

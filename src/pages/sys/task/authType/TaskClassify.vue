@@ -1,18 +1,18 @@
 <template>
   <div class="page-task-classify">
     <div class="task-classify-content">
-      <div class="task-reject-folder-content-meta">
-        <div class="task-item">
+      <div class="task-classify-content-meta">
+        <div class="task-classify-content-meta-item">
           <span class="item-label">任务名称:</span>
-          <span class="item-value">aaaa</span>
+          <span class="item-value">{{detail.taskName}}</span>
         </div>
-        <div class="task-item">
+        <div class="task-classify-content-meta-item">
           <span class="item-label">任务模版:</span>
           <span class="item-value">分类任务</span>
         </div>
-        <div class="task-item">
+        <div class="task-classify-content-meta-item">
           <span class="item-label">任务描述:</span>
-          <span class="item-value">为图片打上分类标签</span>
+          <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
       <div class="task-classify-content-list" v-if = "!noMore">
@@ -59,6 +59,14 @@ import {
 export default {
   name: 'TaskClassify',
   mixins: [minxin],
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
   data() {
     return {
       taskItemList: [],
@@ -201,6 +209,28 @@ export default {
 <style lang="scss" scoped>
 .page-task-classify {
   .task-classify-content {
+    &-meta {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      width: 60%;
+      &-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 14px;
+        .item-label {
+          color: #333;
+          min-width: 80px;
+          margin-right: 20px;
+        }
+        .item-value {
+          flex: 1;
+          line-height: 17px;
+          color: #666;
+        }
+      }
+    }
     &-list {
       display: flex;
       flex-wrap: wrap;

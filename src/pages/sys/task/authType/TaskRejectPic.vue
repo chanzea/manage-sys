@@ -4,15 +4,15 @@
       <div class="task-reject-pic-content-meta">
         <div class="task-reject-pic-content-meta-item">
           <span class="item-label">任务名称:</span>
-          <span class="item-value">aaaa</span>
+          <span class="item-value">{{detail.taskName}}</span>
         </div>
         <div class="task-reject-pic-content-meta-item">
           <span class="item-label">任务模版:</span>
-          <span class="item-value">图片剔除模版</span>
+          <span class="item-value">图片剔除任务</span>
         </div>
         <div class="task-reject-pic-content-meta-item">
           <span class="item-label">任务描述:</span>
-          <span class="item-value"><strong>点击图片选择与大多数图片不同的少数派</strong></span>
+          <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
       <div class="task-reject-pic-content-list">
@@ -64,6 +64,14 @@ export default {
       taskItemStatus: "5",
       taskItemReviewAdvise: "",
       noMore: false
+    }
+  },
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   created() {

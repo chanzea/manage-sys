@@ -4,15 +4,15 @@
       <div class="task-classify-content-meta">
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务名称:</span>
-          <span class="item-value">aaaa</span>
+          <span class="item-value">{{detail.taskName}}</span>
         </div>
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务模版:</span>
-          <span class="item-value">图片标注模版</span>
+          <span class="item-value">分类任务</span>
         </div>
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务描述:</span>
-          <span class="item-value"><strong>选择图片添加标注</strong></span>
+          <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
       <div class="task-classify-content-list">
@@ -102,6 +102,14 @@ export default {
       },
       // 查看详情
       viewOnly: false
+    }
+  },
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   components: {
@@ -261,6 +269,7 @@ export default {
       width: 60%;
       &-item {
         display: flex;
+        align-items: center;
         margin-bottom: 16px;
         font-size: 14px;
         .item-label {
