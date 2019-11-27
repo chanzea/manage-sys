@@ -38,9 +38,15 @@
       </div>
     </div>
     <Modal v-model="isShowmodal" fullscreen :title="'所属任务名称: ' + taskName">
-      <div style="margin-bottom: 12px;width: 300px">
-          <!-- <Input search enter-button="搜索" v-model="itemBankUserName" @on-search="searchOrgUserList" placeholder="关键字" /> -->
-        </div>
+      <div style="margin-bottom: 12px;">
+        <Select class="form-item" v-model="markUserId" filterable style="width:160px" placeholder="根据标注人员搜索">
+          <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
+        </Select>
+        <Select class="form-item" v-model="reviewUserId" filterable style="width:160px" placeholder="根据审核人员搜索">
+          <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
+        </Select>
+        <Button type="primary" @click="searchItemBankList">查询</Button>
+      </div>
       <div style="margin-bottom: 12px">
         <Table border :loading="loading" :columns="itemBankcolumns" :data="itemBankData"></Table>
       </div>
@@ -53,6 +59,9 @@
 
 <script>
 import { getTaskList, taskOffline, taskOnline, taskItemList } from "@/api/task";
+import {
+  getUserList,
+} from 'api/user';
 import {
   TASKTYPE
 } from 'utils/tool.js'
@@ -98,6 +107,7 @@ export default {
         }
       ],
       taskName: '',
+      taskId: '',
       columns: [
         {
           title: "任务编号",
@@ -203,14 +213,28 @@ export default {
           }
         }
       ],
+      userList: [],
+      markUserId: '',
+      reviewUserId: ''
     };
   },
 
   created() {
     this.getTaskList();
+    this.getUserList();
   },
 
   methods: {
+    // 获取表格数据
+    getUserList () {
+      this.userList = []
+      getUserList({
+        enable: 1
+      }).then(res => {
+        const {userList} = res
+        this.userList = userList
+      })
+    },
     getTaskList() {
       this.fullLoading = true
       let page = this.page;
@@ -263,7 +287,8 @@ export default {
     showItemBank (row) {
       console.log('row', row)
       this.taskName = row.taskName;
-      this.taskItemList(row.id)
+      this.taskId = row.id
+      this.taskItemList()
     },
 
     //查看
@@ -305,23 +330,31 @@ export default {
 
     changeItemBankPage (page) {
       this.itemBankPage.pageNum = page
-      this.getTaskList()
+      this.taskItemList()
     },
 
     changeItemBankPageSize (pageSize) {
       this.itemBankPage.pageSize = pageSize
-      this.getTaskList()
+      this.taskItemList()
+    },
+
+    searchItemBankList () {
+      this.itemBankPage.pageNum = 1
+      this.taskItemList()
     },
 
     // 获取题库列表
-    taskItemList (taskId) {
+    taskItemList () {
       this.loading = true
+      this.itemBankData = []
       taskItemList({
         page: {
           pageSize: this.itemBankPage.pageSize,
           pageNum: this.itemBankPage.pageNum
         },
-        taskId
+        taskId: this.taskId,
+        markUserId: this.markUserId,
+        reviewUserId: this.reviewUserId
       }).then(res => {
         this.isShowmodal = true
         const {count, taskItemList, taskList, userList} = res
