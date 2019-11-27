@@ -36,10 +36,8 @@ export default {
     getListTree () {
       return new Promise((resolve) => {
         getListTree().then(res => {
-          console.log('getListTree ===> ', res)
           const { organization } = res
           this.data = this.formatTreeData(organization)
-          console.log('data', this.data)
           resolve()
         })
       })

@@ -10,7 +10,7 @@
           <Button>
             <router-link to="/user/create">新增用户</router-link>
           </Button>
-          <Button @click="getOrgGroup">
+          <Button :disabled="organizationId === ''" @click="getOrgGroup">
             <span style="color: #2d8cf0">新增组用户</span>
           </Button>
         </div>
@@ -182,8 +182,8 @@ export default {
       getListTree().then(res => {
         const { organization } = res
         this.treeOrganization = this.formatTreeData(organization)
-        this.organizationId = this.treeOrganization[0].id
-        this.organizationName = this.treeOrganization[0].organizationName
+        // this.organizationId = this.treeOrganization[0].id
+        // this.organizationName = this.treeOrganization[0].organizationName
         this.getUserList()
       }).catch(() => {
         this.fullLoading = false

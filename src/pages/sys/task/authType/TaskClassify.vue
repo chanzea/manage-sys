@@ -17,7 +17,7 @@
       </div>
       <div class="task-classify-content-list" v-if = "!noMore">
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
-          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
+          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}">
             <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
           <!-- <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div> -->
@@ -213,7 +213,7 @@ export default {
         margin-right: 12px;
         box-sizing: border-box;
         width: 250px;
-        height: 150px;
+        height: 200px;
         &.selected-border {
           border: 2px solid #f00;
           box-sizing: border-box;
@@ -221,6 +221,10 @@ export default {
         .item-thumb {
           width: 100%;
           height: 100%;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
         }
         .item-isselect {
           position: absolute;

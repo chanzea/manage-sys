@@ -19,7 +19,8 @@
         <Table border :columns="columns" :data="data">
           <template slot-scope="{ row, index }" slot="action">
             <span class="opt-item" @click="show(row)">查看</span>
-            <span class="opt-item" @click="jumpToItembank('/task/itembank', row)">题库</span>
+            <!-- <span class="opt-item" @click="jumpToItembank('/task/itembank', row)">题库</span> -->
+            <span class="opt-item" @click="showItemBank(row)">题库</span>
             <Poptip
               confirm
               title="确认删除该任务?"
@@ -36,12 +37,33 @@
         <Page :total="total" size="small" show-elevator show-sizer @on-change="changePage" @on-page-size-change="changePageSize" />
       </div>
     </div>
+    <Modal v-model="isShowmodal" fullscreen :title="'所属任务名称: ' + taskName">
+      <div style="margin-bottom: 12px;width: 300px">
+          <!-- <Input search enter-button="搜索" v-model="itemBankUserName" @on-search="searchOrgUserList" placeholder="关键字" /> -->
+        </div>
+      <div style="margin-bottom: 12px">
+        <Table border :loading="loading" :columns="itemBankcolumns" :data="itemBankData"></Table>
+      </div>
+      <div class="content-middle-right-pages">
+        <Page :total="itemBankTotal" size="small" show-elevator show-sizer @on-change="changeItemBankPage" @on-page-size-change="changeItemBankPageSize" />
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
-import { getTaskList, taskOffline, taskOnline } from "@/api/task";
-// import taskList from "@/mock/task";
+import { getTaskList, taskOffline, taskOnline, taskItemList } from "@/api/task";
+import {
+  TASKTYPE
+} from 'utils/tool.js'
+const taskItemStatusData = {
+  '0': '未领取',
+  '1': '待标注',
+  '2': '待审核',
+  '3': '返工标注',
+  '4': '返工审核',
+  '5': '已完成'
+}
 const taskStatusData = {
   '-1': '初始化',
   '-2': '初始化完成',
@@ -75,8 +97,8 @@ export default {
           value: '0'
         }
       ],
+      taskName: '',
       columns: [
-        
         {
           title: "任务编号",
           key: "id",
@@ -85,6 +107,10 @@ export default {
         {
           title: "任务名称",
           key: "taskName"
+        },
+        {
+          title: '任务类型',
+          key: 'taskTypeDis'
         },
         {
           title: "创建人",
@@ -96,15 +122,18 @@ export default {
         },
         {
           title: "数量",
-          key: "taskItemTotal"
+          key: "taskItemTotal",
+          width: '100'
         },
         {
           title: "待标注",
-          key: "taskItemHadMarkTotal"
+          key: "taskItemHadMarkTotal",
+          width: '100'
         },
         {
           title: "待审核",
-          key: "taskItemNeedReviewTotal"
+          key: "taskItemNeedReviewTotal",
+          width: '100'
         },
         {
           title: "状态",
@@ -118,7 +147,62 @@ export default {
         }
       ],
       total: 0,
-      data: []
+      data: [],
+
+      isShowmodal: false,
+      itemBankData: [],
+      itemBankTotal: null,
+      loading: false,
+      itemBankPage: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      itemBankcolumns: [
+        {
+          title: '题目编号',
+          key: 'id'
+        },{
+          title: '所属任务编号',
+          key: 'taskId'
+        },{
+          title: '所属任务名称',
+          key: 'taskName'
+        },{
+          title: '所属任务类型',
+          key: 'taskTypeDis'
+        },
+        {
+          title: '标注人员',
+          key: 'markUserName'
+        },{
+          title: '审核人员',
+          key: 'reviewUserName'
+        },{
+          title: '状态',
+          key: 'status'
+        },{
+          title: '操作',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('span', {
+                style: {
+                  color: '#2d8cf0',
+                  marginRight: '12px',
+                  cursor: 'pointer'
+                },
+                on: {
+                  click: () => {
+                      this.showDetail(params)
+                  }
+                }
+              }, '查看详情')
+            ]);
+          }
+        }
+      ],
     };
   },
 
@@ -143,7 +227,8 @@ export default {
         this.data = taskList ? taskList.map(item => {
           item.creatorName = userList[item.creatorId].userName
           item.createdTime = dataSetList[item.dataSetId] ? new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd') : '-'
-          item.taskStatusDis = taskStatusData[item.taskStatus]
+          item.taskStatusDis = taskStatusData[item.taskStatus];
+          item.taskTypeDis = TASKTYPE[item.taskType].label
           return item
         }) : []
         this.total = count;
@@ -166,13 +251,19 @@ export default {
     },
     
     // 跳转到题库
-    jumpToItembank(path, row) {
-      this.$router.push({
-        path,
-        query: {
-          taskId: row.id
-        }
-      })
+    // jumpToItembank(path, row) {
+    //   this.$router.push({
+    //     path,
+    //     query: {
+    //       taskId: row.id
+    //     }
+    //   })
+    // },
+
+    showItemBank (row) {
+      console.log('row', row)
+      this.taskName = row.taskName;
+      this.taskItemList(row.id)
     },
 
     //查看
@@ -210,6 +301,57 @@ export default {
     changePageSize (pageSize) {
       this.page.pageSize = pageSize
       this.getTaskList()
+    },
+
+    changeItemBankPage (page) {
+      this.itemBankPage.pageNum = page
+      this.getTaskList()
+    },
+
+    changeItemBankPageSize (pageSize) {
+      this.itemBankPage.pageSize = pageSize
+      this.getTaskList()
+    },
+
+    // 获取题库列表
+    taskItemList (taskId) {
+      this.loading = true
+      taskItemList({
+        page: {
+          pageSize: this.itemBankPage.pageSize,
+          pageNum: this.itemBankPage.pageNum
+        },
+        taskId
+      }).then(res => {
+        this.isShowmodal = true
+        const {count, taskItemList, taskList, userList} = res
+        this.itemBankData = taskItemList.map(item => {
+          item.taskName = taskList[item.taskId].taskName;
+          item.taskTypeDis = TASKTYPE[taskList[item.taskId].taskType].label;
+          item.taskType = taskList[item.taskId].taskType;
+          item.status = taskItemStatusData[item.taskItemType];
+          item.markUserName = item.markUserId !== 0 ? userList[item.markUserId].userName : '暂无';
+          item.reviewUserName = item.reviewUserId !== 0 ? userList[item.reviewUserId].userName : '暂无';
+          return item
+        })
+        this.itemBankTotal = count
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+
+    // 查看详情
+    showDetail (params) {
+      this.$router.push({
+        path: '/task/type',
+        query: {
+          id: params.row.taskId,
+          taskItemId: params.row.id,
+          type: TASKTYPE[params.row.taskType].type,
+          viewOnly: true,
+        }
+      })
     },
     
     // 删除任务

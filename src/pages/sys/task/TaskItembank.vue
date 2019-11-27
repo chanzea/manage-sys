@@ -3,10 +3,16 @@
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
-        <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字" />
+        <Input class="form-item" style="width:120px" v-model="searchKey" placeholder="关键字" />
         <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
-        <Select class="form-item" v-model="status" style="width:120px" placeholder="任务类型">
+        <Select class="form-item" v-model="status" style="width:160px" placeholder="任务类型">
           <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+        <Select class="form-item" v-model="markUserId" filterable style="width:160px" placeholder="根据标注人员搜索">
+          <Option v-for="item in userList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
+        <Select class="form-item" v-model="reviewUserId" filterable style="width:160px" placeholder="根据审核人员搜索">
+          <Option v-for="item in userList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         <!-- <ButtonGroup> -->
           <Button type="primary" @click="searchTaskItemList">查询</Button>
@@ -20,15 +26,18 @@
 <script>
 import { taskItemList } from "api/task.js";
 import TablePage from 'components/tablePage.vue';
+ import {
+    getUserList,
+  } from 'api/user';
 import {
   TASKTYPE
 } from 'utils/tool.js'
 const taskItemStatusData = {
-  '0': '待分发',
+  '0': '未领取',
   '1': '待标注',
   '2': '待审核',
   '3': '返工标注',
-  '4': '返工标注审核',
+  '4': '返工审核',
   '5': '已完成'
 }
 
@@ -61,11 +70,6 @@ export default {
       status: '',
       options: taskType,
       columns: [
-        // {
-        //   
-        //   width: 60,
-        //   align: 'center'
-        // },
         {
           title: '题目编号',
           key: 'id'
@@ -103,7 +107,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                      this.show(params)
+                      this.showDetail(params)
                   }
                 }
               }, '查看详情')
@@ -118,6 +122,9 @@ export default {
       },
       taskItemStatus: '', //状态
       total: null,
+      reviewUserId: '',
+      markUserId: '',
+      userList: []
     }
   },
   created() {
@@ -136,8 +143,8 @@ export default {
         startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
         endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
         searchKey: this.searchKey,
-        markUserId: '',
-        reviewUserId: ''
+        markUserId: this.markUserId,
+        reviewUserId: this.reviewUserId
       }).then(res => {
         console.log('res', res)
         const {count, taskItemList, taskList, userList} = res
@@ -178,7 +185,7 @@ export default {
     },
 
     // 查看详情
-    show (params) {
+    showDetail (params) {
       console.log('params', params)
       this.$router.push({
         path: '/task/type',

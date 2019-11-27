@@ -1,6 +1,6 @@
 <style scoped>
   .layout-content {
-    min-width: 800px;
+    min-width: 1000px;
     margin: 15px 15px 5px 15px;
     min-height: calc(100vh - 130px);
     overflow-y: yes;

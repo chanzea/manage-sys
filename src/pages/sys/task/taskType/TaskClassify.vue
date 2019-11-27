@@ -17,7 +17,8 @@
       </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
+          <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}">
+            <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
@@ -288,12 +289,25 @@ export default {
         position: relative;
         .item-thumb {
           width: 250px;
-          height: 150px;
+          height: 200px;
+          // display: flex;
+          // justify-content: center;
+          // align-items: center;
           margin-bottom: 12px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
           &.selected-border {
             border: 2px solid #f00;
             box-sizing: border-box;
           }
+          // img {
+          //   max-width: 100%;
+          //   max-height: 100%;
+          //   overflow: hidden;
+          //   display: block;
+          // }
         }
         .item-isselect {
           position: absolute;

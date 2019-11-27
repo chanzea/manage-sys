@@ -5,8 +5,8 @@
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
         <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
-        <Button type="primary" size="small" @click="searchDatasetList">查询</Button>
-        <Button  size="small" type="primary" icon="md-add" @click="jumpToPage">新建数据源</Button>
+        <Button type="primary" @click="searchDatasetList">查询</Button>
+        <Button type="primary" icon="md-add" @click="jumpToPage">新建数据源</Button>
       </div>
     </table-page>
     <Modal
