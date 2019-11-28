@@ -1,5 +1,19 @@
 <template>
   <div class="home">
+    <div class="task-mark-content-meta">
+      <div class="task-mark-content-meta-item">
+        <span class="item-label">任务名称:</span>
+        <span class="item-value">{{detail.taskName}}</span>
+      </div>
+      <div class="task-mark-content-meta-item">
+        <span class="item-label">任务模版:</span>
+        <span class="item-value">{{taskType === 'Mark' ? '标注任务' : '分割任务'}}</span>
+      </div>
+      <div class="task-mark-content-meta-item">
+        <span class="item-label">任务描述:</span>
+        <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
+      </div>
+    </div>
     <div class="btn-group">
       <button @click="()=>{taskItemMark()}">提交数据</button>
       <button v-if="!isReturnItem" @click="()=>{taskItemMark(true)}">下一题</button>
@@ -63,9 +77,19 @@ export default {
         // }
       ],
       tagDataList: [],
+      taskType: ''
+    }
+  },
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   mounted () {
+    this.taskType = this.$route.query.type
     this.tagMarkAdd();
     const taskId = this.$route.query.id
     const taskItemId = this.$route.query.taskItemId
@@ -217,8 +241,28 @@ export default {
   }
 }
 </script>
-<style lang="less">
-
+<style lang="scss">
+.task-mark-content-meta {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 60%;
+  &-item {
+    display: flex;
+    margin-bottom: 16px;
+    font-size: 14px;
+    .item-label {
+      color: #333;
+      min-width: 80px;
+      margin-right: 20px;
+    }
+    .item-value {
+      flex: 1;
+      line-height: 17px;
+      color: #666;
+    }
+  }
+}
 .ivu-input[disabled], fieldset[disabled] .ivu-input{
   background-color: white;
   color: #000000;

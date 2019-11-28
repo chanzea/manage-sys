@@ -1,23 +1,23 @@
 <template>
   <div class="page-task-classify">
     <div class="task-classify-content">
-      <div class="task-reject-folder-content-meta">
-        <div class="task-item">
+      <div class="task-classify-content-meta">
+        <div class="task-classify-content-meta-item">
           <span class="item-label">任务名称:</span>
-          <span class="item-value">aaaa</span>
+          <span class="item-value">{{detail.taskName}}</span>
         </div>
-        <div class="task-item">
+        <div class="task-classify-content-meta-item">
           <span class="item-label">任务模版:</span>
           <span class="item-value">分类任务</span>
         </div>
-        <div class="task-item">
+        <div class="task-classify-content-meta-item">
           <span class="item-label">任务描述:</span>
-          <span class="item-value">为图片打上分类标签</span>
+          <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
       <div class="task-classify-content-list" v-if = "!noMore">
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
-          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
+          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}">
             <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
           <!-- <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div> -->
@@ -59,6 +59,14 @@ import {
 export default {
   name: 'TaskClassify',
   mixins: [minxin],
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
   data() {
     return {
       taskItemList: [],
@@ -201,6 +209,28 @@ export default {
 <style lang="scss" scoped>
 .page-task-classify {
   .task-classify-content {
+    &-meta {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      width: 60%;
+      &-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 14px;
+        .item-label {
+          color: #333;
+          min-width: 80px;
+          margin-right: 20px;
+        }
+        .item-value {
+          flex: 1;
+          line-height: 17px;
+          color: #666;
+        }
+      }
+    }
     &-list {
       display: flex;
       flex-wrap: wrap;
@@ -213,7 +243,7 @@ export default {
         margin-right: 12px;
         box-sizing: border-box;
         width: 250px;
-        height: 150px;
+        height: 200px;
         &.selected-border {
           border: 2px solid #f00;
           box-sizing: border-box;
@@ -221,12 +251,19 @@ export default {
         .item-thumb {
           width: 100%;
           height: 100%;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
         }
         .item-isselect {
           position: absolute;
-          font-size: 36px;
+          font-size: 36px !important;
           left: -2px;
           top: -14px;
+          i {
+            font-size: 36px !important;
+          }
         }
         .item-opt {
           position: absolute;

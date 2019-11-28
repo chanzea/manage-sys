@@ -2,7 +2,7 @@
   <div class="page-task-add">
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <div class="task-add-content">
-      <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="100">
+      <Form :model="formItem" ref="taskForm" :rules="ruleValidate" :label-width="120">
         <FormItem label="任务名称:" prop="taskName">
           <Input v-model="formItem.taskName" placeholder="任务名称"></Input>
         </FormItem>

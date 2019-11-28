@@ -5,8 +5,8 @@
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:300px" v-model="searchKey" placeholder="关键字: 名称|文件|路径" />
         <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
-        <Button type="primary" size="small" @click="searchDatasetList">查询</Button>
-        <Button  size="small" type="primary" icon="md-add" @click="jumpToPage">新建数据源</Button>
+        <Button type="primary" @click="searchDatasetList">查询</Button>
+        <Button type="primary" icon="md-add" @click="jumpToPage">新建数据源</Button>
       </div>
     </table-page>
     <Modal
@@ -33,10 +33,13 @@
       title="查看源文件"
       width="620">
       <div class="modal-content">
-        <div class="modal-content-list">
+        <div class="modal-content-list" v-if="fileList.length !== 0">
           <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
             <img :src="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
           </div>
+        </div>
+        <div v-else style="text-align:center;padding: 8px 0;">
+          暂无数据
         </div>
       </div>
       <div class="modal-footer" slot="footer">
@@ -202,7 +205,6 @@ export default {
     },
     getOrganizationName (organizationIds) {
       const organizationList = [...this.organizationList]
-      console.log('organizationList', organizationList)
       const path = organizationList.filter(item => {
         return organizationIds.includes(item.id)
       }).map(item => {

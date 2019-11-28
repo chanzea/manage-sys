@@ -4,20 +4,21 @@
       <div class="task-classify-content-meta">
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务名称:</span>
-          <span class="item-value">aaaa</span>
+          <span class="item-value">{{detail.taskName}}</span>
         </div>
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务模版:</span>
-          <span class="item-value">图片标注模版</span>
+          <span class="item-value">分类任务</span>
         </div>
         <div class="task-classify-content-meta-item">
           <span class="item-label">任务描述:</span>
-          <span class="item-value"><strong>选择图片添加标注</strong></span>
+          <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
+          <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}">
+            <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
@@ -39,6 +40,7 @@
         </div>
       </div>
       <div class="task-classify-content-opt" v-if="!viewOnly">
+        <Button class="opt-btn" type="primary" @click="selectAll">全选</Button>
         <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
@@ -47,8 +49,7 @@
     <Modal
       v-model="isShowModal"
       title="分类标注"
-      @on-ok="confirm"
-      @on-cancel="">
+      @on-ok="confirm">
       <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" @on-change="selectTag" />
     </Modal>
   </div>
@@ -101,6 +102,14 @@ export default {
       },
       // 查看详情
       viewOnly: false
+    }
+  },
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     }
   },
   components: {
@@ -169,6 +178,14 @@ export default {
     //選擇標簽
     selectTag (val) {
       this.formCustom.name = val
+    },
+
+    // 全选
+    selectAll () {
+      this.taskItemList.map(item => {
+        item.isSelected = true
+        return item
+      })
     },
 
     // 提交任务
@@ -252,6 +269,7 @@ export default {
       width: 60%;
       &-item {
         display: flex;
+        align-items: center;
         margin-bottom: 16px;
         font-size: 14px;
         .item-label {
@@ -280,18 +298,34 @@ export default {
         position: relative;
         .item-thumb {
           width: 250px;
-          height: 150px;
+          height: 200px;
+          // display: flex;
+          // justify-content: center;
+          // align-items: center;
           margin-bottom: 12px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
           &.selected-border {
             border: 2px solid #f00;
             box-sizing: border-box;
           }
+          // img {
+          //   max-width: 100%;
+          //   max-height: 100%;
+          //   overflow: hidden;
+          //   display: block;
+          // }
         }
         .item-isselect {
           position: absolute;
-          font-size: 36px;
+          font-size: 36px !important;
           left: -2px;
           top: -14px;
+          i {
+            font-size: 36px !important;
+          }
         }
         .item-tag {
           color: #666;

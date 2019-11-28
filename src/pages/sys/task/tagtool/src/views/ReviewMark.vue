@@ -1,5 +1,19 @@
 <template>
   <div class="home">
+    <div class="task-review-content-meta">
+      <div class="task-review-content-meta-item">
+        <span class="item-label">任务名称:</span>
+        <span class="item-value">{{detail.taskName}}</span>
+      </div>
+      <div class="task-review-content-meta-item">
+        <span class="item-label">任务模版:</span>
+        <span class="item-value">{{taskType === 'Mark' ? '标注任务' : '分割任务'}}</span>
+      </div>
+      <div class="task-review-content-meta-item">
+        <span class="item-label">任务描述:</span>
+        <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
+      </div>
+    </div>
     <div class="btn-group" v-if="!viewOnly">
       <button @click="taskItemReview">审核</button>
       <button v-if="!isReturnItem" @click="taskItemReview(true)">下一题</button>
@@ -173,7 +187,28 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="scss">
+.task-review-content-meta {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 60%;
+  &-item {
+    display: flex;
+    margin-bottom: 16px;
+    font-size: 14px;
+    .item-label {
+      color: #333;
+      min-width: 80px;
+      margin-right: 20px;
+    }
+    .item-value {
+      flex: 1;
+      line-height: 17px;
+      color: #666;
+    }
+  }
+}
 .btn-group {
   text-align: left;
   padding-bottom: 0.5em;
