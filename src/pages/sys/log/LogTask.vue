@@ -85,7 +85,7 @@ export default {
           title: '任务id',
           key: 'taskId',
           sortable: true,
-          width: 300
+          width: 100
         },
         {
           title: '任务类型',
@@ -104,7 +104,10 @@ export default {
           title: '操作',
           key: 'operateAction'
         }, 
-
+        {
+          title: '时间',
+          key: 'createdTime'
+        }, 
         {
           title: '请求者',
           key: 'operatorId',

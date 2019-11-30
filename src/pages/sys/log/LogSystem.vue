@@ -100,6 +100,10 @@ export default {
           }
         },
         {
+          title: '请求时间',
+          key: 'createdTime'
+        },
+        {
           title: '请求数据',
           key: 'operateData'
         }
