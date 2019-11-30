@@ -3,7 +3,7 @@
     <div class="task-review-content-meta">
       <div class="task-review-content-meta-item">
         <span class="item-label">任务名称:</span>
-        <span class="item-value">{{detail.taskName}}</span>
+        <span class="item-value">{{detail && detail.taskName}}</span>
       </div>
       <div class="task-review-content-meta-item">
         <span class="item-label">任务模版:</span>
@@ -11,7 +11,7 @@
       </div>
       <div class="task-review-content-meta-item">
         <span class="item-label">任务描述:</span>
-        <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
+        <span class="item-value"><strong>{{detail && detail.taskRemark}}</strong></span>
       </div>
     </div>
     <div class="btn-group" v-if="!viewOnly">
@@ -48,6 +48,14 @@ export default {
   components: {
     tagTool
   },
+  props: {
+    detail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
   data () {
     return {
       taskItemList: [],
@@ -77,10 +85,12 @@ export default {
           'desc': '军事图片识别',
           'selected': false
         }
-      ]
+      ],
+      taskType: ''
     }
   },
   mounted () {
+    this.taskType = this.$route.query.type
     const taskId = this.$route.query.id;
     const taskItemId = this.$route.query.taskItemId
     // this.viewOnly = this.$route.query.viewOnly ? true : false;

@@ -15,9 +15,11 @@ import { taskDetail } from "@/api/task"
 
 export default {
   name: 'TaskType',
-  data: {
-    type: '',
-    detail: {}
+  data(){
+    return {
+      type: '',
+      detail: {}
+    }
   },
   created() {
     this.type = this.$route.query.type
