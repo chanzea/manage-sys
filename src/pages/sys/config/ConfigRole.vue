@@ -230,17 +230,17 @@ export default {
         permissionIds: this.getCheckedNodesIds()
       }
       console.log('params', params)
-      // roleAddPermission({
-      //   roleId: this.currentUpdateRole.id,
-      //   permissionIds: this.getCheckedNodesIds()
-      // }).then(() => {
+      roleAddPermission({
+        roleId: this.currentUpdateRole.id,
+        permissionIds: this.getCheckedNodesIds()
+      }).then(() => {
         
-      //   this.$Message.success("修改权限成功");
-      //   this.isShowModal = false;
-      //   this.$set(this.treeData[0], "children", []);
-      // }).catch( () => {
-      //   this.$Message.error("修改权限失败");
-      // });
+        this.$Message.success("修改权限成功");
+        this.isShowModal = false;
+        this.$set(this.treeData[0], "children", []);
+      }).catch( () => {
+        this.$Message.error("修改权限失败");
+      });
     },
 
     formatTreeData(item) {
