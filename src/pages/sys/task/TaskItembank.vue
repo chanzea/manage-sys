@@ -33,7 +33,7 @@ import {
   TASKTYPE
 } from 'utils/tool.js'
 const taskItemStatusData = {
-  '0': '未领取',
+  '0': '待领取',
   '1': '待标注',
   '2': '待审核',
   '3': '返工标注',
@@ -163,7 +163,7 @@ export default {
           item.taskName = taskList[item.taskId].taskName;
           item.taskTypeDis = TASKTYPE[taskList[item.taskId].taskType].label;
           item.taskType = taskList[item.taskId].taskType;
-          item.status = taskItemStatusData[item.taskItemType];
+          item.status = taskItemStatusData[item.itemStatus];
           item.markUserName = item.markUserId !== 0 ? userList[item.markUserId].userName : '暂无';
           item.reviewUserName = item.reviewUserId !== 0 ? userList[item.reviewUserId].userName : '暂无';
           return item

@@ -35,7 +35,7 @@
       <div class="modal-content">
         <div class="modal-content-list" v-if="fileList.length !== 0">
           <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
-            <img :src="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
+            <img v-lazy="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
           </div>
         </div>
         <div v-else style="text-align:center;padding: 8px 0;">
@@ -358,10 +358,14 @@ export default {
       margin-bottom: 12px;
       margin-right: 20px;
       width: 120px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
       img {
-        width: 100%;
-        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
         display: block;
       }
       &.not-allow {

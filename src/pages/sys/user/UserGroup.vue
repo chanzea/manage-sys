@@ -77,16 +77,17 @@ export default {
             }),
             h("span", {
                 style: {
-                  display: data.isEdit ? "none" : "inline-block",
-                  width: '120px',
-                  'white-space': 'nowrap',
-                  'overflow': 'hidden',
-                  'text-overflow': 'ellipsis',
-                  'vertical-align': 'middle'
+                  display: data.isEdit ? "none" : "unset",
+                  // display: data.isEdit ? "none" : "inline-block",
+                  // width: '120px',
+                  // 'white-space': 'nowrap',
+                  // 'overflow': 'hidden',
+                  // 'text-overflow': 'ellipsis',
+                  // 'vertical-align': 'middle'
                 },
-                props: {
+                props: Object.assign({},{
                   title: `${data.organizationName}` 
-                }
+                })
               },
               `${data.organizationName}`
             ),
@@ -275,7 +276,7 @@ export default {
   flex: 1;
   background: #fff;
   .user-group-content {
-    width: 50%;
+    width: 55%;
     flex: 1;
     padding: 8px;
   }

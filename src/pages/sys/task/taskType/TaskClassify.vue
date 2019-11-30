@@ -17,9 +17,11 @@
       </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}">
-            <!-- <img :src="BASEURL + item.src" alt=""> -->
-          </div>
+          <!-- <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}"> -->
+            <div class="item-thumb">
+              <img :src="BASEURL + item.src" alt="">
+            </div>
+          <!-- </div> -->
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
             <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
@@ -299,24 +301,23 @@ export default {
         .item-thumb {
           width: 250px;
           height: 200px;
-          // display: flex;
-          // justify-content: center;
-          // align-items: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           margin-bottom: 12px;
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: center;
+          // background-size: contain;
+          // background-repeat: no-repeat;
+          // background-position: center;
           box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
           &.selected-border {
             border: 2px solid #f00;
             box-sizing: border-box;
           }
-          // img {
-          //   max-width: 100%;
-          //   max-height: 100%;
-          //   overflow: hidden;
-          //   display: block;
-          // }
+          img {
+            max-width: 100%;
+            max-height: 100%;
+            display: inline-block;
+          }
         }
         .item-isselect {
           position: absolute;
