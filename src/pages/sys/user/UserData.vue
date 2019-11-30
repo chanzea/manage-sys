@@ -4,11 +4,11 @@
     <div class="user-data-content">
       <div class="content-header">
         <div class="content-header-btn-lists">
-          <Button>
-            <router-link to="/user/group">新增组</router-link>
+          <Button @click="jumpToPage('/user/group')">
+            <span style="color: #2d8cf0">新增组</span>
           </Button>
-          <Button>
-            <router-link to="/user/create">新增用户</router-link>
+          <Button @click="jumpToPage('/user/create')">
+            <span style="color: #2d8cf0">新增用户</span>
           </Button>
           <Button :disabled="organizationId === ''" @click="getOrgGroup">
             <span style="color: #2d8cf0">新增组用户</span>
@@ -347,19 +347,25 @@ export default {
         return
       }
       this.loading = true
-      Promise.all(this.selection.forEach(item => {
-        organizationAddUser({
+      Promise.all(this.selection.map(item => {
+        return organizationAddUser({
           organizationId: this.organizationId,
           userId: item.id
         })
       })).then((res) => {
+        console.log('res', res)
         this.loading = false
         this.isShowmodal = false
+        this.page.pageNum = 1
         this.getUserList() //重新更新用户列表
       }).catch(() => {
         this.loading = false
         this.isShowmodal = false
       })
+    },
+
+    jumpToPage (path) {
+      this.$router.push(path)
     }
   }
 }

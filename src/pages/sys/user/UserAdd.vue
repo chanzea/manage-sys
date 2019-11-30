@@ -134,7 +134,7 @@ export default {
         },{
           label: '婚姻状况',
           type: 'select',
-          value: '',
+          value: null,
           options: [{
             value: 0,
             label: '未婚'

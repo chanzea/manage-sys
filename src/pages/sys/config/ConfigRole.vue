@@ -10,7 +10,6 @@
       <Modal v-model="isShowModal" fullscreen :title="modalContent.title">
         <!-- <div>{{modalContent.content}}</div> -->
         <div>
-          <!-- <Button slot="append" icon="md-add" @click="getCheckedNodesIds">test</Button> -->
           <Tree :data="treeData" ref="tree" :render="renderContent" show-checkbox></Tree>
         </div>
         <div slot="footer">
@@ -148,10 +147,20 @@ export default {
   },
   methods: {
     getCheckedNodesIds() {
+      function sortNumber(a,b){
+        return a - b
+      }
       let checkedNodes = this.$refs.tree.getCheckedNodes();
-      let checkedId = checkedNodes.map(item => item.id);
-      console.log(checkedId);
-      return checkedId;
+      let checkedId = checkedNodes.map(item => {
+        return item.id
+      });
+      let parentId = checkedNodes.map(item => {
+        return item.permissionParent
+      });
+      parentId = parentId.filter(item => {
+        return item !== 0
+      })
+      return [...new Set([...checkedId, ...parentId])].sort(sortNumber);
     },
     //删除角色
     delete(row) {
@@ -216,17 +225,22 @@ export default {
 
     //更新权限
     updatePermission() {
-      roleAddPermission({
+      const params = {
         roleId: this.currentUpdateRole.id,
         permissionIds: this.getCheckedNodesIds()
-      }).then(() => {
+      }
+      console.log('params', params)
+      // roleAddPermission({
+      //   roleId: this.currentUpdateRole.id,
+      //   permissionIds: this.getCheckedNodesIds()
+      // }).then(() => {
         
-        this.$Message.success("修改权限成功");
-        this.isShowModal = false;
-        this.$set(this.treeData[0], "children", []);
-      }).catch( () => {
-        this.$Message.error("修改权限失败");
-      });
+      //   this.$Message.success("修改权限成功");
+      //   this.isShowModal = false;
+      //   this.$set(this.treeData[0], "children", []);
+      // }).catch( () => {
+      //   this.$Message.error("修改权限失败");
+      // });
     },
 
     formatTreeData(item) {

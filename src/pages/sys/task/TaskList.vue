@@ -137,12 +137,12 @@ export default {
         },
         {
           title: "待标注",
-          key: "taskItemHadMarkTotal",
+          key: "taskItemNeedMarkTotal",
           width: '100'
         },
         {
           title: "待审核",
-          key: "taskItemNeedReviewTotal",
+          key: "_taskItemNeedReviewTotal",
           width: '100'
         },
         {
@@ -252,6 +252,8 @@ export default {
           item.creatorName = userList[item.creatorId].userName
           item.createdTime = dataSetList[item.dataSetId] ? new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd') : '-'
           item.taskStatusDis = taskStatusData[item.taskStatus];
+          item.taskItemNeedMarkTotal = item.taskItemMarkTotal - item.taskItemHadMarkTotal
+          item._taskItemNeedReviewTotal = item.taskItemReviewTotal - item.taskItemHadReviewTotal
           item.taskTypeDis = TASKTYPE[item.taskType].label
           return item
         }) : []

@@ -62,7 +62,7 @@
           <span style="color: #17233d;font-weight: 700">{{isLogin ? '欢迎登录' : '注册新用户'}}</span>
           <span style="color: #2d8cf0;cursor: pointer" @click="isLogin = !isLogin">{{isLogin ? '注册' : '登录'}}</span>
         </div>
-        <Form ref="formLogin" :model="formLogin" :rules="ruleInline" v-if="isLogin">
+        <Form ref="formLogin" :model="formLogin" :rules="ruleInline" v-show="isLogin">
           <div class="login-area">
             <FormItem prop="username">
               <i-input v-model="formLogin.username" type="text" placeholder="用户名" style="width: 100%"></i-input>
@@ -83,7 +83,7 @@
             </FormItem>
           </div>
         </Form>
-        <Form ref="formRegister" :model="formRegister" :rules="ruleRegister" v-else>
+        <Form ref="formRegister" :model="formRegister" :rules="ruleRegister" v-show="!isLogin">
           <FormItem prop="username">
             <i-input v-model="formRegister.username" type="text" placeholder="请输入登录用户名" style="width: 100%"></i-input>
           </FormItem>
