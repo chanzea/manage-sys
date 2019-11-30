@@ -228,7 +228,7 @@
       back () {
         const list = JSON.parse(getMessage('permissionList'))
         if (list.length !== 0) {
-          const uiPath = list[0].uiPath
+          const uiPath = list[1].uiPath
           this.$router.replace(uiPath)
         } else {
           return

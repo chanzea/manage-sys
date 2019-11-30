@@ -75,11 +75,17 @@ export default {
                 marginRight: "8px"
               }
             }),
-            h(
-              "span",
-              {
+            h("span", {
                 style: {
-                  display: data.isEdit ? "none" : "unset"
+                  display: data.isEdit ? "none" : "inline-block",
+                  width: '120px',
+                  'white-space': 'nowrap',
+                  'overflow': 'hidden',
+                  'text-overflow': 'ellipsis',
+                  'vertical-align': 'middle'
+                },
+                props: {
+                  title: `${data.organizationName}` 
                 }
               },
               `${data.organizationName}`
@@ -267,10 +273,10 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1;
+  background: #fff;
   .user-group-content {
-    width: 100%;
+    width: 50%;
     flex: 1;
-    background: #fff;
     padding: 8px;
   }
 }

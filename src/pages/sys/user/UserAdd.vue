@@ -88,7 +88,8 @@ export default {
           key: 'loginName'
         },{
           label: '登录密码',
-          type: 'password',
+          // type: 'password',
+          type: 'text',
           value: '',
           placeholder: '登录密码,要求至少8位数字加英文',
           key: 'loginPassword'

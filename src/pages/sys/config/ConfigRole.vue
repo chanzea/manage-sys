@@ -180,7 +180,8 @@ export default {
       ]);
       let treeList = dataList[0].list;
       // console.log(treeList);
-      let permissionList = (this.permissionList = dataList[1].list);
+      // let permissionList = (this.permissionList = dataList[1].list);
+      this.permissionList = dataList[1].list
       console.log(this.permissionList, treeList);
       treeList.forEach(item => {
         this.formatTreeData(item);
