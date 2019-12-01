@@ -189,11 +189,7 @@ export default {
    //获取操作类型字典
     getListActionType() {
         getListTaskActionType({}).then((res) => {
-          let {code, data} = res;
-          if(code == 0){
-            this.actionTypeList = data;
-          }
-          
+          this.actionTypeList = res;
         })
     },
 
