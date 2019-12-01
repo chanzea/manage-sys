@@ -21,7 +21,7 @@
             <div class="item-thumb" @click="getFolderPic(item)">
               <img :src="folderSrc" alt="">
             </div>
-            <span style="margin: 8px 0 12px; color: #666;">查看缩略图</span>
+            <span style="margin: 8px 0 12px; color: #666;">{{item.fileName}}</span>
             <div class="item-isselect">
               <Icon type="ios-checkbox-outline" style="" v-if="!item.isSelected" />
               <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
@@ -52,9 +52,13 @@
     <Modal
       v-model="isShowModal"
       title="查看缩略图"
+      width="620"
     >
       <div class="pic-list">
-        <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.fileUrl + ')', 'background-size': 'cover'}">
+        <!-- <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.thumbnailUrl + ')', 'background-size': 'cover'}">
+        </div> -->
+        <div class="pic-list-item" v-for="(item, index) in picList" :key="index">
+          <img v-lazy="BASEURL + item.thumbnailUrl" alt="">
         </div>
       </div>
     </Modal>
@@ -246,8 +250,11 @@ export default {
           .item-isselect {
             display: flex;
             justify-content: center;
-            font-size: 36px;
+            font-size: 36px !important;
             cursor: pointer;
+            i {
+              font-size: 36px !important;
+            }
           }
         }
       }
@@ -270,9 +277,14 @@ export default {
   max-width: 660px;
   min-height: 100px;
   &-item {
-    border: 1px solid #eee;
-    width: 150px;
-    margin-right: 12px;
+    margin-bottom: 12px;
+    margin-right: 20px;
+    width: 120px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
 }
 </style>

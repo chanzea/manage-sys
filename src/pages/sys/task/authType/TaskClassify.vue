@@ -256,6 +256,11 @@ export default {
           background-position: center;
           box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
         }
+        .item-tag {
+          display: flex;
+          justify-content: center;
+          margin-top: 12px;
+        }
         .item-isselect {
           position: absolute;
           font-size: 36px !important;
