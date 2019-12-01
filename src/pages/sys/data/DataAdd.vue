@@ -103,7 +103,7 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.fileId !== '' && this.startChunkNumber > 0
+      return this.fileId !== ''
     },
     color () {
       let color = '#2db7f5';
@@ -137,20 +137,24 @@ export default {
           _this.fileId = res.fileId
           _this.formItem.fileIds = [res.fileId]
           _this.startChunkNumber = res.startChunkNumber
-          if (res.chunkTotal > 1) {
-            _this.startUpload = true
-            console.log('res.chunkTotal', res.chunkTotal)
-            _this.chunkUpload(0, 1, res.chunkThreshold, res.chunkTotal, file, res.fileId)
-            // const chunkTotal = Math.ceil(file.size / 131072) //测试用
-            // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
+          if (res.startChunkNumber === -1) {  //表示已经上传过
+            _this.fileName.push(file.name)
           } else {
-            const form = new FormData();
-            form.append('file', file);
-            form.append('fileId', res.fileId)
-            form.append('chunkNum', res.startChunkNumber)
-            fileUpload(form).then(res => {
-              _this.fileName.push(file.name)
-            })
+            if (res.chunkTotal > 1) {
+              _this.startUpload = true
+              console.log('res.chunkTotal', res.chunkTotal)
+              _this.chunkUpload(0, 1, res.chunkThreshold, res.chunkTotal, file, res.fileId)
+              // const chunkTotal = Math.ceil(file.size / 131072) //测试用
+              // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
+            } else {
+              const form = new FormData();
+              form.append('file', file);
+              form.append('fileId', res.fileId)
+              form.append('chunkNum', res.startChunkNumber)
+              fileUpload(form).then(res => {
+                _this.fileName.push(file.name)
+              })
+            }
           }
         })
       });
