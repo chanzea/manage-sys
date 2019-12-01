@@ -203,7 +203,7 @@ export default {
       }).then(res => {
         const {organizationList,roleList,userList,count} = res
         this.data = userList.map(item => {
-          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd hh:mm:ss')
           item.roleName = item.roleIds && item.roleIds.map(item => {
             return roleList[item].roleName
           }).join(',')
@@ -286,7 +286,7 @@ export default {
       }).then(res => {
         const {organizationList,roleList,userList,count} = res
         this.orgData = userList.map(item => {
-          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd hh:mm:ss')
           item.roleName = item.roleIds && item.roleIds.map(item => {
             return roleList[item].roleName
           }).join(',')

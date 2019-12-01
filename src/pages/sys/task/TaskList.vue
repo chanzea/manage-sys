@@ -250,7 +250,7 @@ export default {
         const { taskList, dataSetList, userList, count } = res
         this.data = taskList ? taskList.map(item => {
           item.creatorName = userList[item.creatorId].userName
-          item.createdTime = dataSetList[item.dataSetId] ? new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd') : '-'
+          item.createdTime = dataSetList[item.dataSetId] ? new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd hh:mm:ss') : '-'
           item.taskStatusDis = taskStatusData[item.taskStatus];
           item.taskItemNeedMarkTotal = item.taskItemMarkTotal - item.taskItemHadMarkTotal
           item._taskItemNeedReviewTotal = item.taskItemReviewTotal - item.taskItemHadReviewTotal
