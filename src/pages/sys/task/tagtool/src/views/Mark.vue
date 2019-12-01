@@ -155,13 +155,12 @@ export default {
       if(JSON.stringify(markData) == "{}"){
         return this.$Message.error("请先标注数据");
       }
-
-      console.log(this.tagData);
       this.tagMarkAdd();
       taskItemMark(data).then(res => {
         this.$Message.success("提交成功")
         if (next) {
-          this.taskItemAllotMark()
+          this.taskItemAllotMark();
+          this.getTagMarkList();
         }
       });
     },
@@ -195,7 +194,8 @@ export default {
       }).then(res => {
         console.log(res)
         const { list } = res;
-        this.taskData = list.map( item => {
+        console.log(list);
+        this.tagData = list.map( item => {
           return {
             title: item.tagName,
             desc: item.tagDesc,

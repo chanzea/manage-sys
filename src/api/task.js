@@ -138,7 +138,15 @@ export async function itemTaskUpload(params) {
     return data
 }
 
+//任务下载
 export async function taskDownload(params) {
     const data = await api(`/task/download`, 'get', params, "application/x-www-form-urlencoded; charset=UTF-8")
+    return data
+}
+
+
+//任务监控
+export async function getRealTimeMonitor(params) {
+    const data = await api(`/monitor/realTimeMonitor`, 'get', params)
     return data
 }
