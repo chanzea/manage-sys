@@ -45,7 +45,7 @@
         <Button class="opt-btn" type="primary" @click="selectAll">全选</Button>
         <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
-        <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemAllotMark" :disabled="!isNext">下一题</Button>
       </div>
     </div>
     <Modal
@@ -210,11 +210,12 @@ export default {
         taskId: this.$route.query.id,
         markDataList
       }
-      taskItemMarklist(data).then(res => {
-        if (next) {
-          this.taskItemAllotMark()
-        }
-      })
+      taskItemMarklist(data)
+      // .then(res => {
+      //   if (next) {
+      //     this.taskItemAllotMark()
+      //   }
+      // })
     },
 
     // 获取分类标签
