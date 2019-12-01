@@ -15,7 +15,7 @@
           :key="k"
           :class="{'selected':i.selected}">
           <button v-if="i.selected"
-            @click.stop="delTag"
+            @click.stop="delTag()"
             style="background-color:#ed4014">删除</button>
           <button v-if="i.selected"
             @click.stop="editTagInfo(k,1)">编辑</button>
@@ -44,14 +44,14 @@
       <div class="tool-more"
         v-show="more">
         <ul class="tool-more-item">
-          <template v-for="(i,k) in tagData">
+          <!-- <template v-for="(i,k) in tagData">
             <li @click="addTagInfo(i)"
               :key="'tag'+k"
               v-if="i.title.trim().length>0">
               <span>{{i.title}}</span>
             </li>
-          </template>
-          <template v-for="(i,k) in items">
+          </template> -->
+          <template v-for="(i,k) in tags">
             <li @click="addTagInfo(i)"
               :key="'item'+k"
               v-if="i.title.trim().length>0">
@@ -135,6 +135,12 @@ export default {
     },
     items () {
       return this.shapes.items
+    },
+    tags () {
+      const res = new Map();
+      let items = this.shapes.items || [];
+      let arr = items.concat(this.tagData);
+      return arr.filter((a) => !res.has(a.title) && res.set(a.title, 1))
     }
   },
   mounted () {
@@ -183,6 +189,12 @@ export default {
         this.loading = false
       })
     },
+
+    //请空
+    clearShapeItems () {
+        this.shapes.items = [];
+    },
+
     getTagData () {
       if (this.sc) {
         return this.sc.getData()
@@ -209,10 +221,12 @@ export default {
       }
     },
     addTagInfo (i) {
-      this.sc.info.show(i.title, i.desc)
+      // console.log("这里添加标签",i)
+      this.sc.info.show(i.title, i.desc);
+      // this.$emit('on-tag-add', i);
     },
     delTag () {
-      this.sc.delete()
+      this.sc.delete();
     },
     view () {
       this.sc && this.sc.coverView()

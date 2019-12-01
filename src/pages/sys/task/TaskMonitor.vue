@@ -61,7 +61,8 @@ export default {
   watch: {
     realMonitorOptions: {
       handler: function(newVal, oldVal){
-
+        console.log(newVal,oldVal);
+        
       },
       deep: true
     }
@@ -76,9 +77,12 @@ export default {
       getRealTimeMonitor({}).then( (res) => {
         console.log(res);
         let {realTimeMonitor} = res;
-        this.legendDatalegendData = realTimeMonitor.map( item => {
+        legendDatalegendData = realTimeMonitor.map( item => {
           item.name
         })
+
+        this.realMonitorOptions.legend.data = legendDatalegendData;
+        this.realMonitorOptions.series.data = realTimeMonitor;
 
       })
     }

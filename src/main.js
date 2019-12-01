@@ -46,6 +46,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  // next();
   const tokenId = getMessage('tokenId')
   if (!tokenId) {
     if (to.path !== '/login') {

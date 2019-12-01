@@ -28,6 +28,7 @@
     </div>
     <tag-tool ref="tool"
       @on-data-change="saveTagData"
+      @on-tag-add='tagMarkAddAction'
       :isNoData="!this.isNext"
       :tag-data="tagData"></tag-tool>
   </div>
@@ -129,11 +130,10 @@ export default {
           return item
         }) : []
         this.isNext = !!taskItemList;
-        console.log("====")
-        console.log(res)
         if(taskItemList.length > 0) {
-          console.log(this.taskItemList[0].src)
           this.setImage(this.taskItemList[0].src);//设置图片
+          this.getTagMarkList();
+          this.$refs["tool"].clearShapeItems();
         }
       })
     },
@@ -160,7 +160,6 @@ export default {
         this.$Message.success("提交成功")
         if (next) {
           this.taskItemAllotMark();
-          this.getTagMarkList();
         }
       });
     },
@@ -207,6 +206,16 @@ export default {
 
     tagMarkAdd() {
         tagMarkAdd(this.tagDataList);
+    },
+
+    //这里是添加标签的直接接口
+    tagMarkAddAction(tagData) {
+      //TODO 这里添加接口并吧数据传到后台
+      console.log(tagData);
+      tagData.taskId = this.$route.query.id;
+      tagMarkAdd(tagData).then( res => {
+        console.log(res)
+      });
     },
 
     setImage (imgUrl) {
