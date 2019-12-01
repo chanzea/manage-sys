@@ -157,7 +157,6 @@ export default {
         markUserId: this.markUserId,
         reviewUserId: this.reviewUserId
       }).then(res => {
-        console.log('res', res)
         const {count, taskItemList, taskList, userList} = res
         this.data = taskItemList.map(item => {
           item.taskName = taskList[item.taskId].taskName;

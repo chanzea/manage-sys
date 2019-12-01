@@ -48,9 +48,7 @@ export default {
     //获取数据
     getList(){
       let list = getListTree().then( (res) => {
-          console.log(res);
           let list = res.list;
-          console.log(list);
           list.forEach( item => {
             this.formatTreeData(item);
           })
@@ -174,7 +172,6 @@ export default {
       );
     },
     append(data) {
-      console.log(data);
       const children = data.children || [];
       children.push({
         permissionName: "",
@@ -191,7 +188,6 @@ export default {
 
       if(data.id){
         permissonDelete({permissionId: data.id}).then((res)=>{
-          console.log(res);
           const parentKey = root.find(el => el === node).parent;
           const parent = root.find(el => el.nodeKey === parentKey).node;
           const index = parent.children.indexOf(data);
@@ -217,7 +213,6 @@ export default {
 
       const parentKey = root.find(el => el === node).parent;
       const parent = root.find(el => el.nodeKey === parentKey).node;
-      console.log(parent)
 
       let params = {
         permissionName: data.permissionName,
@@ -264,7 +259,6 @@ export default {
         .node;
       const source_index = source_parent.children.indexOf(this.dragstartData);
       source_parent.children.splice(source_index, 1);
-      console.log(this.data, "data");
     },
     editRender(h, data, node, root) {
       let reviseNameData = data.permissionName;
@@ -342,3 +336,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.page-config-index {
+  width: 55%;
+}
+</style>

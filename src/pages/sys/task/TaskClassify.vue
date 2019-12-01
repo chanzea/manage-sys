@@ -49,14 +49,12 @@ export default {
       taskItemAllotMark({
         taskId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res
         this.taskItemList = taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].fileUrl
           item.isSelected = false
           return item
         })
-        console.log('taskItemList', this.taskItemList)
       })
     }
   },

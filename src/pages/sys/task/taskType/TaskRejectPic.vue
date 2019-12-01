@@ -93,14 +93,12 @@ export default {
       taskItemAllotMark({
         taskId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res
         dataRecordList && Object.keys(dataRecordList).forEach(item => {
           dataRecordList[item].isSelected = false
           this.dataRecordList.push(dataRecordList[item])
           this.taskItemList = taskItemList
         })
-        console.log('taskItemList', this.dataRecordList)
       })
     },
 
@@ -124,7 +122,6 @@ export default {
           }).join(',')
         }
       }
-      console.log('data', data)
       taskItemMark(data).then(res => {
         if (next) {
           this.taskItemAllotMark()
@@ -138,7 +135,6 @@ export default {
         taskId,
         taskItemId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res
         dataRecordList && Object.keys(dataRecordList).forEach(item => {
           dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item);

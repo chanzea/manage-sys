@@ -281,7 +281,6 @@ export default {
       taskDetail({
         taskId
       }).then(res => {
-        console.log('taskDetail ===> res' ,res)
         this.formItem = res;
         this.fullLoading = false
       }).catch(() => {
@@ -290,7 +289,6 @@ export default {
     },
 
     submit() {
-      console.log('执行')
       this.$refs["taskForm"].validate(valid => {
         if (valid) {
           this.loading = true;
@@ -302,7 +300,6 @@ export default {
               this.$router.push('/task/list');
               this.loading = false;
             }).catch((e) => {
-              console.log(e)
               this.loading = false
             })
           } else {
@@ -327,7 +324,7 @@ export default {
         this.dataSetList = list[0].dataSetList
         this.userList = list[1].userList;
       }).catch( err => {
-        console.log(err)
+        console.error(err)
       })
     },
     

@@ -98,9 +98,6 @@ export default {
       taskItemAllotReview({
         taskId
       }).then(res => {
-        console.log('res', res)
-
-        
         const {taskItemList, dataRecordList, userList} = res
         if(!taskItemList){
           this.$Message.info("任务审核完成，没有下一题了");
@@ -113,7 +110,6 @@ export default {
           this.dataRecordList.push(dataRecordList[item])
           this.taskItemList = taskItemList
         })
-        console.log('dataRecordList', this.dataRecordList)
       })
     },
 
@@ -123,7 +119,6 @@ export default {
         taskId,
         taskItemId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList} = res
         dataRecordList && Object.keys(dataRecordList).forEach(item => {
           dataRecordList[item].isSelected = taskItemList[0].taskData.split(",").includes(item); 
@@ -141,9 +136,7 @@ export default {
         taskItemStatus: this.taskItemStatus,
         taskItemReviewAdvise: this.taskItemReviewAdvise
       }
-      console.log('data', data)
       taskItemReview(data).then(res => {
-        console.log('res', res)
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功');

@@ -273,7 +273,6 @@ export default {
     },
 
     edit(params) {
-      console.log('params', params)
       this.$set(this, 'formItem', params.row);
       this.isShowModal = true
     },

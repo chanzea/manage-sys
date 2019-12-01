@@ -353,7 +353,6 @@ export default {
           userId: item.id
         })
       })).then((res) => {
-        console.log('res', res)
         this.loading = false
         this.isShowmodal = false
         this.page.pageNum = 1

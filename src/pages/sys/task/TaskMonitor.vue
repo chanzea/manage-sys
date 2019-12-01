@@ -74,7 +74,6 @@ export default {
   methods: {
     getRealTimeMonitor: function() {
       getRealTimeMonitor({}).then( (res) => {
-        console.log(res);
         let {realTimeMonitor} = res;
         this.legendDatalegendData = realTimeMonitor.map( item => {
           item.name

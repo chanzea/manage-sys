@@ -142,7 +142,6 @@ export default {
           } else {
             if (res.chunkTotal > 1) {
               _this.startUpload = true
-              console.log('res.chunkTotal', res.chunkTotal)
               _this.chunkUpload(0, 1, res.chunkThreshold, res.chunkTotal, file, res.fileId)
               // const chunkTotal = Math.ceil(file.size / 131072) //测试用
               // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
@@ -164,18 +163,14 @@ export default {
     chunkUpload (start, startChunkNumber, chunkThreshold, chunkTotal, file, fileId) {
       const _this = this
       const fileSize = file.size
-      console.log('文件大小', file.size)
       let blob = null //二进制对象
       let end = start + chunkThreshold //
-      console.log(`第${startChunkNumber}次`, 'start:', start)
       // 如果超出文件大小
       if (end > fileSize) {
         blob = file.slice(start, fileSize, file.type);
       } else {
-        console.log(`第${startChunkNumber}次`, 'end大小:', end)
         blob = file.slice(start, end, file.type);
       }
-      console.log('blob', blob)
       const form = new FormData();
       form.append('file', blob);
       form.append('fileId', fileId)
@@ -183,14 +178,12 @@ export default {
       fileUpload(form).then(res => {
         if (startChunkNumber < chunkTotal) {        
           _this.percent = (end / fileSize).toFixed(2) * 100; //进度条比例
-          console.log('当前进度', _this.percent)
           _this.chunkUpload(end, ++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
         } else {
           _this.percent = 100 //进度条完成
           fileMerge({
             file_id: fileId
           }).then(res => {
-            console.log('fileMerge', res)
             _this.fileName.push(file.name)
           })
         }

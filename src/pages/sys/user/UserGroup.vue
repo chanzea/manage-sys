@@ -155,7 +155,6 @@ export default {
       );
     },
     append(data) {
-      console.log(data);
       const children = data.children || [];
       children.push({
         organizationName: "",
@@ -170,7 +169,6 @@ export default {
     remove(root, node, data) {
       if(data.id){
         organizationDelete({organizationId: data.id}).then((res)=>{
-          console.log(res);
           const parentKey = root.find(el => el === node).parent;
           const parent = root.find(el => el.nodeKey === parentKey).node;
           const index = parent.children.indexOf(data);
