@@ -117,7 +117,7 @@ export default {
           //   return userList[id].userName
           // }).join(',') : '暂无审核人员';
           item.creator = userList[item.creatorId].userName
-          item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd')
+          item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd hh:mm:ss')
           return item
         })
         this.fullLoading = false

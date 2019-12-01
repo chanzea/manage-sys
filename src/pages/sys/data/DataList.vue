@@ -247,7 +247,7 @@ export default {
           item.dataPath = item.organizationIds ? item.organizationIds.map(item => {
             return organizationList[item].organizationName
           }).join(',') : '未分组'
-          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd')
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd hh:mm:ss')
           return item
         })
         this.total = count
