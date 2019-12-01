@@ -57,6 +57,16 @@ export default {
     var myChart = this.$echarts.init(this.$refs.realTimeMonitor);
     myChart.setOption(this.realMonitorOptions);
   },
+
+  watch: {
+    realMonitorOptions: {
+      handler: function(newVal, oldVal){
+
+      },
+      deep: true
+    }
+  },
+
   updated() {
 
   },

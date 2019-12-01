@@ -284,7 +284,7 @@ export default {
 
           button {
             float: right;
-            font-size: 14px;
+            // font-size: 14px;
             width: 50px;
             border-style: solid;
             border-width: 0;
@@ -294,8 +294,8 @@ export default {
             border-bottom-width: 1px;
             border-bottom-color: rgba(0, 0, 0, 0.6);
             overflow: hidden;
-            padding: 2px 5px 3px 5px;
-            margin-top: 8px;
+            // padding: 2px 5px 3px 5px;
+            margin-top: 5px;
             border-radius: 3px;
             color: #d5d5d5;
             -webkit-appearance: none;
@@ -303,6 +303,8 @@ export default {
             transition: color 0.2s linear, background-color 0.2s linear,
               border 0.2s linear, box-shadow 0.2s linear;
             outline: 0;
+            height: auto;
+            line-height: 30px;
             & + button {
               margin-right: 0.5em;
             }
