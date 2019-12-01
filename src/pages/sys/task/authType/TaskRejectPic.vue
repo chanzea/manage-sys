@@ -193,7 +193,7 @@ export default {
         margin-right: 12px;
         box-sizing: border-box;
         width: 250px;
-        height: 150px;
+        height: 200px;
         &.selected-border {
           border: 2px solid #f00;
           box-sizing: border-box;
@@ -204,9 +204,13 @@ export default {
         }
         .item-isselect {
           position: absolute;
-          font-size: 36px;
           left: -2px;
           top: -14px;
+          font-size: 36px !important;
+          cursor: pointer;
+          i {
+            font-size: 36px !important;
+          }
         }
         .item-opt {
           position: absolute;

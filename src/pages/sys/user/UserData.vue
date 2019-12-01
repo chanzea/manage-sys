@@ -309,12 +309,12 @@ export default {
     // 改变页码
     changeOrgPage (page) {
       this.orgPage.pageNum = page
-      this.getUserList()
+      this.getOrgGroup()
     },
     // 改变页面条数
     changeOrgPageSize (pageSize) {
       this.orgPage.pageSize = pageSize
-      this.getUserList()
+      this.getOrgGroup()
     },
 
     searchOrgUserList () {
