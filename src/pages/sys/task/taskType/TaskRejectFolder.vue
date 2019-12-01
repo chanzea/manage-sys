@@ -41,7 +41,7 @@
       </div>
       <div class="task-reject-folder-content-opt" v-if="!viewOnly">
         <Button class="opt-btn" type="primary" @click="taskItemMark(false)" :disabled="!isSelected">保存</Button>
-        <Button class="opt-btn" type="primary" @click="taskItemAllotMark" :disabled="!isSelected">下一题</Button>
+        <Button class="opt-btn" type="primary" @click="taskItemMark(true)" :disabled="!isSelected">下一题</Button>
       </div>
     </div>
     <Modal
@@ -148,12 +148,11 @@ export default {
         }
       }
       console.log('data', data)
-      taskItemMark(data)
-      // .then(res => {
-      //   if (next) {
-      //     this.taskItemAllotMark()
-      //   }
-      // })
+      taskItemMark(data).then(res => {
+        if (next) {
+          this.taskItemAllotMark()
+        }
+      })
     },
     //图片预览
     getFolderPic (item) {
