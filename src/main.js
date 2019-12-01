@@ -25,6 +25,11 @@ Vue.use(Fabric);
 // import './styles/index.less';
 // import mock from './mock/index.js';
 
+var echarts = require('echarts');
+
+Vue.prototype.$echarts = echarts;
+
+
 iView.Message.config({duration: 2});
 // iView.Notice.config({top: 55});
 Vue.config.productionTip = false;

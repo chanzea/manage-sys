@@ -3,7 +3,10 @@
     <Spin size="large" fix v-if="fullLoading"></Spin>
     <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
       <div class="content-header" slot="form">
-        <Input class="form-item" style="width:300px" v-model="operator" placeholder="操作人" />
+        <!-- <Input class="form-item" style="width:300px" v-model="operator" placeholder="操作人" /> -->
+        <Select class="form-item" v-model="operator" filterable style="width:160px" placeholder="根据标注人员搜索">
+          <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
+        </Select>
         <!-- <Input class="form-item" style="width:300px" v-model="actionType" placeholder="操作类型" /> -->
         <Select class="form-item" v-model="actionType" placeholder="操作类型" style="width:200px">
             <Option v-for="item in actionTypeList" :value="item" :key="item">{{ item }}</Option>
@@ -69,19 +72,19 @@ export default {
       formItem: {},
       value: ['', ''],
       columns: [
-          {
-            type: 'expand',
-            width: 50,
-            render: (h, params) => {
-                return h('Input', {
-                    props: {
-                        "value": params.row.operateData,
-                        "type": "textarea",
-                        // "disabled": true
-                    }
-                })
-            }
-        },
+        //   {
+        //     type: 'expand',
+        //     width: 50,
+        //     render: (h, params) => {
+        //         return h('Input', {
+        //             props: {
+        //                 "value": params.row.operateData,
+        //                 "type": "textarea",
+        //                 // "disabled": true
+        //             }
+        //         })
+        //     }
+        // },
         {
           title: '请求接口',
           key: 'uri',
@@ -173,11 +176,7 @@ export default {
     //获取操作类型字典
     getListActionType() {
         getListActionType({}).then((res) => {
-          let {code, data} = res;
-          if(code == 0){
-            this.actionTypeList = data;
-          }
-          
+          this.actionTypeList = res;   
         })
     },
 
