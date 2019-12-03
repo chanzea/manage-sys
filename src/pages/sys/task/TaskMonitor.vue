@@ -3,7 +3,7 @@
     <div style="padding: 20px 0 0;border: 10px white solid">
       <div ref="realTimeMonitor" style="height: 300px "></div>
     </div>
-    <div style="padding: 20px 0;border: 10px white solid">
+    <div class="m-monitor" >
       <DatePicker
         style="margin-left: 15px;width: 200px"
         class="form-item"
@@ -13,8 +13,11 @@
         v-model="value"
       ></DatePicker>
       <div ref="costHistoryMonitor" style="height: 500px " ></div>
+      <div v-if="costNodata" class="v-nodata">
+        暂无数据，请选择另外时间
+      </div>
     </div>
-    <div style="padding: 20px 0;border: 10px white solid">
+    <div class="m-monitor">
       <DatePicker
         style="margin-left: 15px;width: 200px"
         class="form-item"
@@ -24,20 +27,25 @@
         v-model="value2"
       ></DatePicker>
       <div ref="amountHistoryMonitor" style="height: 500px " ></div>
+       <div v-if="amountNodata"  class="v-nodata">
+        暂无数据，请选择另外时间
+      </div>
     </div>
   </div>
 </template>
 <script>
+var moment = require('moment') ;
 import { getRealTimeMonitor, getHistoryMonitor } from "@/api/task";
-
 export default {
   name: "TaskMonitor",
   data() {
     return {
       legendData: [],
       seriesData: [],
-      value: [],
-      value2: [],
+      value: ['', ''],
+      value2: ['', ''],
+      costNodata: false,
+      amountNodata: false,
       realTimeMonitorEcharts: null,
       historyMonitorEcharts: null,
       realMonitorOptions: {
@@ -125,28 +133,8 @@ export default {
         tooltip: {},
         dataset: {
           // center: ["50%", "10%"],
-          dimensions: ["month", "2015", "2016", "2017"],
-          source: [
-            {
-              month: "Matcha Latte",
-              "2015": 43.3,
-              "2016": 85.8,
-              "2017": 93.7
-            },
-            { product: "Milk Tea", "2015": 83.1, "2016": 73.4, "2017": 55.1 },
-            {
-              month: "Cheese Cocoa",
-              "2015": 86.4,
-              "2016": 65.2,
-              "2017": 82.5
-            },
-            {
-              month: "Walnut Brownie",
-              "2015": 72.4,
-              "2016": 53.9,
-              "2017": 39.1
-            }
-          ]
+          dimensions: null,
+          source: null
         },
         xAxis: { type: "category" },
         yAxis: {
@@ -158,8 +146,15 @@ export default {
     };
     
   },
-  mounted() {
+
+  created() {
     
+  },
+
+  mounted() {
+    this.value = [moment().subtract('month', 1).format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
+    this.value2 = [moment().subtract('month', 1).format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')];
+    console.log(this.value, this.value2)
     this.realTimeMonitorEcharts = this.$echarts.init(
       this.$refs.realTimeMonitor
     );
@@ -168,14 +163,14 @@ export default {
     this.costHistoryMonitorEcharts = this.$echarts.init(
       this.$refs.costHistoryMonitor
     );
-    // this.getTaskItemHandleCostMonitor();
-    this.costHistoryMonitorEcharts.setOption(this.costHistoryMonitorOption)
+    this.getTaskItemHandleCostMonitor();
+    // this.costHistoryMonitorEcharts.setOption(this.costHistoryMonitorOption)
 
     this.amountHistoryMonitorEcharts = this.$echarts.init(
       this.$refs.amountHistoryMonitor
     );
-    this.amountHistoryMonitorEcharts.setOption(this.amountHistoryMonitorOption)
-    // this.getTaskItemMonitor();
+    // this.amountHistoryMonitorEcharts.setOption(this.amountHistoryMonitorOption)
+    this.getTaskItemMonitor();
   },
 
   watch: {
@@ -202,31 +197,53 @@ export default {
 
     getTaskItemHandleCostMonitor() {
       this.getHistoryMonitor("cost", (data) => {
-        let {dimensions,source} = data.taskItemMonitor
-        this.amountHistoryMonitorOption.dataset.dimensions = dimensions;
-        this.amountHistoryMonitorOption.dataset.source = source;
-        this.amountHistoryMonitorEcharts.setOption(this.amountHistoryMonitorOption);
+        if(! (data && data.taskItemHandleCostMonitor)) 
+        {
+          this.costHistoryMonitorEcharts.clear();
+          this.costNodata = true;
+          return;
+        }
+        let {dimensions,source} = data.taskItemHandleCostMonitor
+        this.costHistoryMonitorOption.dataset.dimensions = dimensions;
+        this.costHistoryMonitorOption.dataset.source = source;
+        // this.$set(this, "costHistoryMonitorOption", this.costHistoryMonitorOption );
+        this.costHistoryMonitorEcharts.clear();
+        this.$nextTick(() => {
+          this.costHistoryMonitorEcharts.setOption(this.costHistoryMonitorOption);
+        })
       })
     },
 
 
     getTaskItemMonitor() {
       this.getHistoryMonitor("amount", (data) => {
-        let {dimensions,source} = data.taskItemHandleCostMonitor
-        this.costHistoryMonitorOption.dataset.dimensions = dimensions;
-        this.costHistoryMonitorOption.dataset.source = source;
-        this.costHistoryMonitorEcharts.setOption(this.costHistoryMonitorOption);
+        if(! (data && data.taskItemMonitor)) 
+        {
+          this.amountHistoryMonitorEcharts.clear();
+          this.amountNodata = true;
+          return;
+        }
+        let {dimensions,source} = data.taskItemMonitor
+        this.amountHistoryMonitorOption.dataset.dimensions = dimensions;
+        console.log(dimensions)
+        this.amountHistoryMonitorOption.dataset.source = source;
+        // this.$set(this, "amountHistoryMonitorOption", this.amountHistoryMonitorOption );
+        this.amountHistoryMonitorEcharts.clear();
+        this.$nextTick(() => {
+          this.amountHistoryMonitorEcharts.setOption(this.amountHistoryMonitorOption);
+        })
+        
       })
     },
 
     //获取历史监控
     getHistoryMonitor(tag, callback) {
 
-      let {startTime, endTime} = tag == 'cost' ? this.value : this.value2;
+      let [startTime, endTime] = tag == 'cost' ? this.value : this.value2;
 
       let params = {
-        startTime: this.value[0],
-        endTime: this.value[1],
+        startTime,
+        endTime,
         tag
       }
       getHistoryMonitor(params).then(res => {
@@ -250,5 +267,22 @@ export default {
 
 <style lang="scss" scoped>
 .page-task-monitor {
+}
+
+.m-monitor{
+  position: relative;
+  padding: 20px 0;
+  border: 10px white solid;
+  .v-nodata{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: max-content;
+    height: 40px;
+    font-size: 30px !important;
+  }
 }
 </style>
