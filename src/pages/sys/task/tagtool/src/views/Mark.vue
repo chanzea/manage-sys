@@ -39,7 +39,7 @@
       :height = "canvasStyle.height"
       :width = "canvasStyle.width"
       @on-data-change="saveTagData"
-      @on-tag-add="tagMarkAddAction"
+      @on-tag-change="changeTagData"
       :isNoData="!this.isNext"
       :tag-data="tagData"
     ></tag-tool>
@@ -65,28 +65,28 @@ export default {
     return {
       canvasStyle:{
         height: 600,
-        width: 1000
+        width: 900
       },
       taskItemList: [],
       isNext: true,
       taskItemReviewAdvise: "",
       taskItemStatus: "",
       tagData: [
-        // {
-        //   'title': '箭头',
-        //   'desc': '箭头标注',
-        //   'selected': false
-        // },
-        // {
-        //   'title': '马',
-        //   'desc': '动物世界马',
-        //   'selected': false
-        // },
-        // {
-        //   'title': '轮船',
-        //   'desc': '世界轮船',
-        //   'selected': false
-        // },
+        {
+          'title': '箭头',
+          'desc': '箭头标注',
+          'selected': false
+        },
+        {
+          'title': '马',
+          'desc': '动物世界马',
+          'selected': false
+        },
+        {
+          'title': '轮船',
+          'desc': '世界轮船',
+          'selected': false
+        },
         // {
         //   'title': '航空母舰',
         //   'desc': '军事图片识别',
@@ -107,7 +107,7 @@ export default {
   },
   mounted () {
     this.taskType = this.$route.query.type
-    this.tagMarkAdd();
+    // this.tagMarkAdd();
     const taskId = this.$route.query.id
     const taskItemId = this.$route.query.taskItemId
     this.viewOnly = this.$route.query.viewOnly;
@@ -170,7 +170,7 @@ export default {
       if(JSON.stringify(markData) == "{}"){
         return this.$Message.error("请先标注数据");
       }
-      this.tagMarkAdd();
+      
       taskItemMark(data).then(res => {
         this.$Message.success("提交成功")
         if (next) {
@@ -220,18 +220,29 @@ export default {
       })
     },
 
-    tagMarkAdd() {
-        tagMarkAdd(this.tagDataList);
-    },
+    changeTagData (data, item) {
+      // 增加或者编辑标签属性，触发。
+      let isNew = this.tagData.filter(i => {
+        return i.title === item.title && i.desc === item.desc
+      })
+      console.log(data, item)
 
-    //这里是添加标签的直接接口
-    tagMarkAddAction(tagData) {
-      //TODO 这里添加接口并吧数据传到后台
-      console.log(tagData);
-      tagData.taskId = this.$route.query.id;
-      tagMarkAdd(tagData).then( res => {
-        console.log(res)
-      });
+      if(isNew.length === 0) {
+        let params = {
+          tagName: item.title,
+          tagDesc: item.desc,
+          tagType: true
+        }
+        params.taskId = parseInt(this.$route.query.id);
+        tagMarkAdd([params]).then( res => {
+        });
+
+        this.tagData.push({
+          'title': item.title,
+          'desc': item.desc,
+          'selected': false
+        });
+      }
     },
 
     setImage (imgUrl) {
@@ -242,9 +253,6 @@ export default {
     },
     getTagData () {
       let data = this.$refs.tool.getTagData()
-      console.log("TCL: getTagData -> data", data)
-      console.log(data);
-      //这里获取标签数组
       if(JSON.stringify(data) != {}){
         this.tagDataList = data.items.map( item => {
           return {

@@ -22,6 +22,7 @@
           <b v-if="i.selected"></b>
           {{i.title}}
           <i v-if="i.title.length===0">未设置标记名</i>
+          <p v-if="i.selected">{{i.desc}}</p>
         </li>
       </ul>
       <ul class="tool-tab-item"
@@ -35,22 +36,23 @@
           :class="{'selected':i.selected}">
           <b v-if="i.selected"></b>
           {{i.title}}
+          <p v-if="i.selected">{{i.desc}}</p>
         </li>
       </ul>
     </div>
     <div class="tool-canvas"
       :style="canvasStyle">
       <div ref="toolCanvas"></div>
-      <div class="tool-more"
+      <!-- <div class="tool-more"
         v-show="more">
         <ul class="tool-more-item">
-          <!-- <template v-for="(i,k) in tagData">
+          <template v-for="(i,k) in tagData">
             <li @click="addTagInfo(i)"
               :key="'tag'+k"
               v-if="i.title.trim().length>0">
               <span>{{i.title}}</span>
             </li>
-          </template> -->
+          </template>
           <template v-for="(i,k) in tags">
             <li @click="addTagInfo(i)"
               :key="'item'+k"
@@ -59,7 +61,7 @@
             </li>
           </template>
         </ul>
-      </div>
+      </div> -->
     </div>
     <div class="tool-mask"
       v-show="loading && !isNoData">
@@ -74,7 +76,7 @@ import ShapeCanvas from './js/ShapeCanvas'
 import loading from './loading'
 
 export default {
-  name: 'tagTool',
+  name: 'tagTool2',
   props: {
     height: {
       type: Number, // 工具高度
@@ -82,7 +84,7 @@ export default {
     },
     width: {
       type: Number, // 工具高度
-      default: 1000
+      default: 900
     },
     tagWidth: {
       type: Number, // 标签显示宽度
@@ -118,7 +120,7 @@ export default {
       tab: 1,
       shapes: [],
       message: '加载中...',
-      more: false
+      // more: false
     }
   },
   components: {
@@ -139,14 +141,15 @@ export default {
       }
     },
     items () {
-      return this.shapes.items
+
+      return this.shapes.items || []
     },
-    tags () {
-      const res = new Map();
-      let items = this.shapes.items || [];
-      let arr = items.concat(this.tagData);
-      return arr.filter((a) => !res.has(a.title) && res.set(a.title, 1))
-    }
+    // tags () {
+    //   const res = new Map();
+    //   let items = this.shapes.items || [];
+    //   let arr = items.concat(this.tagData);
+    //   return arr.filter((a) => !res.has(a.title) && res.set(a.title, 1))
+    // }
   },
   mounted () {
     this.initCanvas();
@@ -159,6 +162,11 @@ export default {
   },
   methods: {
     initCanvas () {
+      console.log("****")
+      console.log(this.items, this.tagData)
+
+      console.log("====")
+      console.log(this.shapes)
       this.sc = new ShapeCanvas()
       this.sc.init({
         el: this.$refs.toolCanvas, // 工具容器,未设置默认时body
@@ -166,16 +174,23 @@ export default {
           this.shapes = data
           this.$emit('on-data-change', data)
         },
+        changeInfo: (data, item) => { // 增加了保存触发 
+          this.shapes = data;
+
+          this.$emit('on-tag-change', data, item)
+        },
         onSelect: (data) => {
           this.shapes = data
         },
-        moreInfo: (f) => {
-          if (f === true) {
-            this.more = false
-          } else {
-            this.more = !this.more
-          }
-        }
+        // moreInfo: (f) => {
+        //   if (f === true) {
+        //     this.more = false
+        //   } else {
+        //     this.more = !this.more
+        //   }
+        // }
+        tagData: this.tagData,
+        itemData: this.items
       })
     },
     setImage (imgURL) {
@@ -208,7 +223,7 @@ export default {
       }
     },
     editTagInfo (k, f) {
-      this.sc.editInfo(k, f)
+      this.sc.editInfo(k, f, this.tagData, this.items)
     },
     setTagInfo (key) {
       this.tagData.forEach((i, k) => {
@@ -226,9 +241,7 @@ export default {
       }
     },
     addTagInfo (i) {
-      // console.log("这里添加标签",i)
       this.sc.info.show(i.title, i.desc);
-      // this.$emit('on-tag-add', i);
     },
     delTag () {
       this.sc.delete();
@@ -368,6 +381,14 @@ export default {
           &:hover {
             background-color: transparent;
           }
+        }
+        p {
+            line-height: 1;
+            font-size: 12px;
+            margin: 0;
+            padding-left: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 6px;
         }
       }
     }
