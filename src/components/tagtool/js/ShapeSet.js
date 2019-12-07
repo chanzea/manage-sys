@@ -88,12 +88,11 @@ const ShapeSet = function () {
 
   }
 
-  shapeSet.getData = function (scale) {
+  shapeSet.getData = function () {
     return this.items.map(item => {
-      return item.getAttr(scale)
+      return item.getAttr()
     })
   }
-
   return shapeSet
 }
 

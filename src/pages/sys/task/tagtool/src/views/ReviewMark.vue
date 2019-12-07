@@ -116,14 +116,19 @@ export default {
         }
         taskItemList = taskItemList || [];//没有居然是null
         this.taskItemList = taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = BASEURL + dataRecordList[item.dataRecordId].fileUrl
           item.isSelected = false
           return item
         })
 
         this.isNext = !!taskItemList;
         if(taskItemList.length > 0) {
-          this.setTagData(JSON.parse(this.taskItemList[0].taskData));//设置图片
+          console.log(this.taskItemList[0].taskData)
+          let tagData =  JSON.parse(this.taskItemList[0].taskData);
+          if(tagData.imgSrc == ''){
+            tagData.imgSrc = this.taskItemList[0].src;
+          }
+          this.setTagData(tagData);//设置图片
         }
       })
     },
@@ -141,7 +146,7 @@ export default {
           this.taskItemStatus = String(taskItemList[0].itemStatus)
         }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = BASEURL + dataRecordList[item.dataRecordId].fileUrl
           item.tag = item.taskData
           return item
         }) : []

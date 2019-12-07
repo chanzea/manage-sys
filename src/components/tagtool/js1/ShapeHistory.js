@@ -11,7 +11,6 @@ const ShapeHistory = () => {
       this.index--;
       var t = this.index;
       return this.index < 0 && (this.index = 0),
-        console.log(t),
         this.data[t]
     },
     next: function () {

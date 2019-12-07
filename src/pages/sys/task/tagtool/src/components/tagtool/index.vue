@@ -80,6 +80,10 @@ export default {
       type: Number, // 工具高度
       default: 600
     },
+    width: {
+      type: Number, // 工具高度
+      default: 1000
+    },
     tagWidth: {
       type: Number, // 标签显示宽度
       default: 300
@@ -130,6 +134,7 @@ export default {
     canvasStyle () {
       return {
         height: this.height + 'px',
+        width: this.width + 'px',
         marginRight: this.tagWidth + 'px'
       }
     },

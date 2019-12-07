@@ -85,7 +85,7 @@ export default {
       costHistoryMonitorOption: {
         title: {
           text: "历史监控数据",
-          subtext: "每个月的各个指标统计图",
+          subtext: "月度题数监控统计图",
           x: "85%",
           // y: "10%"
         },
@@ -125,7 +125,7 @@ export default {
       amountHistoryMonitorOption: {
         title: {
           text: "历史监控数据",
-          subtext: "每个月的各个指标统计图",
+          subtext: "月度标注监控统计图",
           x: "85%",
           // y: "10%"
         },
@@ -172,17 +172,6 @@ export default {
     // this.amountHistoryMonitorEcharts.setOption(this.amountHistoryMonitorOption)
     this.getTaskItemMonitor();
   },
-
-  watch: {
-    realMonitorOptions: {
-      handler: function(newVal, oldVal) {
-        console.log(newVal, oldVal);
-      },
-      deep: true
-    }
-  },
-
-  updated() {},
 
   methods: {
     getRealTimeMonitor: function() {

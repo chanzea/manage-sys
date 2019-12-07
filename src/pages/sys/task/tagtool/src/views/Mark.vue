@@ -11,7 +11,9 @@
       </div>
       <div class="task-mark-content-meta-item">
         <span class="item-label">任务描述:</span>
-        <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
+        <span class="item-value">
+          <strong>{{detail.taskRemark}}</strong>
+        </span>
       </div>
     </div>
     <div class="btn-group">
@@ -21,16 +23,26 @@
     </div>
     <div v-if="isReturnItem" style="margin: 10px 0;">
       <RadioGroup v-model="taskItemStatus" :disabled="true">
-          <Radio :disabled="true" label="5">通过</Radio>
-          <Radio :disabled="true" label="3">不通过</Radio>
+        <Radio :disabled="true" label="5">通过</Radio>
+        <Radio :disabled="true" label="3">不通过</Radio>
       </RadioGroup>
-      <Input :disabled="true" v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
+      <Input
+        :disabled="true"
+        v-model="taskItemReviewAdvise"
+        type="textarea"
+        :rows="4"
+        placeholder="审核意见"
+      />
     </div>
-    <tag-tool ref="tool"
+    <tag-tool
+      ref="tool"
+      :height = "canvasStyle.height"
+      :width = "canvasStyle.width"
       @on-data-change="saveTagData"
-      @on-tag-add='tagMarkAddAction'
+      @on-tag-add="tagMarkAddAction"
       :isNoData="!this.isNext"
-      :tag-data="tagData"></tag-tool>
+      :tag-data="tagData"
+    ></tag-tool>
   </div>
 </template>
 
@@ -51,6 +63,10 @@ export default {
   },
   data () {
     return {
+      canvasStyle:{
+        height: 600,
+        width: 1000
+      },
       taskItemList: [],
       isNext: true,
       taskItemReviewAdvise: "",
@@ -114,7 +130,6 @@ export default {
         return this.$Message.warning("没有下一题了");
       }
 
-
       taskItemAllotMark({
         taskId
       }).then( res => {
@@ -172,7 +187,8 @@ export default {
       }).then(res => {
         const {taskItemList, dataRecordList} = res;
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = BASEURL + dataRecordList[item.dataRecordId].fileUrl
+          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].fileUrl;
           item.tag = item.taskData
           return item
         }) : []
@@ -246,7 +262,26 @@ export default {
     },
     view () {
       this.$refs.tool.view()
-    }
+    },
+
+    upload() {    
+        let file = document.querySelector('input[type=file]').files[0]  
+        // 获取选择的文件，这里是图片类型    
+        let reader = new FileReader()        
+        reader.readAsDataURL(file) //读取文件并将文件以URL的形式保存在resulr属性中 base64格式        
+        reader.onload = function(e) { // 文件读取完成时触发             
+            let result = e.target.result // base64格式图片地址             
+            var image = new Image();
+            image.src = result // 设置image的地址为base64的地址             
+            image.onload = function(){                 
+                this.canvasStyle = {
+                  width: parseInt(image.width),
+                  height: parseInt(image.height)
+                }              
+            }   
+            
+        }
+    } 
   }
 }
 </script>
@@ -272,7 +307,8 @@ export default {
     }
   }
 }
-.ivu-input[disabled], fieldset[disabled] .ivu-input{
+.ivu-input[disabled],
+fieldset[disabled] .ivu-input {
   background-color: white;
   color: #000000;
 }
