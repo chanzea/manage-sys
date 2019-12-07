@@ -19,7 +19,7 @@
     <div class="btn-group">
       <button @click="()=>{taskItemMark()}">提交数据</button>
       <button v-if="!isReturnItem" @click="()=>{taskItemMark(true)}">下一题</button>
-      <button @click="view">黑白图片预览</button>
+      <!-- <button @click="view">黑白图片预览</button> -->
     </div>
     <div v-if="isReturnItem" style="margin: 10px 0;">
       <RadioGroup v-model="taskItemStatus" :disabled="true">
@@ -231,7 +231,7 @@ export default {
         let params = {
           tagName: item.title,
           tagDesc: item.desc,
-          tagType: true
+          tagType: ""
         }
         params.taskId = parseInt(this.$route.query.id);
         tagMarkAdd([params]).then( res => {

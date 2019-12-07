@@ -17,7 +17,7 @@
     <div class="btn-group" v-if="!viewOnly">
       <button @click="taskItemReview">审核</button>
       <button v-if="!isReturnItem" @click="taskItemReview(true)">下一题</button>
-      <button @click="view">黑白图片预览</button>
+      <!-- <button @click="view">黑白图片预览</button> -->
     </div>
     <div style="margin: 10px 0;">
       <RadioGroup v-model="taskItemStatus" >
