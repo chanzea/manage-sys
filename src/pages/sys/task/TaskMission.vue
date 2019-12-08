@@ -149,10 +149,11 @@ export default {
         tag: 'mark'
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList, taskList} = res;
+        let {userList, taskItemList, taskList, count} = res;
         this.userList = userList;
         this.data = taskItemList;
         this.taskList = taskList;
+        this.total = count;
       });
     },
 
@@ -163,10 +164,11 @@ export default {
         tag: "mark"
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList, taskList} = res;
+        let {userList, taskItemList, taskList, count} = res;
         this.userList = userList;
         this.data = taskItemList;
         this.taskList = taskList;
+        this.total = count;
       });
     },
 

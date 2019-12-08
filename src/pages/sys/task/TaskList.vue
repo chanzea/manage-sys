@@ -122,10 +122,12 @@ export default {
           title: '任务类型',
           key: 'taskTypeDis'
         },
+        
         {
           title: "创建人",
           key: "creatorName"
         },
+         
         {
           title: "创建时间",
           key: "createdTime"
@@ -144,6 +146,14 @@ export default {
           title: "待审核",
           key: "_taskItemNeedReviewTotal",
           width: '100'
+        },
+        {
+          title: '返工任务总数',
+          key: 'taskItemReMarkTotal'
+        },
+        {
+          title: '返工审核总数',
+          key: 'taskItemReReviewTotal'
         },
         {
           title: "状态",
@@ -364,7 +374,7 @@ export default {
           item.taskName = taskList[item.taskId].taskName;
           item.taskTypeDis = TASKTYPE[taskList[item.taskId].taskType].label;
           item.taskType = taskList[item.taskId].taskType;
-          item.status = taskItemStatusData[item.taskItemType];
+          item.status = taskItemStatusData[item.itemStatus];
           item.markUserName = item.markUserId !== 0 ? userList[item.markUserId].userName : '暂无';
           item.reviewUserName = item.reviewUserId !== 0 ? userList[item.reviewUserId].userName : '暂无';
           return item
