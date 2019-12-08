@@ -59,9 +59,8 @@ export default {
   data () {
     return {
       taskItemList: [],
-      isNext: false,
+      isNext: true,
       viewOnly: false, 
-      noMore: false,
       taskItemStatus: "5",
       taskItemReviewAdvise: "",
       tagData: [
@@ -104,15 +103,21 @@ export default {
   methods: {
     taskItemAllotReview () {
       const taskId = this.$route.query.id
+
+      if(!this.isNext){
+        this.setTagData({})
+        return this.$Message.warning("没有下一题了");
+      }
+
       taskItemAllotReview({
         taskId
       }).then(res => {
         this.isNext = false
         let {taskItemList, dataRecordList, userList} = res;
-        if(!taskItemList){
-          this.$Message.info("任务审核完成");
-          this.noMore = true;
-          return;
+
+        if(!taskItemList || taskItemList.length == 0){
+          this.isNext = false;
+          this.$Message.warning("没有下一题了");
         }
         taskItemList = taskItemList || [];//没有居然是null
         this.taskItemList = taskItemList.map(item => {
