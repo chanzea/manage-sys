@@ -158,6 +158,7 @@ export default {
           }
         })
       });
+      return false;
     },
 
     // 分块上传
