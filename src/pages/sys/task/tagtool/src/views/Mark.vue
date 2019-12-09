@@ -72,21 +72,21 @@ export default {
       taskItemReviewAdvise: "",
       taskItemStatus: "",
       tagData: [
-        {
-          'title': '箭头',
-          'desc': '箭头标注',
-          'selected': false
-        },
-        {
-          'title': '马',
-          'desc': '动物世界马',
-          'selected': false
-        },
-        {
-          'title': '轮船',
-          'desc': '世界轮船',
-          'selected': false
-        },
+        // {
+        //   'title': '箭头',
+        //   'desc': '箭头标注',
+        //   'selected': false
+        // },
+        // {
+        //   'title': '马',
+        //   'desc': '动物世界马',
+        //   'selected': false
+        // },
+        // {
+        //   'title': '轮船',
+        //   'desc': '世界轮船',
+        //   'selected': false
+        // },
         // {
         //   'title': '航空母舰',
         //   'desc': '军事图片识别',
@@ -220,7 +220,7 @@ export default {
       })
     },
 
-    changeTagData (data, item) {
+    changeTagData (item, data) {
       // 增加或者编辑标签属性，触发。
       let isNew = this.tagData.filter(i => {
         return i.title === item.title && i.desc === item.desc

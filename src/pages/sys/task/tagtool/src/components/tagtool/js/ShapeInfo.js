@@ -94,7 +94,7 @@ const ShapeInfo = (option) => {
         return (item.title+'').trim().length > 0
       })
       this.data = a
-      for (let i = 0; i < c; i++) {
+      for (let i = 0; i < c && a[i]; i++) {
         let btn = document.createElement('button')
         btn.innerHTML = a[i].title
         btn.addEventListener('click', () => {
@@ -150,7 +150,9 @@ const ShapeInfo = (option) => {
     },
     confirm () {
       this.hide()
-      option.confirm && option.confirm(this.titleInput.value.trim(), this.descInput.value.trim())
+      let title = this.titleInput.value.trim() || ''
+      let desc = this.descInput.value.trim() || ''
+      option.confirm && option.confirm(title, desc)
     },
     cancel () {
       this.hide()
@@ -171,6 +173,7 @@ const ShapeInfo = (option) => {
       this.tagUl.style.width = input.offsetWidth + 'px'
       if (this.data && this.data.length > 0) {
         let result = this.data.filter(item => {
+          console.log(item)
           return item.title.indexOf(n) > -1
         })
         result.forEach(i => {
