@@ -17,7 +17,7 @@
       </div>
       <div class="task-reject-pic-content-list">
         <div class="task-reject-pic-content-list-item" :class="item.isSelected ? 'selected-border' : ''" v-for="(item, index) in dataRecordList" :key="index" >
-          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.fileUrl + ')', 'background-size': 'cover'}" />
+          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.fileUrl + '\')', 'background-size': 'cover'}" />
           <div class="item-isselect">
               <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
               <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
