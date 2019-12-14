@@ -17,7 +17,7 @@
       </div>
       <div class="task-classify-content-list" v-if = "!noMore">
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
-          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}">
+          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')'}">
             <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
           <!-- <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div> -->

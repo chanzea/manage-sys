@@ -55,10 +55,10 @@
       width="620"
     >
       <div class="pic-list">
-        <!-- <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.thumbnailUrl + ')', 'background-size': 'cover'}">
+        <!-- <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')', 'background-size': 'cover'}">
         </div> -->
         <div class="pic-list-item" v-for="(item, index) in picList" :key="index">
-          <img v-lazy="BASEURL + item.thumbnailUrl" alt="">
+          <img class="v-lazy-img" v-lazy="BASEURL + item.thumbnailUrl" alt="">
         </div>
       </div>
     </Modal>
@@ -279,6 +279,11 @@ export default {
     justify-content: center;
     align-items: center;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    .v-lazy-img {
+      max-width: 100%;
+      max-height: 100%;
+      display: inline-block;
+    }
   }
 }
 </style>

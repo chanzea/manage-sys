@@ -3,7 +3,7 @@
     <div class="task-classify-content">
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" :class="item.isSelected ? 'selected-border' : ''" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')', 'background-size': 'cover'}">
+          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')', 'background-size': 'cover'}">
             <!-- <img :src="BASEURL + item.src" alt=""> -->
           </div>
           <div class="item-isselect">
