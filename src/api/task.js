@@ -150,3 +150,9 @@ export async function getRealTimeMonitor(params) {
     const data = await api(`/monitor/realTimeMonitor`, 'get', params)
     return data
 }
+
+//获取历史监控
+export async function getHistoryMonitor(params) {
+    const data = await api(`/monitor/historyMonitor`, 'POST', params)
+    return data
+}

@@ -11,25 +11,38 @@
       </div>
       <div class="task-mark-content-meta-item">
         <span class="item-label">任务描述:</span>
-        <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
+        <span class="item-value">
+          <strong>{{detail.taskRemark}}</strong>
+        </span>
       </div>
     </div>
     <div class="btn-group">
       <button @click="()=>{taskItemMark()}">提交数据</button>
       <button v-if="!isReturnItem" @click="()=>{taskItemMark(true)}">下一题</button>
-      <button @click="view">黑白图片预览</button>
+      <!-- <button @click="view">黑白图片预览</button> -->
     </div>
     <div v-if="isReturnItem" style="margin: 10px 0;">
       <RadioGroup v-model="taskItemStatus" :disabled="true">
-          <Radio :disabled="true" label="5">通过</Radio>
-          <Radio :disabled="true" label="3">不通过</Radio>
+        <Radio :disabled="true" label="5">通过</Radio>
+        <Radio :disabled="true" label="3">不通过</Radio>
       </RadioGroup>
-      <Input :disabled="true" v-model="taskItemReviewAdvise" type="textarea" :rows="4" placeholder="审核意见" />
+      <Input
+        :disabled="true"
+        v-model="taskItemReviewAdvise"
+        type="textarea"
+        :rows="4"
+        placeholder="审核意见"
+      />
     </div>
-    <tag-tool ref="tool"
+    <tag-tool
+      ref="tool"
+      :height = "canvasStyle.height"
+      :width = "canvasStyle.width"
       @on-data-change="saveTagData"
+      @on-tag-change="changeTagData"
       :isNoData="!this.isNext"
-      :tag-data="tagData"></tag-tool>
+      :tag-data="tagData"
+    ></tag-tool>
   </div>
 </template>
 
@@ -50,6 +63,10 @@ export default {
   },
   data () {
     return {
+      canvasStyle:{
+        height: 600,
+        width: 900
+      },
       taskItemList: [],
       isNext: true,
       taskItemReviewAdvise: "",
@@ -90,7 +107,7 @@ export default {
   },
   mounted () {
     this.taskType = this.$route.query.type
-    this.tagMarkAdd();
+    // this.tagMarkAdd();
     const taskId = this.$route.query.id
     const taskItemId = this.$route.query.taskItemId
     this.viewOnly = this.$route.query.viewOnly;
@@ -113,7 +130,6 @@ export default {
         return this.$Message.warning("没有下一题了");
       }
 
-
       taskItemAllotMark({
         taskId
       }).then( res => {
@@ -129,11 +145,10 @@ export default {
           return item
         }) : []
         this.isNext = !!taskItemList;
-        console.log("====")
-        console.log(res)
         if(taskItemList.length > 0) {
-          console.log(this.taskItemList[0].src)
           this.setImage(this.taskItemList[0].src);//设置图片
+          this.getTagMarkList();
+          this.$refs["tool"].clearShapeItems();
         }
       })
     },
@@ -155,12 +170,11 @@ export default {
       if(JSON.stringify(markData) == "{}"){
         return this.$Message.error("请先标注数据");
       }
-      this.tagMarkAdd();
+      
       taskItemMark(data).then(res => {
         this.$Message.success("提交成功")
         if (next) {
           this.taskItemAllotMark();
-          this.getTagMarkList();
         }
       });
     },
@@ -173,7 +187,8 @@ export default {
       }).then(res => {
         const {taskItemList, dataRecordList} = res;
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = BASEURL + dataRecordList[item.dataRecordId].fileUrl
+          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].fileUrl;
           item.tag = item.taskData
           return item
         }) : []
@@ -205,8 +220,29 @@ export default {
       })
     },
 
-    tagMarkAdd() {
-        tagMarkAdd(this.tagDataList);
+    changeTagData (item, data) {
+      // 增加或者编辑标签属性，触发。
+      let isNew = this.tagData.filter(i => {
+        return i.title === item.title && i.desc === item.desc
+      })
+      console.log(data, item)
+
+      if(isNew.length === 0) {
+        let params = {
+          tagName: item.title,
+          tagDesc: item.desc,
+          tagType: ""
+        }
+        params.taskId = parseInt(this.$route.query.id);
+        tagMarkAdd([params]).then( res => {
+        });
+
+        this.tagData.push({
+          'title': item.title,
+          'desc': item.desc,
+          'selected': false
+        });
+      }
     },
 
     setImage (imgUrl) {
@@ -217,9 +253,6 @@ export default {
     },
     getTagData () {
       let data = this.$refs.tool.getTagData()
-      console.log("TCL: getTagData -> data", data)
-      console.log(data);
-      //这里获取标签数组
       if(JSON.stringify(data) != {}){
         this.tagDataList = data.items.map( item => {
           return {
@@ -237,7 +270,26 @@ export default {
     },
     view () {
       this.$refs.tool.view()
-    }
+    },
+
+    upload() {    
+        let file = document.querySelector('input[type=file]').files[0]  
+        // 获取选择的文件，这里是图片类型    
+        let reader = new FileReader()        
+        reader.readAsDataURL(file) //读取文件并将文件以URL的形式保存在resulr属性中 base64格式        
+        reader.onload = function(e) { // 文件读取完成时触发             
+            let result = e.target.result // base64格式图片地址             
+            var image = new Image();
+            image.src = result // 设置image的地址为base64的地址             
+            image.onload = function(){                 
+                this.canvasStyle = {
+                  width: parseInt(image.width),
+                  height: parseInt(image.height)
+                }              
+            }   
+            
+        }
+    } 
   }
 }
 </script>
@@ -263,7 +315,8 @@ export default {
     }
   }
 }
-.ivu-input[disabled], fieldset[disabled] .ivu-input{
+.ivu-input[disabled],
+fieldset[disabled] .ivu-input {
   background-color: white;
   color: #000000;
 }

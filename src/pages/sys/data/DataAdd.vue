@@ -142,7 +142,8 @@ export default {
           } else {
             if (res.chunkTotal > 1) {
               _this.startUpload = true
-              _this.chunkUpload(0, 1, res.chunkThreshold, res.chunkTotal, file, res.fileId)
+              console.log('res.chunkTotal', res.chunkTotal)
+              _this.chunkUpload(res.startChunkNumber, res.chunkThreshold, res.chunkTotal, file, res.fileId)
               // const chunkTotal = Math.ceil(file.size / 131072) //测试用
               // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
             } else {
@@ -157,13 +158,15 @@ export default {
           }
         })
       });
+      return false;
     },
 
     // 分块上传
-    chunkUpload (start, startChunkNumber, chunkThreshold, chunkTotal, file, fileId) {
+    chunkUpload (startChunkNumber, chunkThreshold, chunkTotal, file, fileId) {
       const _this = this
       const fileSize = file.size
       let blob = null //二进制对象
+      let start = (startChunkNumber - 1) * chunkThreshold;
       let end = start + chunkThreshold //
       // 如果超出文件大小
       if (end > fileSize) {
@@ -178,7 +181,8 @@ export default {
       fileUpload(form).then(res => {
         if (startChunkNumber < chunkTotal) {        
           _this.percent = (end / fileSize).toFixed(2) * 100; //进度条比例
-          _this.chunkUpload(end, ++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
+          console.log('当前进度', _this.percent)
+          _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
         } else {
           _this.percent = 100 //进度条完成
           fileMerge({

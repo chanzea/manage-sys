@@ -32,7 +32,7 @@ export default {
     },
     total: {
       type: Number,
-      default: 100
+      default: 0
     }
   },
   methods: {

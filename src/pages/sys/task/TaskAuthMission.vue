@@ -145,10 +145,11 @@ export default {
         tag: "review"
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList, taskList} = res;
+        let {userList, taskItemList, taskList, count} = res;
         this.userList = userList;
         this.data = taskItemList;
         this.taskList = taskList;
+        this.total = count;
       });
     },
 
@@ -159,10 +160,11 @@ export default {
         tag: "review"
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList, taskList} = res;
+        let {userList, taskItemList, taskList, count} = res;
         this.userList = userList;
         this.data = taskItemList;
         this.taskList = taskList;
+        this.total = count;
       });
     },
 

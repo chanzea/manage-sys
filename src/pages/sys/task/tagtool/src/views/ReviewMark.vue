@@ -17,7 +17,7 @@
     <div class="btn-group" v-if="!viewOnly">
       <button @click="taskItemReview">审核</button>
       <button v-if="!isReturnItem" @click="taskItemReview(true)">下一题</button>
-      <button @click="view">黑白图片预览</button>
+      <!-- <button @click="view">黑白图片预览</button> -->
     </div>
     <div style="margin: 10px 0;">
       <RadioGroup v-model="taskItemStatus" >
@@ -59,9 +59,8 @@ export default {
   data () {
     return {
       taskItemList: [],
-      isNext: false,
+      isNext: true,
       viewOnly: false, 
-      noMore: false,
       taskItemStatus: "5",
       taskItemReviewAdvise: "",
       tagData: [
@@ -104,26 +103,37 @@ export default {
   methods: {
     taskItemAllotReview () {
       const taskId = this.$route.query.id
+
+      if(!this.isNext){
+        this.setTagData({})
+        return this.$Message.warning("没有下一题了");
+      }
+
       taskItemAllotReview({
         taskId
       }).then(res => {
         this.isNext = false
         let {taskItemList, dataRecordList, userList} = res;
-        if(!taskItemList){
-          this.$Message.info("任务审核完成");
-          this.noMore = true;
-          return;
+
+        if(!taskItemList || taskItemList.length == 0){
+          this.isNext = false;
+          this.$Message.warning("没有下一题了");
         }
         taskItemList = taskItemList || [];//没有居然是null
         this.taskItemList = taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = BASEURL + dataRecordList[item.dataRecordId].fileUrl
           item.isSelected = false
           return item
         })
 
         this.isNext = !!taskItemList;
         if(taskItemList.length > 0) {
-          this.setTagData(JSON.parse(this.taskItemList[0].taskData));//设置图片
+          console.log(this.taskItemList[0].taskData)
+          let tagData =  JSON.parse(this.taskItemList[0].taskData);
+          if(tagData.imgSrc == ''){
+            tagData.imgSrc = this.taskItemList[0].src;
+          }
+          this.setTagData(tagData);//设置图片
         }
       })
     },
@@ -141,7 +151,7 @@ export default {
           this.taskItemStatus = String(taskItemList[0].itemStatus)
         }
         this.taskItemList = taskItemList ? taskItemList.map(item => {
-          item.src = dataRecordList[item.dataRecordId].fileUrl
+          item.src = BASEURL + dataRecordList[item.dataRecordId].fileUrl
           item.tag = item.taskData
           return item
         }) : []
