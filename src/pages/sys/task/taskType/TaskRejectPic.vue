@@ -15,9 +15,12 @@
           <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
-      <div class="task-reject-pic-content-list">
+      <div v-if="dataRecordList.length === 0" style="font-size: 24px; font-weight: bold">
+          暂无题目
+      </div>
+      <div v-else class="task-reject-pic-content-list">
         <div class="task-reject-pic-content-list-item" :class="item.isSelected ? 'selected-border' : ''" v-for="(item, index) in dataRecordList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')', 'background-size': 'cover'}" />
+          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" />
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
             <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
@@ -34,7 +37,7 @@
           <span class="item-value">{{reviewInfo.advise}}</span>
         </div>
       </div>
-      <div class="task-reject-pic-content-opt" v-if="!viewOnly">
+      <div class="task-reject-pic-content-opt" v-if="!viewOnly && dataRecordList.length !== 0">
         <Button class="opt-btn" type="primary" @click="taskItemMark(false)" :disabled="!isSelected">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMark(true)" :disabled="!isSelected">下一题</Button>
       </div>
@@ -57,7 +60,8 @@ export default {
       viewOnly: false,
       reviewInfo: {
 
-      }
+      },
+      // nodata: require('../../../../../static/assets/img/nodata.png')
     }
   },
   props: {
@@ -191,6 +195,7 @@ export default {
         box-sizing: border-box;
         width: 250px;
         height: 200px;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
         &.selected-border {
           border: 2px solid #f00;
           box-sizing: border-box;
@@ -198,6 +203,9 @@ export default {
         .item-thumb {
           width: 100%;
           height: 100%;
+          background-size: contain;
+          background-position: center;
+          background-repeat: no-repeat;
         }
         .item-isselect {
           position: absolute;

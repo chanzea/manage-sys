@@ -32,7 +32,7 @@
       <div v-if="noMore" style="font-size: 24px; font-weight: bold">
           暂无需要审核的题目
       </div>
-      <div v-if = "!noMore">
+      <div v-if="!noMore">
           <div style="margin: 10px 0;">
             <RadioGroup v-model="taskItemStatus">
                 <Radio  label="5">通过</Radio>

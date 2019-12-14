@@ -15,7 +15,10 @@
           <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
       </div>
-      <div class="task-reject-folder-content-list">
+      <div v-if="dataRecordList.length === 0" style="font-size: 24px; font-weight: bold">
+        暂无题目
+      </div>
+      <div v-else class="task-reject-folder-content-list">
         <div class="task-reject-folder-content-list-item" v-for="(item, index) in dataRecordList" :key="index">
           <div class="item-folder">
             <div class="item-thumb" @click="getFolderPic(item)">
@@ -39,7 +42,7 @@
           <span class="item-value">{{reviewInfo.advise}}</span>
         </div>
       </div>
-      <div class="task-reject-folder-content-opt" v-if="!viewOnly">
+      <div class="task-reject-folder-content-opt" v-if="!viewOnly && dataRecordList.length !== 0">
         <Button class="opt-btn" type="primary" @click="taskItemMark(false)" :disabled="!isSelected">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMark(true)" :disabled="!isSelected">下一题</Button>
       </div>

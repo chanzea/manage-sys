@@ -34,8 +34,11 @@
       width="620">
       <div class="modal-content">
         <div class="modal-content-list" v-if="fileList.length !== 0">
-          <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
+          <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" :style="{
+            'margin-bottom': item.fileType === 3 ? '40px' : '12px'
+          }" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
             <img v-lazy="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
+            <span class="item-filename" v-if="item.fileType === 3">{{item.fileName}}</span>
           </div>
         </div>
         <div v-else style="text-align:center;padding: 8px 0;">
@@ -354,7 +357,7 @@ export default {
     align-items: flex-start;
     flex-wrap: wrap;
     &-item {
-      margin-bottom: 12px;
+      position: relative;
       margin-right: 20px;
       width: 120px;
       height: 100px;
@@ -372,6 +375,16 @@ export default {
       }
       &.allow {
         cursor: pointer;
+      }
+      .item-filename {
+        position: absolute;
+        bottom: -30px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        color: #333;
+        display: inline-block;
+        text-align: center;
       }
     }
   }

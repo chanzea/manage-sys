@@ -180,7 +180,7 @@ export default {
       form.append('chunkNum', startChunkNumber)
       fileUpload(form).then(res => {
         if (startChunkNumber < chunkTotal) {        
-          _this.percent = (end / fileSize).toFixed(2) * 100; //进度条比例
+          _this.percent = ((end / fileSize) * 100).toFixed(2); //进度条比例
           console.log('当前进度', _this.percent)
           _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
         } else {
