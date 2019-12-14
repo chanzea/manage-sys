@@ -126,7 +126,7 @@
         <Avatar icon="person" size="small" style="background-color: #5c6b77"/>
         <span class="user-name">{{userData.userName}}</span>
         <DropdownMenu slot="list">
-          <DropdownItem name="1" @click.native="messageCenter">消息中心</DropdownItem>
+          <!-- <DropdownItem name="1" @click.native="messageCenter">消息中心</DropdownItem> -->
           <DropdownItem name="1" @click.native="userInfoCenter">用户中心</DropdownItem>
           <DropdownItem name="2" @click.native="logout">退出登录</DropdownItem>
         </DropdownMenu>

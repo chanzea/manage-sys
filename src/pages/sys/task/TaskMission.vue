@@ -130,7 +130,6 @@ export default {
     getTaskList: function() {
       let page = this.page || "";
       getTaskList({ page, tag: 'mark' }).then(res => {
-        console.log(res);
         const { taskList, count } = res
         this.data = taskList ? taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
@@ -201,7 +200,6 @@ export default {
 
     //这个函数在minxin里面
     actionCallFn(params){
-      console.log('params', params)
         this.$router.push({
           path: '/task/type',
           query: {

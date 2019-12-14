@@ -120,7 +120,6 @@ export default {
       taskItemAllotReview({
         taskId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res;
         if(!taskItemList){
           this.$Message.info("任务审核完成，没有下一题了");
@@ -132,7 +131,6 @@ export default {
           this.dataRecordList.push(dataRecordList[item])
           this.taskItemList = taskItemList
         })
-        console.log('taskItemList', this.dataRecordList)
       })
     },
 
@@ -144,9 +142,7 @@ export default {
         taskItemStatus: this.taskItemStatus,
         taskItemReviewAdvise: this.taskItemReviewAdvise
       }
-      console.log('data', data)
       taskItemReview(data).then(res => {
-        console.log('res', res)
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功');
@@ -165,7 +161,6 @@ export default {
         taskId,
         taskItemId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList} = res
         // this.taskItemList = taskItemList ? taskItemList.map(item => {
         //   // item.src = dataRecordList[item.dataRecordId].thumbnailUrl
@@ -189,7 +184,6 @@ export default {
         dataSetId: item.dataSetId,
         folderId: item.id
       }).then(res => {
-        console.log('getFolderPic' ,res)
         const {list} = res
         this.picList = list
         this.isShowModal = true

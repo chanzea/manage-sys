@@ -239,7 +239,6 @@ export default {
         taskId,
         taskItemId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList, userList} = res
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl

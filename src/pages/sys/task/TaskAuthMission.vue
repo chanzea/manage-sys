@@ -126,7 +126,6 @@ export default {
     getTaskList: function() {
       let page = this.page || "";
       getTaskList({ page, tag: 'review' }).then(res => {
-        console.log(res);
         let { taskList, count } = res
         taskList = taskList || [];
         this.data = taskList.map(item => {
@@ -235,7 +234,6 @@ export default {
   watch: {
     currentTab: {
       handler (val) {
-        console.log(val);
         this.columns =  [
           {
             title: '任务编号',

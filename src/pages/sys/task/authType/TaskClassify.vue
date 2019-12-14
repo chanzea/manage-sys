@@ -154,7 +154,6 @@ export default {
         taskId,
         taskItemId
       }).then(res => {
-        console.log('res', res)
         const {taskItemList, dataRecordList} = res;
         if(this.viewOnly && taskItemList.length > 0) {
           this.taskItemReviewAdvise = taskItemList[0].reviewAdvise
@@ -177,9 +176,7 @@ export default {
         taskItemStatus: this.taskItemStatus,
         taskItemReviewAdvise: this.taskItemReviewAdvise
       }
-      console.log('data', data)
       taskItemReview(data).then(res => {
-        console.log('res', res)
       }).then( () => {
           // this.$message.success("提交成功，下一题");
           this.$Message.info('提交成功');

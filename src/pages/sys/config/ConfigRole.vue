@@ -179,10 +179,8 @@ export default {
         getRoleListPermission({ roleId: row.id })
       ]);
       let treeList = dataList[0].list;
-      // console.log(treeList);
       // let permissionList = (this.permissionList = dataList[1].list);
       this.permissionList = dataList[1].list
-      console.log(this.permissionList, treeList);
       treeList.forEach(item => {
         this.formatTreeData(item);
       });
@@ -200,11 +198,9 @@ export default {
     //handleCreateRole确定提交创建
     handleCreateRole() {
       this.$refs["createRoleData"].validate(valid => {
-        console.log(valid);
         if (valid) {
           addRole({ roleName: this.createRoleData.roleName })
             .then(res => {
-              console.log(res);
               this.$Message.success("创建成功");
               this.createVisiAble = false;
               this.getRoleList();
@@ -218,7 +214,6 @@ export default {
 
     getRoleList() {
       getRoleList().then(res => {
-        console.log("res", res);
         const { list } = res;
         this.data = list;
       });
@@ -230,7 +225,6 @@ export default {
         roleId: this.currentUpdateRole.id,
         permissionIds: this.getCheckedNodesIds()
       }
-      console.log('params', params)
       roleAddPermission({
         roleId: this.currentUpdateRole.id,
         permissionIds: this.getCheckedNodesIds()

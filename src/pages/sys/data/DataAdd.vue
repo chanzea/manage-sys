@@ -165,19 +165,15 @@ export default {
     chunkUpload (startChunkNumber, chunkThreshold, chunkTotal, file, fileId) {
       const _this = this
       const fileSize = file.size
-      console.log('文件大小', file.size)
       let blob = null //二进制对象
       let start = (startChunkNumber - 1) * chunkThreshold;
       let end = start + chunkThreshold //
-      console.log(`第${startChunkNumber}次`, 'start:', start)
       // 如果超出文件大小
       if (end > fileSize) {
         blob = file.slice(start, fileSize, file.type);
       } else {
-        console.log(`第${startChunkNumber}次`, 'end大小:', end)
         blob = file.slice(start, end, file.type);
       }
-      console.log('blob', blob)
       const form = new FormData();
       form.append('file', blob);
       form.append('fileId', fileId)
@@ -192,7 +188,6 @@ export default {
           fileMerge({
             file_id: fileId
           }).then(res => {
-            console.log('fileMerge', res)
             _this.fileName.push(file.name)
           })
         }

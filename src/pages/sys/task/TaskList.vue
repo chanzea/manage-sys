@@ -256,7 +256,6 @@ export default {
         startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
         endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : ''
       }).then(res => {
-        console.log('res', res)
         const { taskList, dataSetList, userList, count } = res
         this.data = taskList ? taskList.map(item => {
           item.creatorName = userList[item.creatorId].userName
@@ -297,7 +296,6 @@ export default {
     // },
 
     showItemBank (row) {
-      console.log('row', row)
       this.taskName = row.taskName;
       this.taskId = row.id
       this.taskItemList()
