@@ -268,7 +268,7 @@ export default {
         {
           style: {
             display: data.isEdit ? "inline-block" : "none",
-            width: "150px"
+            width: "200px"
           }
         },
         [
@@ -339,6 +339,6 @@ export default {
 
 <style lang="scss" scoped>
 .page-config-index {
-  width: 55%;
+  width: 60%;
 }
 </style>

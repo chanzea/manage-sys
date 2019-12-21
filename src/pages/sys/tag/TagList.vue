@@ -98,17 +98,19 @@ export default {
 
   methods: {
     getTaskList: function() {
-      let page = this.page;
-      let params = {
-        page,
+      const params = {
         taskStatus: -3,
         startTime: this.value[0] !== '' ? new Date(this.value[0]).Format('yyyy-MM-dd') : '',
         endTime: this.value[1] !== '' ? new Date(this.value[1]).Format('yyyy-MM-dd') : '',
         searchKey: this.searchKey,
+        page: {
+          pageNum: this.page.pageNum,
+          pageSize: this.page.pageSize,
+        }
       }
       this.fullLoading = true
       getTaskList(params).then( res => {
-        let {dataSetList, taskList, userList} = res;
+        const {dataSetList, taskList, userList, count} = res;
         this.data = taskList.map(item => {
           // item.markUser = item.markUserIds ? item.markUserIds.map(id => {
           //   return userList[id].userName
@@ -120,6 +122,7 @@ export default {
           item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd hh:mm:ss')
           return item
         })
+        this.total = count
         this.fullLoading = false
       }).catch(() => {
         this.fullLoading = false

@@ -26,11 +26,13 @@
               <div v-for="(item, index) in fileName" :key="index" style="margin-left: 8px;color: #2d8cf0">
                 <Icon type="ios-paper-outline" /><span style="margin-left: 8px;color: #2d8cf0">{{item}}</span>
               </div>
+
             </div>
             <Upload
               class="upload-comp"
               type="drag"
               :before-upload="beforeUpload"
+              :disabled="isUploading"
               action="">
               <div style="padding: 20px 0">
                 <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -66,6 +68,7 @@ export default {
   name: 'DataAdd',
   data () {
     return {
+      isUploading: false, //上传中
       startUpload: false, //开始上传
       percent: 0,
       loading: false,
@@ -129,6 +132,7 @@ export default {
       _this.startUpload = false
       _this.percent = 0 //清空进度
       browserMD5File(file, function (err, md5) {
+        _this.isUploading = true
         fileUploadInfo({
           fileMD5: md5,
           fileName: file.name,
@@ -153,6 +157,7 @@ export default {
               form.append('chunkNum', res.startChunkNumber)
               fileUpload(form).then(res => {
                 _this.fileName.push(file.name)
+                _this.isUploading = false
               })
             }
           }
@@ -180,7 +185,7 @@ export default {
       form.append('chunkNum', startChunkNumber)
       fileUpload(form).then(res => {
         if (startChunkNumber < chunkTotal) {        
-          _this.percent = (end / fileSize).toFixed(2) * 100; //进度条比例
+          _this.percent = ((end / fileSize) * 100).toFixed(2); //进度条比例
           console.log('当前进度', _this.percent)
           _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
         } else {
@@ -189,6 +194,7 @@ export default {
             file_id: fileId
           }).then(res => {
             _this.fileName.push(file.name)
+            _this.isUploading = false
           })
         }
       })

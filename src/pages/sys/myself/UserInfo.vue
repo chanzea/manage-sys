@@ -11,7 +11,7 @@
           <Button class="btn-list-item" @click="goBack">返回</Button>
         </div>
       </TabPane>
-      <TabPane label="头像" name="avatar">头像</TabPane>
+      <!-- <TabPane label="头像" name="avatar">头像</TabPane> -->
     </Tabs>
   </div>
 </template>

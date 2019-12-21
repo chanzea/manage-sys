@@ -32,7 +32,7 @@
       <div v-if="noMore" style="font-size: 24px; font-weight: bold">
           暂无需要审核的题目
       </div>
-      <div v-if = "!noMore">
+      <div v-if="!noMore">
           <div style="margin: 10px 0;">
             <RadioGroup v-model="taskItemStatus">
                 <Radio  label="5">通过</Radio>
@@ -55,10 +55,13 @@
       width="620"
     >
       <div class="pic-list">
-        <!-- <div class="pic-list-item" v-for="(item, index) in picList" :key="index" :style="{backgroundImage: 'url(' + BASEURL + item.thumbnailUrl + ')', 'background-size': 'cover'}">
-        </div> -->
         <div class="pic-list-item" v-for="(item, index) in picList" :key="index">
-          <img v-lazy="BASEURL + item.thumbnailUrl" alt="">
+          <Poptip placement="right" width="400">
+            <img class="v-lazy-img" v-lazy="BASEURL + item.thumbnailUrl" alt="">
+            <div slot="content" class="prev-content">
+              <img class="prev-img" :src="BASEURL + item.thumbnailUrl" alt="">
+            </div>
+          </Poptip>
         </div>
       </div>
     </Modal>
@@ -275,10 +278,39 @@ export default {
     margin-right: 20px;
     width: 120px;
     height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    /deep/ .ivu-poptip {
+      width: 100%;
+      height: 100%;
+      .ivu-poptip-rel {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+    .v-lazy-img {
+      max-width: 100%;
+      max-height: 100%;
+      display: inline-block;
+    }
+  }
+}
+.ivu-modal-body {
+  max-height: 500px;
+  overflow: auto;
+}
+
+.prev-content {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .prev-img {
+    max-width: 100%;
+    max-height: 100%;
+    display: inline-block;
   }
 }
 </style>

@@ -17,7 +17,7 @@
       </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <!-- <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(' + BASEURL + item.src + ')'}"> -->
+          <!-- <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')'}"> -->
             <div class="item-thumb">
               <img :src="BASEURL + item.src" alt="">
             </div>
@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="task-classify-content-opt" v-if="!viewOnly">
-        <Button class="opt-btn" type="primary" @click="selectAll">全选</Button>
+        <Button class="opt-btn" type="primary" @click="selectAll">{{isSelectedAll ? '取消全选' : '全选'}}</Button>
         <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
@@ -140,6 +140,11 @@ export default {
       }).map(item => {
         return item.id
       })
+    },
+    isSelectedAll () {
+      return this.taskItemList.every(item => {
+        return item.isSelected === true
+      })
     }
   },
   methods: {
@@ -184,8 +189,9 @@ export default {
 
     // 全选
     selectAll () {
+      const isSelected = !this.isSelectedAll
       this.taskItemList.map(item => {
-        item.isSelected = true
+        item.isSelected = isSelected
         return item
       })
     },
