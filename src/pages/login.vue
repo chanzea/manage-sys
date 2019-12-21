@@ -281,6 +281,13 @@
         this.$verify.refresh()
       },
     },
+
+    created () {
+      if(this.$route.query['msg']){
+        this.$Message.success(this.$route.query['msg'])
+      }
+    },
+
     mounted () {
       this.$verify.gverify('v_container'); //验证码初始化
       window.addEventListener('keyup', (e) => {
