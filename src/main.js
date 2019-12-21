@@ -41,7 +41,7 @@ Vue.use(VueLazyload);
 Vue.use(verify);
 window.copyIview = iView
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   routes
 });
 
