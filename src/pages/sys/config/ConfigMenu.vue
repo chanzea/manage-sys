@@ -268,7 +268,7 @@ export default {
         {
           style: {
             display: data.isEdit ? "inline-block" : "none",
-            width: "300px"
+            width: "150px"
           }
         },
         [
