@@ -20,7 +20,13 @@
       </div>
       <div v-else class="task-reject-pic-content-list">
         <div class="task-reject-pic-content-list-item" :class="item.isSelected ? 'selected-border' : ''" v-for="(item, index) in dataRecordList" :key="index" @click="item.isSelected = !item.isSelected">
-          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" />
+          <!-- <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" /> -->
+          <Poptip placement="right" width="400">
+            <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" />
+            <div slot="content" class="prev-content">
+              <img class="prev-img" :src="BASEURL + item.thumbnailUrl" alt="">
+            </div>
+          </Poptip>
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
             <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
@@ -54,6 +60,7 @@ export default {
   name: 'TaskRejectPic',
   data() {
     return {
+      currentUrl: 'http://img2.imgtn.bdimg.com/it/u=392420269,1275548773&fm=26&gp=0.jpg',
       taskItemList: [],
       dataRecordList: [],
       BASEURL,
@@ -196,6 +203,17 @@ export default {
         width: 250px;
         height: 200px;
         box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+        /deep/ .ivu-poptip {
+          width: 100%;
+          height: 100%;
+          .ivu-poptip-rel {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
         &.selected-border {
           border: 2px solid #f00;
           box-sizing: border-box;
@@ -231,6 +249,17 @@ export default {
         margin: 0 12px;
       }
     }
+  }
+}
+.prev-content {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .prev-img {
+    max-width: 100%;
+    max-height: 100%;
+    display: inline-block;
   }
 }
 </style>
