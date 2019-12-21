@@ -127,7 +127,12 @@ export default {
         {
           title: '创建时间',
           key: 'createdTime'
-        },{
+        },
+        {
+          title: '文件大小',
+          key: 'fileSizeFormat'
+        },
+        {
           title: '操作',
           key: 'action',
           width: 260,

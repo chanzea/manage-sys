@@ -214,7 +214,7 @@ export default {
         {
           style: {
             display: data.isEdit ? "inline-block" : "none",
-            width: "300px"
+            width: "200px"
           }
         },
         [
@@ -236,7 +236,8 @@ export default {
           h("Button", {
             props: Object.assign({}, this.buttonProps, {
               icon: "ios-checkmark",
-              type: "default"
+              type: "default",
+              size: "small"
             }),
             style: {
               marginRight: "8px"
@@ -252,7 +253,8 @@ export default {
           h("Button", {
             props: Object.assign({}, this.buttonProps, {
               icon: "ios-close",
-              type: "default"
+              type: "default",
+              size: "small"
             }),
             on: {
               click: () => {
@@ -274,7 +276,7 @@ export default {
   flex: 1;
   background: #fff;
   .user-group-content {
-    width: 55%;
+    width: 60%;
     flex: 1;
     padding: 8px;
   }

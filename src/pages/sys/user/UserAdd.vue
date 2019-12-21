@@ -264,6 +264,7 @@ export default {
     },
     // 获取提交参数
     UserAdd (isReset = false) {
+      console.log('执行')
       this.$refs['formProp'].$refs['basicForm'].validate((valid) => {
         if (valid) {
           this.formCustom.birthday = this.formCustom.birthday ? this.formCustom.birthday.Format('yyyy-MM-dd') : ''

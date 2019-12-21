@@ -254,6 +254,7 @@ export default {
     selectNode (data, node) {
       this.organizationId = node.id
       this.organizationName = node.organizationName
+      this.page.pageNum = 1
       this.getUserList()
     },
     // 改变页码
