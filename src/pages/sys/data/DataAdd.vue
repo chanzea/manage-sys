@@ -224,6 +224,7 @@ export default {
               startChunkNumber: ++startChunkNumber,
               chunkThreshold, chunkTotal, file, fileId
             }
+            return
           } else {
             console.log('继续上传')
             _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
