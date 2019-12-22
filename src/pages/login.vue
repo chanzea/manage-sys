@@ -367,7 +367,7 @@
             saveMessage('tokenId', data.data.tokenId)
             saveMessage('userId', data.data.userId)
             saveMessage('permissionList', JSON.stringify(data.data.permissionList))
-            this.$router.push({path: data.data.permissionList[0].uiPath});
+            this.$router.push({path: data.data.permissionList[0].children[0].uiPath});
           } else {
             this.$Message.warning(data.message);
             this.changeCaptcha(); //更新验证码
