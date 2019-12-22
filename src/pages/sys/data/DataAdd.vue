@@ -23,10 +23,14 @@
               <span style="font-size:12px;color: #2db7f5">文件上传中: {{ percent }}%</span>
             </div>
             <div v-if="fileName.length !== 0" style="margin-bottom: 10px;display: flex;align-items: center">
-              <div v-for="(item, index) in fileName" :key="index" style="margin-left: 8px;color: #2d8cf0">
+              <div v-for="(item, index) in fileName" :key="index" style="margin-left: 8px;margin-right: 8px;color: #2d8cf0">
                 <Icon type="ios-paper-outline" /><span style="margin-left: 8px;color: #2d8cf0">{{item}}</span>
               </div>
-
+              <Button size="small" type="primary" @click="deleteFile">删除</Button>
+            </div>
+            <div v-show="isUploading">
+              <Button @click="isPause=true">暂停</Button>
+              <Button v-if="isPause" @click="continueUpload">继续</Button>
             </div>
             <Upload
               class="upload-comp"
@@ -70,6 +74,8 @@ export default {
     return {
       isUploading: false, //上传中
       startUpload: false, //开始上传
+      isPause: false, //是否暂停
+      pauseData: {},
       percent: 0,
       loading: false,
       organizationsList: [],
@@ -126,27 +132,44 @@ export default {
         this.organizationsList = organizationList
       })
     },
+    deleteFile () {
+      this.fileName = []
+      this.fileId = ''
+      this.isUploading = false //上传中
+      this.startUpload = false //开始上传
+      this.isPause = false //是否暂停
+      this.pauseData = {}
+      this.percent = 0
+      this.loading = false
+    },
     beforeUpload (file) {
       const _this = this
       const form = new FormData();
       _this.startUpload = false
       _this.percent = 0 //清空进度
       browserMD5File(file, function (err, md5) {
-        _this.isUploading = true
         fileUploadInfo({
           fileMD5: md5,
           fileName: file.name,
           fileSize: file.size
         }).then(res => {
+          console.log('不需要分片')
+          const fileSize = file.size
+          console.log('文件大小', fileSize)
           _this.fileId = res.fileId
           _this.formItem.fileIds = [res.fileId]
           _this.startChunkNumber = res.startChunkNumber
           if (res.startChunkNumber === -1) {  //表示已经上传过
             _this.fileName.push(file.name)
+            _this.isUploading = false
           } else {
+            console.log('需要分片')
             if (res.chunkTotal > 1) {
               _this.startUpload = true
-              console.log('res.chunkTotal', res.chunkTotal)
+              _this.isUploading = true
+              // const chunkThreshold = 10000
+              // const chunkTotal = 140
+              // _this.chunkUpload(res.startChunkNumber, chunkThreshold, chunkTotal, file, res.fileId)
               _this.chunkUpload(res.startChunkNumber, res.chunkThreshold, res.chunkTotal, file, res.fileId)
               // const chunkTotal = Math.ceil(file.size / 131072) //测试用
               // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
@@ -164,6 +187,13 @@ export default {
         })
       });
       return false;
+    },
+
+    // 继续上传
+    continueUpload () {
+      console.log(this.pauseData)
+      this.chunkUpload(this.pauseData.startChunkNumber, this.pauseData.chunkThreshold, this.pauseData.chunkTotal, this.pauseData.file, this.pauseData.fileId)
+      this.isPause = false //暂停上传置为false
     },
 
     // 分块上传
@@ -184,10 +214,20 @@ export default {
       form.append('fileId', fileId)
       form.append('chunkNum', startChunkNumber)
       fileUpload(form).then(res => {
+        console.log('分片上传')
         if (startChunkNumber < chunkTotal) {        
-          _this.percent = ((end / fileSize) * 100).toFixed(2); //进度条比例
+          _this.percent = Number(((end / fileSize) * 100).toFixed(2)); //进度条比例
           console.log('当前进度', _this.percent)
-          _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
+          // 表示点击暂停
+          if (_this.isPause) {
+            _this.pauseData = {
+              startChunkNumber: ++startChunkNumber,
+              chunkThreshold, chunkTotal, file, fileId
+            }
+          } else {
+            console.log('继续上传')
+            _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
+          }
         } else {
           _this.percent = 100 //进度条完成
           fileMerge({
@@ -197,6 +237,8 @@ export default {
             _this.isUploading = false
           })
         }
+      }).catch(err => {
+        console.error('err', err)
       })
     },
 
