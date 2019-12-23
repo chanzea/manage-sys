@@ -28,9 +28,9 @@
               </div>
               <Button size="small" type="primary" @click="deleteFile">删除</Button>
             </div>
-            <div v-show="isUploading">
-              <Button @click="isPause=true">暂停</Button>
-              <Button v-if="isPause" @click="continueUpload">继续</Button>
+            <div v-show="isUploading" style="margin-bottom: 10px;">
+              <Button size="small" type="primary" v-if="!isPause" @click="isPause=true">暂停</Button>
+              <Button size="small" type="primary" v-else @click="continueUpload">继续</Button>
             </div>
             <Upload
               class="upload-comp"
