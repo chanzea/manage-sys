@@ -35,8 +35,6 @@ export default {
         type: "default",
         size: "small"
       },
-      dragstartNode: "",
-      dragstartData: ""
     };
   },
 
@@ -76,12 +74,6 @@ export default {
           style: {
             display: "inline-block",
             width: "100%"
-          },
-          on: {
-            dragstart: () => this.handleDragStart(root, node, data),
-            dragover: () => this.handleDragOver(root, node, data),
-            dragend: () => this.handleDragEnd(root, node, data),
-            drop: () => this.handleDrop(root, node, data)
           }
         },
         [
@@ -228,37 +220,6 @@ export default {
         params.permissionId = data.id
         permissonUpdate(params)
       }
-    },
-
-    handleDragStart(root, node, data) {
-      const event = window.event || arguments[0];
-      this.dragstartNode = node;
-      this.dragstartData = data;
-    },
-    handleDragOver(root, node, data) {
-      const event = window.event || arguments[0];
-      event.preventDefault();
-    },
-    handleDragEnd(root, node, data) {
-      const event = window.event || arguments[0];
-      event.preventDefault();
-    },
-    handleDrop(root, node, data) {
-      event.preventDefault();
-      if (node === this.dragstartNode) return;
-      const target_parentKey = root.find(el => el === node).parent;
-      const target_parent = root.find(el => el.nodeKey === target_parentKey)
-        .node;
-      const target_index = target_parent.children.indexOf(data);
-      const target_children = data.children || [];
-      target_children.push(this.dragstartData);
-      this.$set(data, "children", target_children);
-      const source_parentKey = root.find(el => el === this.dragstartNode)
-        .parent;
-      const source_parent = root.find(el => el.nodeKey === source_parentKey)
-        .node;
-      const source_index = source_parent.children.indexOf(this.dragstartData);
-      source_parent.children.splice(source_index, 1);
     },
     editRender(h, data, node, root) {
       let reviseNameData = data.permissionName;
