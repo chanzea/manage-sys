@@ -56,7 +56,7 @@
     >
       <div class="pic-list">
         <div class="pic-list-item" v-for="(item, index) in picList" :key="index">
-          <Poptip placement="right" width="1000">
+          <Poptip placement="right" width="800">
             <img class="v-lazy-img" v-lazy="BASEURL + item.thumbnailUrl" alt="">
             <div slot="content" class="prev-content">
               <img class="prev-img" :src="BASEURL + item.fileUrl" alt="">
@@ -303,7 +303,7 @@ export default {
 }
 
 .prev-content {
-  height: 300px;
+  //height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;

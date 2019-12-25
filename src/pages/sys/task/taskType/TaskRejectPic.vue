@@ -21,7 +21,7 @@
       <div v-else class="task-reject-pic-content-list">
         <div class="task-reject-pic-content-list-item" :class="item.isSelected ? 'selected-border' : ''" v-for="(item, index) in dataRecordList" :key="index" @click="item.isSelected = !item.isSelected">
           <!-- <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" /> -->
-          <Poptip placement="right" width="1000">
+          <Poptip placement="right" width="800">
             <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" />
             <div slot="content" class="prev-content">
               <img class="prev-img" :src="BASEURL + item.fileUrl" alt="">
