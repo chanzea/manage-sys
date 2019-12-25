@@ -64,7 +64,7 @@ export default {
   data () {
     return {
       canvasStyle:{
-        height: 600,
+        height: 800,
         width: 900
       },
       taskItemList: [],

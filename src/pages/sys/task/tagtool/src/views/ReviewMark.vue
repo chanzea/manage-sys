@@ -28,6 +28,8 @@
     </div>
     
     <tag-tool ref="tool"
+      :height = "canvasStyle.height"
+      :width = "canvasStyle.width"
       @on-data-change="saveTagData"
       :isNoData="!this.isNext"
       :tag-data="tagData"></tag-tool>
@@ -58,6 +60,10 @@ export default {
   },
   data () {
     return {
+      canvasStyle:{
+        height: 800,
+        width: 900
+      },
       taskItemList: [],
       isNext: true,
       viewOnly: false, 
