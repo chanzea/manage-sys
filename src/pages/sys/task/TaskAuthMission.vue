@@ -6,9 +6,9 @@
           <table-page v-if="item.name == 'taskMission'" :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
-              <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
+              <DatePicker style="margin-left: 15px;width: 200px" class="form-item" type="daterange" @on-change="handleDateRangeChange" placeholder="选择查询时间范围" v-model="searchData.dateRange" ></DatePicker>
               <ButtonGroup>
-                <Button type="primary">查询</Button>
+                <Button type="primary" @click="searchTaskList">查询</Button>
                 <Button>重置</Button>
               </ButtonGroup>
             </div>
@@ -67,7 +67,7 @@ export default {
     return {
       searchData: {
         inputValue: '',
-        dateValue: ''
+        dateRange: ["", ""]
       },
       userList: [],
       taskList: [],
@@ -125,7 +125,13 @@ export default {
   methods: {
     getTaskList: function() {
       let page = this.page || "";
-      getTaskList({ page, tag: 'review' }).then(res => {
+      let params = {
+        page, 
+        tag: 'review',
+        searchKey: this.searchData.inputValue,
+        ...this.dateRange
+      }
+      getTaskList(params).then(res => {
         let { taskList, count } = res
         taskList = taskList || [];
         this.data = taskList.map(item => {
@@ -142,7 +148,9 @@ export default {
       let params = {
         page: this.page,
         taskItemStatus: 4, // RETURN_REVIEW(4),
-        tag: "review"
+        tag: "review",
+        searchKey: this.searchData.inputValue,
+        ...this.dateRange
       }
       taskItemList(params).then( (res) => {
         let {userList, taskItemList, taskList, count} = res;
@@ -157,7 +165,9 @@ export default {
       let params = {
         page: this.page,
         taskItemStatus: 5,
-        tag: "review"
+        tag: "review",
+        searchKey: this.searchData.inputValue,
+        ...this.dateRange
       }
       taskItemList(params).then( (res) => {
         let {userList, taskItemList, taskList, count} = res;
@@ -195,6 +205,10 @@ export default {
       this.justGetdata();
     },
 
+    handleDateRangeChange(value) {
+      this.searchData.dateRange = value;
+    },
+
     //判断调哪个函数
     justGetdata(){
       let getDataMap = {
@@ -205,6 +219,11 @@ export default {
       getDataMap[this.currentTab]();
     },
     
+    searchTaskList () {
+      this.page.pageNum = 1
+      this.justGetdata()
+    },
+
     //这个函数在minxin里面
     actionCallFn(params){
         this.$router.push({

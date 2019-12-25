@@ -274,7 +274,7 @@ export default {
     },
     
     searchTaskList () {
-      this.page.pageNum = page
+      this.page.pageNum = 1
       this.getTaskList()
     },
 

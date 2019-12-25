@@ -80,7 +80,7 @@ export default {
   props: {
     height: {
       type: Number, // 工具高度
-      default: 600
+      default: 1000
     },
     width: {
       type: Number, // 工具高度

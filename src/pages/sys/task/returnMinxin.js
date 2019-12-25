@@ -47,7 +47,7 @@ const mixin = {
                 },
                 {
                     title: '获得积分',
-                    key: this.$route.path.indexOf('auth') ? 'reviewPoint' : 'markPoint',
+                    key: this.$route.path.indexOf('auth') > 0 ? 'reviewPoint' : 'markPoint',
                     // render: (h, params) => {
                     //     return h('div', this.userList[params.row.reviewUserId] ? this.userList[params.row.reviewUserId].loginName : "");
                     // }

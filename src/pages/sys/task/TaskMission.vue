@@ -6,9 +6,10 @@
           <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
-              <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
+              <!-- <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker> -->
+              <DatePicker style="margin-left: 15px;width: 200px" class="form-item" type="daterange" @on-change="handleDateRangeChange" placeholder="选择查询时间范围" v-model="searchData.dateRange" ></DatePicker>
               <ButtonGroup>
-                <Button type="primary">查询</Button>
+                <Button type="primary" @click="searchTaskList">查询</Button>
                 <Button>重置</Button>
               </ButtonGroup>
             </div>
@@ -37,7 +38,7 @@ export default {
       actionText: "重做任务",
       searchData: {
         inputValue: '',
-        dateValue: ''
+        dateRange: ["", ""]
       },
       userlist:[],
       currentTab: 'taskMission',
@@ -119,6 +120,7 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      searchKey: "",
       total: null
     }
   },
@@ -126,10 +128,26 @@ export default {
     this.getTaskList();
     this.columns = this.missionColumns;
   },
+
+  computed: {
+      dateRange: function() {
+        return {
+          startTime: this.searchData.dateRange[0],
+          endTime: this.searchData.dateRange[1]
+        }
+      }
+  },
+
   methods: {
     getTaskList: function() {
       let page = this.page || "";
-      getTaskList({ page, tag: 'mark' }).then(res => {
+      let params = {
+        page, 
+        tag: 'mark',
+        searchKey: this.searchData.inputValue,
+        ...this.dateRange
+      };
+      getTaskList(params).then(res => {
         const { taskList, count } = res
         this.data = taskList ? taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
@@ -145,7 +163,9 @@ export default {
       let params = {
         page: this.page,
         taskItemStatus: 3, // RETURN_REVIEW(4)   
-        tag: 'mark'
+        tag: 'mark',
+        searchKey: this.searchData.inputValue,
+        ...this.dateRange
       }
       taskItemList(params).then( (res) => {
         let {userList, taskItemList, taskList, count} = res;
@@ -156,11 +176,17 @@ export default {
       });
     },
 
+    handleDateRangeChange(value) {
+      this.searchData.dateRange = value;
+    },
+
     getCompleteTaskItemList(){
       let params = {
         page: this.page,
         taskItemStatus: 5,
-        tag: "mark"
+        tag: "mark",
+        searchKey: this.searchData.inputValue,
+        ...this.dateRange
       }
       taskItemList(params).then( (res) => {
         let {userList, taskItemList, taskList, count} = res;
@@ -197,6 +223,10 @@ export default {
       getDataMap[this.currentTab]();
     },
     
+    searchTaskList () {
+      this.page.pageNum = 1
+      this.justGetdata()
+    },
 
     //这个函数在minxin里面
     actionCallFn(params){
