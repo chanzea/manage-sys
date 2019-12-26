@@ -46,6 +46,7 @@
           <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
         </Select>
         <Button type="primary" @click="searchItemBankList">查询</Button>
+        <Button type="primary" @click="resetItemBank">重置</Button>
       </div>
       <div style="margin-bottom: 12px">
         <Table border :loading="loading" :columns="itemBankcolumns" :data="itemBankData"></Table>
@@ -353,6 +354,11 @@ export default {
       this.taskItemList()
     },
 
+    resetItemBank () {
+      this.markUserId = '',
+      this.reviewUserId = ''
+    },
+
     // 获取题库列表
     taskItemList () {
       this.loading = true
@@ -437,6 +443,6 @@ export default {
 
 <style lang="scss">
   .ivu-poptip-body {
-    display: flex;
+    // display: flex;
   }
 </style>

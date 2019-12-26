@@ -17,10 +17,14 @@
       </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <!-- <div class="item-thumb" :class="item.isSelected ? 'selected-border' : ''" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')'}"> -->
+          <Poptip placement="right" width="800">
+            <div slot="content" class="prev-content">
+              <img class="prev-img" :src="BASEURL + item.src" alt="">
+            </div>
             <div class="item-thumb">
               <img :src="BASEURL + item.src" alt="">
             </div>
+          </Poptip>
           <!-- </div> -->
           <div class="item-isselect">
             <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
@@ -349,6 +353,17 @@ export default {
         margin: 0 12px;
       }
     }
+  }
+}
+.prev-content {
+  //height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .prev-img {
+    max-width: 100%;
+    max-height: 100%;
+    display: inline-block;
   }
 }
 </style>

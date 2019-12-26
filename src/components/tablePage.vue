@@ -48,6 +48,7 @@ export default {
 
 <style lang="scss" scoped>
 .table-page-component {
+  min-height: 300px;
   .content-header {
     margin-bottom: 20px;
     .form-item {

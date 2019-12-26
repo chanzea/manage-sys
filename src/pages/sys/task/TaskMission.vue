@@ -3,14 +3,24 @@
     <div class="task-mission-content">
       <Tabs :value="currentTab" @on-click="changeTab">
         <TabPane v-for="(item, index) in tabLists" :key="index" :label="item.label" :name="item.name">
-          <table-page :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+          <table-page v-if="item.name === 'taskMission'"  :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
-              <!-- <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker> -->
               <DatePicker style="margin-left: 15px;width: 200px" class="form-item" type="daterange" @on-change="handleDateRangeChange" placeholder="选择查询时间范围" v-model="searchData.dateRange" ></DatePicker>
               <ButtonGroup>
                 <Button type="primary" @click="searchTaskList">查询</Button>
-                <Button>重置</Button>
+                <Button @click="reset">重置</Button>
+              </ButtonGroup>
+            </div>
+          </table-page>
+
+          <table-page v-else :columns="columns" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
+            <div class="content-header" slot='form'>
+              <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
+              <DatePicker style="margin-left: 15px;width: 200px" class="form-item" type="daterange" @on-change="handleDateRangeChange" placeholder="选择查询时间范围" v-model="searchData.dateRange" ></DatePicker>
+              <ButtonGroup>
+                <Button type="primary" @click="searchTaskList">查询</Button>
+                <Button @click="reset">重置</Button>
               </ButtonGroup>
             </div>
           </table-page>
@@ -65,7 +75,6 @@ export default {
         name: 'taskComplete'
       }],
       missionColumns: [
-        
         {
           title: '任务编号',
           key: 'id',
@@ -261,6 +270,13 @@ export default {
       this.page.pageSize = pageSize
       this.justGetdata()
     },
+
+    reset () {
+      this.searchData = {
+        inputValue: '',
+        dateRange: ["", ""]
+      }
+    }
   }
 }
 </script>

@@ -9,7 +9,7 @@
               <DatePicker style="margin-left: 15px;width: 200px" class="form-item" type="daterange" @on-change="handleDateRangeChange" placeholder="选择查询时间范围" v-model="searchData.dateRange" ></DatePicker>
               <ButtonGroup>
                 <Button type="primary" @click="searchTaskList">查询</Button>
-                <Button>重置</Button>
+                <Button @click="reset">重置</Button>
               </ButtonGroup>
             </div>
           </table-page>
@@ -17,10 +17,10 @@
           <table-page v-else :columns="computeCol" :data="data" :total="total" @on-change-page="changePage" @on-change-pageSize="changePageSize">
             <div class="content-header" slot='form'>
               <Input class="form-item" style="width:300px" placeholder="任务编号,任务名称,任务用途" v-model="searchData.inputValue"></Input>
-              <DatePicker class="form-item" type="date" placeholder="选择查询时间范围" style="width: 200px"></DatePicker>
+              <DatePicker style="margin-left: 15px;width: 200px" class="form-item" type="daterange" @on-change="handleDateRangeChange" placeholder="选择查询时间范围" v-model="searchData.dateRange" ></DatePicker>
               <ButtonGroup>
-                <Button type="primary">查询</Button>
-                <Button>重置</Button>
+                <Button type="primary" @click="searchTaskList">查询</Button>
+                <Button @click="reset">重置</Button>
               </ButtonGroup>
             </div>
           </table-page>
@@ -120,6 +120,14 @@ export default {
   },
   created() {
     this.getTaskList()
+  },
+  computed: {
+      dateRange: function() {
+        return {
+          startTime: this.searchData.dateRange[0],
+          endTime: this.searchData.dateRange[1]
+        }
+      }
   },
 
   methods: {
@@ -247,6 +255,13 @@ export default {
       this.page.pageSize = pageSize
       this.justGetdata();//判断当前调用哪些函数
     },
+
+    reset () {
+      this.searchData = {
+        inputValue: '',
+        dateRange: ["", ""]
+      }
+    }
 
   },
 

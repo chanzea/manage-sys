@@ -17,10 +17,17 @@
       </div>
       <div class="task-classify-content-list" v-if = "!noMore">
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
-          <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')'}">
-            <!-- <img :src="BASEURL + item.src" alt=""> -->
-          </div>
-          <!-- <div class="desc" style="fontSize:20px;fontWeight: bold">标签：{{item.taskData}}</div> -->
+          <Poptip placement="right" width="800">
+            <div slot="content" class="prev-content">
+              <img class="prev-img" :src="BASEURL + item.src" alt="">
+            </div>
+            <!-- <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')'}">
+              <img :src="BASEURL + item.src" alt="">
+            </div> -->
+            <div class="item-thumb">
+              <img :src="BASEURL + item.src" alt="">
+            </div>
+          </Poptip>
           <span v-if="item.taskData" class="item-tag">
             <Tag color="success" size="medium">{{item.taskData}}</Tag>
           </span>
@@ -231,7 +238,7 @@ export default {
     &-list {
       display: flex;
       flex-wrap: wrap;
-      // margin-bottom: 20px;
+      margin-bottom: 40px;
       &-item {
         display: flex;
         flex-direction: column;
@@ -246,12 +253,20 @@ export default {
           box-sizing: border-box;
         }
         .item-thumb {
-          width: 100%;
-          height: 100%;
-          background-size: contain;
-          background-repeat: no-repeat;
-          background-position: center;
+          width: 250px;
+          height: 200px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          // background-size: contain;
+          // background-repeat: no-repeat;
+          // background-position: center;
           box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+          img {
+            max-width: 100%;
+            max-height: 100%;
+            display: inline-block;
+          }
         }
         .item-tag {
           display: flex;
@@ -281,6 +296,17 @@ export default {
         margin: 0 12px;
       }
     }
+  }
+}
+.prev-content {
+  //height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .prev-img {
+    max-width: 100%;
+    max-height: 100%;
+    display: inline-block;
   }
 }
 </style>
