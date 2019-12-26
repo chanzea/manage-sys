@@ -5,9 +5,9 @@
       <div class="content-header" slot="form">
         <Input class="form-item" style="width:120px" v-model="searchKey" placeholder="关键字" />
         <DatePicker class="form-item" type="daterange" placeholder="选择查询时间范围" v-model="value" style="width: 200px"></DatePicker>
-        <Select class="form-item" v-model="status" style="width:160px" placeholder="任务类型">
+        <!-- <Select class="form-item" v-model="status" style="width:160px" placeholder="任务类型">
           <Option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        </Select> -->
         <Select class="form-item" v-model="markUserId" filterable style="width:160px" placeholder="根据标注人员搜索">
           <Option v-for="item in userList" :value="item.id" :key="item.id">{{ item.userName }}</Option>
         </Select>
