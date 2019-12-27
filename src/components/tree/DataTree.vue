@@ -2,10 +2,10 @@
   .data-tree-panel {
     width: 100%;
     position: relative;
-    -webkit-user-select: none;
+    /* -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+    user-select: none; */
   }
 
   .tree-spin {

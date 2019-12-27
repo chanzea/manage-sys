@@ -3,7 +3,6 @@
 import Vue from 'vue';
 import iView from 'iView';
 import 'iview/dist/styles/iview.css';
-// import 'vue-fabric/dist/vue-fabric.min.css';
 import App from './App';
 import routes from './routes';
 import VueRouter from 'vue-router';
@@ -18,13 +17,9 @@ import './styles/index.scss';
 import config from './config';
 
 import verify from './plugins/gVerify';
-// import { Fabric } from 'vue-fabric';
 import {
   getMessage
 } from './utils/tool.js'
-// Vue.use(Fabric);
-// import './styles/index.less';
-// import mock from './mock/index.js';
 
 var echarts = require('echarts');
 

@@ -21,7 +21,7 @@
     color: white;
     visibility: hidden;
     opacity: 0;
-    user-select: none;
+    /* user-select: none; */
   }
 
   .photo-viewer-close {
@@ -54,7 +54,7 @@
     transform: translate3d(0px, 0px, 0px) scale(1);
     position: absolute;
     cursor: -webkit-grab;
-    user-select: none;
+    /* user-select: none; */
   }
 
   .show-size {

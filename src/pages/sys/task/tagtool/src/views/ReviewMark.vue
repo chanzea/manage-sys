@@ -249,7 +249,7 @@ export default {
     background-color: #313343;
     color: rgba(255, 255, 255, 0.8);
     border: 1px solid transparent;
-    user-select: none;
+    // user-select: none;
     height: 32px;
     padding: 0 15px;
     font-size: 14px;
