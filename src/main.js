@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import iView from 'iView';
 import 'iview/dist/styles/iview.css';
+// import 'vue-fabric/dist/vue-fabric.min.css';
 import App from './App';
 import routes from './routes';
 import VueRouter from 'vue-router';
@@ -15,13 +16,13 @@ import enLocale from 'iview/src/locale/lang/en-US';
 import VueLazyload from 'vue-lazyload'
 import './styles/index.scss';
 import config from './config';
-import 'vue-fabric/dist/vue-fabric.min.css';
+
 import verify from './plugins/gVerify';
-import { Fabric } from 'vue-fabric';
+// import { Fabric } from 'vue-fabric';
 import {
   getMessage
 } from './utils/tool.js'
-Vue.use(Fabric);
+// Vue.use(Fabric);
 // import './styles/index.less';
 // import mock from './mock/index.js';
 

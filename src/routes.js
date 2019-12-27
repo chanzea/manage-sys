@@ -46,16 +46,10 @@ const LogPage = resolve => require(['pages/sys/log/log'], resolve);
 const LogSystem = resolve => require(['pages/sys/log/LogSystem'], resolve);
 const LogTask = resolve => require(['pages/sys/log/LogTask'], resolve);
 
-//ps模块
-// const PsDraw = resolve => require(['pages/sys/ps/ps'], resolve);
-// const PsDraw2 = resolve => require(['pages/sys/ps/ps1'], resolve);
-
 // 消息中心
 const MyselfPage = resolve => require(['pages/sys/myself/myself'], resolve);
 const MessageCenter = resolve => require(['pages/sys/myself/MessageCenter'], resolve);
 const UserInfoCenter = resolve => require(['pages/sys/myself/UserInfo'], resolve);
-
-
 
 const routes = [
   {

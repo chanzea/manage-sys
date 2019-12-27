@@ -6,7 +6,7 @@
   }
 </style>
 
-<style>
+<style scoped>
 
   .table-panel .ivu-table-small th {
     height: 40px;
@@ -35,12 +35,6 @@
   background-color: #f8f8f9;
   }
 
-  td {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  }
 
   .table-loading .ivu-table-body, .table-loading .ivu-table-tip {
     opacity: 0.5
