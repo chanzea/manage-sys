@@ -57,7 +57,7 @@ import _util from '@/utils/utils'
  import minxin from "../../../authType/minxin";
 export default {
   mixins: [minxin],
-  name: 'home',
+  name: 'Mark',
   components: {
     tagTool
   },
@@ -92,11 +92,11 @@ export default {
   },
 
   created() {
-      console.log(_util.getWindowWH());
-      let {width, height} = _util.getWindowWH();
-      this.canvasStyle.width = width - 530;
-      this.canvasStyle.height = height - 258;
-      console.log(this.canvasStyle)
+      // console.log(_util.getWindowWH());
+      // let {width, height} = _util.getWindowWH();
+      // this.canvasStyle.width = width - 530;
+      // this.canvasStyle.height = height - 258;
+      // console.log(this.canvasStyle)
   },
 
   mounted () {
@@ -143,6 +143,7 @@ export default {
           this.setImage(this.taskItemList[0].src);//设置图片
           this.getTagMarkList();
           this.$refs["tool"].clearShapeItems();
+          this.upload(this.taskItemList[0].src);
         }
       })
     },
@@ -192,6 +193,7 @@ export default {
           this.taskItemStatus = String(taskItemList[0].itemStatus)
           console.log(JSON.parse(this.taskItemList[0].taskData))
           this.setTagData(JSON.parse(this.taskItemList[0].taskData));//设置数据
+          this.upload(this.taskItemList[0].src);
         }
       })
     },
@@ -266,23 +268,15 @@ export default {
       this.$refs.tool.view()
     },
 
-    upload() {    
-        let file = document.querySelector('input[type=file]').files[0]  
-        // 获取选择的文件，这里是图片类型    
-        let reader = new FileReader()        
-        reader.readAsDataURL(file) //读取文件并将文件以URL的形式保存在resulr属性中 base64格式        
-        reader.onload = function(e) { // 文件读取完成时触发             
-            let result = e.target.result // base64格式图片地址             
-            var image = new Image();
-            image.src = result // 设置image的地址为base64的地址             
-            image.onload = function(){                 
-                this.canvasStyle = {
-                  width: parseInt(image.width),
-                  height: parseInt(image.height)
-                }              
-            }   
-            
-        }
+    upload(src) {    
+        let self = this;
+        var image = new Image();
+        image.src = src // 设置image的地址为base64的地址             
+        image.onload = function(){       
+            let {width, height} = _util.getWindowWH();
+            self.canvasStyle.width = width - 530;
+            self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
+        } 
     } 
   }
 }

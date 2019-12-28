@@ -149,6 +149,7 @@ export default {
             tagData.imgSrc = this.taskItemList[0].src;
           }
           this.setTagData(tagData);//设置图片
+          this.upload(tagData.imgSrc);
         }
       })
     },
@@ -174,6 +175,7 @@ export default {
         if(taskItemList.length > 0) {
           // console.log(JSON.parse(this.taskItemList[0].taskData))
           this.setTagData(JSON.parse(this.taskItemList[0].taskData));//设置数据
+          this.upload(this.taskItemList[0].src);
         }
       })
     },
@@ -218,7 +220,18 @@ export default {
     },
     view () {
       this.$refs.tool.view()
-    }
+    },
+
+    upload(src) {    
+      let self = this;
+      var image = new Image();
+      image.src = src // 设置image的地址为base64的地址             
+      image.onload = function(){       
+          let {width, height} = _util.getWindowWH();
+          self.canvasStyle.width = width - 530;
+          self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
+      } 
+    } 
   }
 }
 </script>

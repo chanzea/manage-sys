@@ -134,6 +134,7 @@ export default {
       }
     },
     canvasStyle () {
+      console.log("触发", this.height, this.width)
       return {
         height: this.height + 'px',
         width: this.width + 'px',
