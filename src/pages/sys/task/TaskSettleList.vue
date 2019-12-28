@@ -56,12 +56,10 @@ export default {
     },
 
     created() {
-        console.log("这里更新");
         this.getTaskSettleList();
     },
 
     destroyed() {
-        console.log("这里触发destroy");
         this.settleList = [];
     },
 

@@ -43,6 +43,7 @@ import { taskItemAllotReview, taskItemReview, taskItemDetail } from "@/api/task"
 import { 
   BASEURL
  } from "@/api/config.js";
+ import _util from '@/utils/utils'
  import minxin from "../../../authType/minxin";
 export default {
   mixins: [minxin],
@@ -70,30 +71,38 @@ export default {
       taskItemStatus: "5",
       taskItemReviewAdvise: "",
       tagData: [
-        {
-          'title': '箭头',
-          'desc': '箭头标注',
-          'selected': false
-        },
-        {
-          'title': '马',
-          'desc': '动物世界马',
-          'selected': false
-        },
-        {
-          'title': '轮船',
-          'desc': '世界轮船',
-          'selected': false
-        },
-        {
-          'title': '航空母舰',
-          'desc': '军事图片识别',
-          'selected': false
-        }
+        // {
+        //   'title': '箭头',
+        //   'desc': '箭头标注',
+        //   'selected': false
+        // },
+        // {
+        //   'title': '马',
+        //   'desc': '动物世界马',
+        //   'selected': false
+        // },
+        // {
+        //   'title': '轮船',
+        //   'desc': '世界轮船',
+        //   'selected': false
+        // },
+        // {
+        //   'title': '航空母舰',
+        //   'desc': '军事图片识别',
+        //   'selected': false
+        // }
       ],
       taskType: ''
     }
   },
+
+  created() {
+      let {width, height} = _util.getWindowWH();
+      this.canvasStyle.width = width - 530;
+      this.canvasStyle.height = height - 258;
+      console.log(this.canvasStyle)
+  },
+
   mounted () {
     this.taskType = this.$route.query.type
     const taskId = this.$route.query.id;

@@ -254,11 +254,21 @@ export default {
     taskItemAllotMark (params) {
       this.$router.push({
         path: '/task/type',
+        
         query: {
           id: params.row.id,
           type: TASKTYPE[params.row.taskType].type,
         }
       })
+
+      // let routeUrl = this.$router.resolve({
+      //       path: '/task/type',
+      //       query: {
+      //         id: params.row.id,
+      //         type: TASKTYPE[params.row.taskType].type,
+      //       }
+      // });
+      // window.open(routeUrl .href, '_blank');
     },
 
     changePage (page) {

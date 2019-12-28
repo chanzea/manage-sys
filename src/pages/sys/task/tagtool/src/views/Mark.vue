@@ -48,12 +48,12 @@
 
 <script>
 import tagTool from '../components/tagtool'
-import demoData from './demo'
+// import demoData from './demo'
 import { taskItemAllotMark, tagMarkAdd, tagMarkList, itemTaskUpload, taskItemMark, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
-
+import _util from '@/utils/utils'
  import minxin from "../../../authType/minxin";
 export default {
   mixins: [minxin],
@@ -77,21 +77,6 @@ export default {
         //   'desc': '箭头标注',
         //   'selected': false
         // },
-        // {
-        //   'title': '马',
-        //   'desc': '动物世界马',
-        //   'selected': false
-        // },
-        // {
-        //   'title': '轮船',
-        //   'desc': '世界轮船',
-        //   'selected': false
-        // },
-        // {
-        //   'title': '航空母舰',
-        //   'desc': '军事图片识别',
-        //   'selected': false
-        // }
       ],
       tagDataList: [],
       taskType: ''
@@ -105,6 +90,15 @@ export default {
       }
     }
   },
+
+  created() {
+      console.log(_util.getWindowWH());
+      let {width, height} = _util.getWindowWH();
+      this.canvasStyle.width = width - 530;
+      this.canvasStyle.height = height - 258;
+      console.log(this.canvasStyle)
+  },
+
   mounted () {
     this.taskType = this.$route.query.type
     // this.tagMarkAdd();

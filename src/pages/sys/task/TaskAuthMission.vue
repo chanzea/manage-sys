@@ -194,6 +194,15 @@ export default {
           type: taskType[params.row.taskType].type
         }
       })
+
+      // let routeUrl = this.$router.resolve({
+      //       path: '/task/review',
+      //       query: {
+      //         id: params.row.id,
+      //         type: taskType[params.row.taskType].type,
+      //       }
+      // });
+      // window.open(routeUrl .href, '_blank');
     },
 
     changeTab(value){
