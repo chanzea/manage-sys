@@ -51,6 +51,12 @@ export async function taskItemList(params) {
     return data
 }
 
+//结算列表
+export async function getTaskSettleList(params) {
+    const data = await api(`/task/settle`, 'post', params)
+    return data
+}
+
 //领取任务
 export async function taskItemAllotMark(params) {
     const data = await api(`/taskItem/allotMark`, 'post', params)

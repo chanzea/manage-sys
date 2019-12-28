@@ -27,9 +27,10 @@
               @on-ok="onDelete(row)"
               @on-cancel="">
               <!-- <span class="opt-item">删除</span> -->
-          </Poptip>
+            </Poptip>
             <span class="opt-item" @click="offLine(row)">下线</span>
             <span class="opt-item" @click="online(row)">上线</span>
+            <span class="opt-item" @click="showItemSettle(row)">结算</span>
           </template>
         </Table>
       </div>
@@ -55,10 +56,16 @@
         <Page :total="itemBankTotal" size="small" show-elevator show-sizer @on-change="changeItemBankPage" @on-page-size-change="changeItemBankPageSize" />
       </div>
     </Modal>
+
+    <Modal v-model="isShowSettleModal" fullscreen :title="'所属任务名称: ' + getSettleInfo.taskName">
+        <TaskSettleList v-if="isShowSettleModal" :taskId="getSettleInfo.taskId"></TaskSettleList>
+    </Modal>
+
   </div>
 </template>
 
 <script>
+import TaskSettleList from './TaskSettleList'
 import { getTaskList, taskOffline, taskOnline, taskItemList } from "@/api/task";
 import {
   getUserList,
@@ -83,6 +90,9 @@ const taskStatusData = {
 } 
 export default {
   name: "TaskList",
+  components: {
+    TaskSettleList: TaskSettleList
+  },
   data() {
     return {
       fullLoading: false,
@@ -93,6 +103,12 @@ export default {
       searchKey: "",
       status: "",
       value: ['', ''],
+      //获取结算列表的ID
+      getSettleInfo: {
+        taskId: null,
+        taskName: ""
+      },
+      isShowSettleModal: false,
       options: [
         {
           label: "完成",
@@ -285,21 +301,17 @@ export default {
         path
       })
     },
-    
-    // 跳转到题库
-    // jumpToItembank(path, row) {
-    //   this.$router.push({
-    //     path,
-    //     query: {
-    //       taskId: row.id
-    //     }
-    //   })
-    // },
 
     showItemBank (row) {
       this.taskName = row.taskName;
       this.taskId = row.id
       this.taskItemList()
+    },
+
+    showItemSettle (row) {
+      this.isShowSettleModal = true;
+      this.getSettleInfo.taskName = row.taskName;
+      this.getSettleInfo.taskId = row.id
     },
 
     //查看
