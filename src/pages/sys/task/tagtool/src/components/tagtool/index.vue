@@ -142,7 +142,6 @@ export default {
       }
     },
     items () {
-
       return this.shapes.items || []
     },
     // tags () {
@@ -152,6 +151,15 @@ export default {
     //   return arr.filter((a) => !res.has(a.title) && res.set(a.title, 1))
     // }
   },
+
+  watch:{
+    tagData(n) {
+      if (this.sc) {
+        this.sc.tagData = n
+      }
+    }
+  },
+
   mounted () {
     this.initCanvas();
     if(this.isNoData){
@@ -163,11 +171,6 @@ export default {
   },
   methods: {
     initCanvas () {
-      console.log("****")
-      console.log(this.items, this.tagData)
-
-      console.log("====")
-      console.log(this.shapes)
       this.sc = new ShapeCanvas()
       this.sc.init({
         el: this.$refs.toolCanvas, // 工具容器,未设置默认时body
@@ -182,13 +185,6 @@ export default {
         onSelect: (data) => {
           this.shapes = data
         },
-        // moreInfo: (f) => {
-        //   if (f === true) {
-        //     this.more = false
-        //   } else {
-        //     this.more = !this.more
-        //   }
-        // }
         tagData: this.tagData,
         itemData: this.items
       })
@@ -208,6 +204,10 @@ export default {
       this.sc.setData(this.shapes, () => {
         this.loading = false
       })
+    },
+
+    updated() {
+      
     },
 
     //请空

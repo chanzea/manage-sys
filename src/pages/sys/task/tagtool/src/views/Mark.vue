@@ -64,8 +64,8 @@ export default {
   data () {
     return {
       canvasStyle:{
-        height: 800,
-        width: 900
+        height: 1615.25,
+        width: 910
       },
       taskItemList: [],
       isNext: true,
@@ -118,7 +118,7 @@ export default {
     taskItemAllotMark () {
       const taskId = this.$route.query.id
       this.taskItemList = [];
-
+      this.ismounted = false;
       if(!this.isNext){
         this.setTagData({})
         return this.$Message.warning("没有下一题了");
@@ -128,7 +128,6 @@ export default {
         taskId
       }).then( res => {
         const {taskItemList, dataRecordList, userList} = res;
-
         if(!taskItemList || taskItemList.length == 0){
           this.isNext = false;
           this.$Message.warning("没有下一题了");
@@ -140,10 +139,12 @@ export default {
         }) : []
         this.isNext = !!taskItemList;
         if(taskItemList.length > 0) {
-          this.setImage(this.taskItemList[0].src);//设置图片
-          this.getTagMarkList();
-          this.$refs["tool"].clearShapeItems();
-          this.upload(this.taskItemList[0].src);
+          // this.$nextTick( () => {
+              this.setImage(this.taskItemList[0].src);//设置图片
+              this.getTagMarkList();
+              this.$refs["tool"].clearShapeItems();
+              this.upload(this.taskItemList[0].src);
+          // })
         }
       })
     },
@@ -275,7 +276,15 @@ export default {
         image.onload = function(){       
             let {width, height} = _util.getWindowWH();
             self.canvasStyle.width = width - 530;
-            self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
+            // self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));    
+            
+            // self.canvasStyle.width = image.width;
+            self.canvasStyle.height = image.height;
+            console.log(image.height, image.width);
+            // self.$nextTick( () => {
+            //   self.setImage(src);//设置图片
+            // })
+            
         } 
     } 
   }

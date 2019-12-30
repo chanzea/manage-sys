@@ -62,8 +62,8 @@ export default {
   data () {
     return {
       canvasStyle:{
-        height: 800,
-        width: 900
+        height: 2000,
+        width: 910
       },
       taskItemList: [],
       isNext: true,
@@ -229,7 +229,8 @@ export default {
       image.onload = function(){       
           let {width, height} = _util.getWindowWH();
           self.canvasStyle.width = width - 530;
-          self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
+          // self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
+          self.canvasStyle.height = image.height;
       } 
     } 
   }
