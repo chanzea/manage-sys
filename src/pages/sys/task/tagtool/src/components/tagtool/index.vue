@@ -80,11 +80,11 @@ export default {
   props: {
     height: {
       type: Number, // 工具高度
-      default: 2000
+      default: 1000
     },
     width: {
       type: Number, // 工具高度
-      default: 910
+      default: 900
     },
     tagWidth: {
       type: Number, // 标签显示宽度

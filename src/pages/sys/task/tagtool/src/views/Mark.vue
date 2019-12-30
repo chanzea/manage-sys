@@ -92,11 +92,11 @@ export default {
   },
 
   created() {
-      // console.log(_util.getWindowWH());
-      // let {width, height} = _util.getWindowWH();
-      // this.canvasStyle.width = width - 530;
-      // this.canvasStyle.height = height - 258;
-      // console.log(this.canvasStyle)
+      console.log(_util.getWindowWH());
+      let {width, height} = _util.getWindowWH();
+      this.canvasStyle.width = width - 530;
+      this.canvasStyle.height = height - 258;
+      console.log(this.canvasStyle)
   },
 
   mounted () {
@@ -143,7 +143,7 @@ export default {
               this.setImage(this.taskItemList[0].src);//设置图片
               this.getTagMarkList();
               this.$refs["tool"].clearShapeItems();
-              this.upload(this.taskItemList[0].src);
+              // this.upload(this.taskItemList[0].src);
           // })
         }
       })
@@ -194,7 +194,7 @@ export default {
           this.taskItemStatus = String(taskItemList[0].itemStatus)
           console.log(JSON.parse(this.taskItemList[0].taskData))
           this.setTagData(JSON.parse(this.taskItemList[0].taskData));//设置数据
-          this.upload(this.taskItemList[0].src);
+          // this.upload(this.taskItemList[0].src);
         }
       })
     },

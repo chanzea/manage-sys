@@ -149,7 +149,7 @@ export default {
             tagData.imgSrc = this.taskItemList[0].src;
           }
           this.setTagData(tagData);//设置图片
-          this.upload(tagData.imgSrc);
+          // this.upload(tagData.imgSrc);
         }
       })
     },
@@ -175,7 +175,7 @@ export default {
         if(taskItemList.length > 0) {
           // console.log(JSON.parse(this.taskItemList[0].taskData))
           this.setTagData(JSON.parse(this.taskItemList[0].taskData));//设置数据
-          this.upload(this.taskItemList[0].src);
+          // this.upload(this.taskItemList[0].src);
         }
       })
     },
@@ -229,8 +229,8 @@ export default {
       image.onload = function(){       
           let {width, height} = _util.getWindowWH();
           self.canvasStyle.width = width - 530;
-          // self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
-          self.canvasStyle.height = image.height;
+          self.canvasStyle.height = self.canvasStyle.width * (parseInt(image.height)/parseInt(image.width));  
+          // self.canvasStyle.height = image.height;
       } 
     } 
   }
