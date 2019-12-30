@@ -94,7 +94,7 @@ export default {
   created() {
       console.log(_util.getWindowWH());
       let {width, height} = _util.getWindowWH();
-      this.canvasStyle.width = width - 530;
+      this.canvasStyle.width = width - 540;
       this.canvasStyle.height = height - 258;
       console.log(this.canvasStyle)
   },
