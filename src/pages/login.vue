@@ -63,13 +63,13 @@
           <div>
             <span
               style="color: #2d8cf0;cursor: pointer"
-              @click="isLogin = true; "
-              v-show="modle !== 'formLogin'"
+              @click="isLogin = true; handleShowModel('formLogin')"
+              v-show="modle !== 'formLogin' "
             >登录</span>
             <span
               style="color: #2d8cf0;cursor: pointer"
               v-show="modle !== 'formRegister'"
-              @click="isLogin = false"
+              @click="isLogin = false; handleShowModel('formRegister')"
             >注册</span>
             <span style="color: #2d8cf0;cursor: pointer" v-show=" modle !== 'changePwd'" @click="handleShowModel('changePwd')">忘记密码</span>
           </div>
