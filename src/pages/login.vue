@@ -63,9 +63,15 @@
           <div>
             <span
               style="color: #2d8cf0;cursor: pointer"
-              @click="isLogin = !isLogin"
-            >{{isLogin ? '注册' : '登录'}}</span>
-            <span style="color: #2d8cf0;cursor: pointer" @click="handleShowModel('changePwd')">忘记密码</span>
+              @click="isLogin = true; "
+              v-show="modle !== 'formLogin'"
+            >登录</span>
+            <span
+              style="color: #2d8cf0;cursor: pointer"
+              v-show="modle !== 'formRegister'"
+              @click="isLogin = false"
+            >注册</span>
+            <span style="color: #2d8cf0;cursor: pointer" v-show=" modle !== 'changePwd'" @click="handleShowModel('changePwd')">忘记密码</span>
           </div>
         </div>
         <Form ref="formLogin" :model="formLogin" :rules="ruleInline" v-show="modle == 'formLogin'">
