@@ -22,6 +22,7 @@
                 <Button type="primary" @click="searchTaskList">查询</Button>
                 <Button @click="reset">重置</Button>
               </ButtonGroup>
+              <div style="margin-top: 10px; font-weight: bold" v-if="currentTab == 'taskComplete'">获得任务总积分：{{reviewPoint}}</div>
             </div>
           </table-page>
 
@@ -69,6 +70,7 @@ export default {
         inputValue: '',
         dateRange: ["", ""]
       },
+      reviewPoint: 0,
       userList: [],
       taskList: [],
       currentTab: 'taskMission',
@@ -178,11 +180,12 @@ export default {
         ...this.dateRange
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList, taskList, count} = res;
+        let {userList, taskItemList, taskList, count, reviewPoint} = res;
         this.userList = userList;
         this.data = taskItemList;
         this.taskList = taskList;
         this.total = count;
+        this.reviewPoint = reviewPoint;
       });
     },
 

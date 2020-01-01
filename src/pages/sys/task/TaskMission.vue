@@ -22,6 +22,7 @@
                 <Button type="primary" @click="searchTaskList">查询</Button>
                 <Button @click="reset">重置</Button>
               </ButtonGroup>
+              <div style="margin-top: 10px; font-weight: bold" v-if="currentTab == 'taskComplete'">获得任务总积分：{{markPoint}}</div>
             </div>
           </table-page>
         </TabPane>
@@ -50,6 +51,7 @@ export default {
         inputValue: '',
         dateRange: ["", ""]
       },
+      markPoint: 0,
       userlist:[],
       currentTab: 'taskMission',
       tabLists: [{
@@ -157,7 +159,7 @@ export default {
         ...this.dateRange
       };
       getTaskList(params).then(res => {
-        const { taskList, count } = res
+        const { taskList, count} = res
         this.data = taskList ? taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
           item.taskTypeDis = TASKTYPE[item.taskType].label
@@ -198,11 +200,12 @@ export default {
         ...this.dateRange
       }
       taskItemList(params).then( (res) => {
-        let {userList, taskItemList, taskList, count} = res;
+        let {userList, taskItemList, taskList, count, markPoint} = res;
         this.userList = userList;
         this.data = taskItemList;
         this.taskList = taskList;
         this.total = count;
+        this.markPoint = markPoint;
       });
     },
 
