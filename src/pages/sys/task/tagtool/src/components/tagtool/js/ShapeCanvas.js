@@ -153,6 +153,11 @@ function ShapeCanvas () {
     tempDesc: '',
     tagData: [],
     itemData: [],
+    autoInfo: true,
+    multipleArr: [1, 1.5, 2, 3, 4, 8, 16, 32, 64, 128, 256],
+    multiple: 0,
+    x:0,
+    y:0,
     init (option) {
       option = option || {}
       this.el = option.el || document.body
@@ -166,6 +171,7 @@ function ShapeCanvas () {
       this.changeInfo = option.changeInfo || function () { }
       this.tagData = option.tagData || []
       this.itemData = option.itemData || []
+      this.autoInfo = option.autoInfo || this.autoInfo
 
       this.context = this.canvas.getContext('2d')
       this.wrap = this.ce('div')
@@ -368,7 +374,7 @@ function ShapeCanvas () {
       }
     },
     toolbarDblclick: function (t) {
-      t.currentTarget.tool === 'zoom' && (this.zoomScale = 1,
+      t.currentTarget.tool === 'zoom' && (this.zoomScale = 1, this.multiple = 0,
         this.zoomSize(1))
     },
     statusClick: function (t) {
@@ -384,6 +390,8 @@ function ShapeCanvas () {
       this.addShape('down', e)
     },
     mousemove (e) {
+      this.usedX = this.moveX || 0
+      this.usedY = this.moveY || 0
       this.moveX = e.offsetX
       this.moveY = e.offsetY
       this.moveClientX = e.clientX
@@ -417,8 +425,15 @@ function ShapeCanvas () {
           this.downX = t.offsetX,
           this.downY = t.offsetY
         var o = this.zoomScale
-        e === 1 ? this.zoomScale += 0.1 : this.zoomScale -= 0.1,
-          this.zoomSize(o)
+        if(e === 1) {
+          this.multiple++
+          this.multiple = this.multiple > this.multipleArr.length-1 ? this.multipleArr.length-1 : this.multiple
+        } else {
+          this.multiple--
+          this.multiple = this.multiple <0 ? 0 : this.multiple
+        }
+        this.zoomScale = this.multipleArr[this.multiple]
+        this.zoomSize(o)
       }
     },
     keyDown: function (t) {
@@ -482,7 +497,8 @@ function ShapeCanvas () {
           color: this.color
         })
       } else if (t === 'move') {
-        !0 === this.draw && (this.shapeSet.item.rect(this.downX / this.zoomScale, this.downY / this.zoomScale, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
+        var _p = this.computePoint()
+        !0 === this.draw && (this.shapeSet.item.rect(_p.x, _p.y, _p.tx, _p.ty),
           this.shapeSet.trigger())
       } else {
         if (!0 === this.draw) {
@@ -497,6 +513,7 @@ function ShapeCanvas () {
       }
     },
     polygon: function (t) {
+      var _p = this.computePoint()
       if (t === 'down') {
         var e, o
         this.draw = !0,
@@ -517,7 +534,7 @@ function ShapeCanvas () {
         })
         if (i.length > 2 && (e = i[0]),
           o) {
-          if (e && Math.abs(e.x - this.downX / this.zoomScale) < this.accuracy && Math.abs(e.y - this.downY / this.zoomScale) < this.accuracy) {
+          if (e && Math.abs(e.x - _p.x) < this.accuracy/this.zoomScale && Math.abs(e.y - _p.y) < this.accuracy/this.zoomScale) {
             s.line(o.tx, o.ty, e.x, e.y),
               this.shapeSet.item.addChild(s)
             var n = this.shapeSet.item
@@ -529,21 +546,22 @@ function ShapeCanvas () {
               this.shapeSet.addHistory(),
               this.shapeSet.trigger()
           } else {
-            s.line(o.tx, o.ty, this.downX / this.zoomScale, this.downY / this.zoomScale),
+            s.line(o.tx, o.ty, _p.x, _p.y),
               this.shapeSet.item.addChild(s),
               this.shapeSet.addHistory()
           }
         } else {
-          s.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.downX / this.zoomScale, this.downY / this.zoomScale),
+          s.line(_p.x, _p.y, _p.x, _p.y),
             this.shapeSet.item.addChild(s)
         }
         this.shapeSet.trigger()
       } else {
-        t === 'move' ? this.shapeSet.temp && (this.shapeSet.temp.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
+        t === 'move' ? this.shapeSet.temp && (this.shapeSet.temp.line(_p.x, _p.y, _p.tx, _p.ty),
           this.shapeSet.trigger()) : this.draw = !1
       }
     },
     lasso: function (t) {
+      var _p = this.computePoint()
       if (t === 'down') {
         this.draw = !0,
           this.shapeSet.item = new ShapePath({
@@ -559,7 +577,7 @@ function ShapeCanvas () {
           color: this.color,
           parent: this.shapeSet.item
         })
-        e.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.downX / this.zoomScale, this.downY / this.zoomScale),
+        e.line(_p.x, _p.y, _p.x, _p.y),
           this.shapeSet.item.addChild(e),
           this.shapeSet.trigger(),
           this._x = this.downX,
@@ -579,8 +597,8 @@ function ShapeCanvas () {
             color: this.color,
             parent: this.shapeSet.item
           })
-          o ? (s.line(o.tx, o.ty, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
-            this.shapeSet.item.addChild(s)) : (s.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
+          o ? (s.line(o.tx, o.ty, _p.tx, _p.ty),
+            this.shapeSet.item.addChild(s)) : (s.line(_p.x, _p.y, _p.tx, _p.ty),
               this.shapeSet.item.addChild(s)),
             this.shapeSet.trigger()
         }
@@ -596,14 +614,14 @@ function ShapeCanvas () {
               color: this.color,
               parent: this.shapeSet.item
             })
-            a.line(r.tx, r.ty, this.upX / this.zoomScale, this.upY / this.zoomScale),
+            a.line(r.tx, r.ty, _p.ux, _p.uy),
               this.shapeSet.item.addChild(a)
             var c = new ShapePath({
               type: 'line',
               color: this.color,
               parent: this.shapeSet.item
             })
-            c.line(this.upX / this.zoomScale, this.upY / this.zoomScale, n.x, n.y),
+            c.line( _p.ux, _p.uy, n.x, n.y),
               this.shapeSet.item.addChild(c)
             var l = this.shapeSet.item
             l.children.shift(),
@@ -619,6 +637,7 @@ function ShapeCanvas () {
       }
     },
     repair: function (t, e) {
+      var _p = this.computePoint()
       if (t === 'down') {
         this.draw = !0,
           this.shapeSet.item = new ShapePath({
@@ -634,7 +653,7 @@ function ShapeCanvas () {
           color: this.color,
           parent: this.shapeSet.item
         })
-        o.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.downX / this.zoomScale, this.downY / this.zoomScale),
+        o.line(_p.x, _p.y, _p.x, _p.y),
           this.shapeSet.item.addChild(o),
           this.shapeSet.trigger(),
           this._x = this.downX,
@@ -654,8 +673,8 @@ function ShapeCanvas () {
             color: this.color,
             parent: this.shapeSet.item
           })
-          i ? (n.line(i.tx, i.ty, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
-            this.shapeSet.item.addChild(n)) : (n.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
+          i ? (n.line(i.tx, i.ty, _p.tx, _p.ty),
+            this.shapeSet.item.addChild(n)) : (n.line(_p.x, _p.y, _p.tx, _p.ty),
               this.shapeSet.item.addChild(n)),
             this.shapeSet.trigger()
         }
@@ -671,14 +690,14 @@ function ShapeCanvas () {
               color: this.color,
               parent: this.shapeSet.item
             })
-            c.line(a.tx, a.ty, this.upX / this.zoomScale, this.upY / this.zoomScale),
+            c.line(a.tx, a.ty, _p.ux, _p.uy),
               this.shapeSet.item.addChild(c)
             var l = new ShapePath({
               type: 'line',
               color: this.color,
               parent: this.shapeSet.item
             })
-            l.line(this.upX / this.zoomScale, this.upY / this.zoomScale, h.x, h.y),
+            l.line(_p.ux, _p.uy, h.x, h.y),
               this.shapeSet.item.addChild(l)
             var d = this.shapeSet.item
             if (d.children.shift(),
@@ -699,13 +718,14 @@ function ShapeCanvas () {
       }
     },
     point: function (t, e) {
+      var _p = this.computePoint()
       var o = this
       if (!(t === 'click' || e.button > 1)) {
         if (t === 'down') {
           var i = this.shapeSet.edits
           this.drawEdit = null
           Array.isArray(i) && i.forEach(function (t, e) {
-            t.contain(o.moveX, o.moveY, o.zoomScale) && (o.drawEdit = e)
+            t.contain(o.moveX + o.x, o.moveY + o.y, o.zoomScale, !0) && (o.drawEdit = e)
           })
         } else if (t === 'move') {
           if (this.drawEdit | this.drawEdit === 0) {
@@ -716,14 +736,14 @@ function ShapeCanvas () {
             var n = this.shapeSet.edits
             var h = !1
             s.reverse().forEach(function (t, e) {
-              t.contain(o.moveX, o.moveY, o.zoomScale) && !h ? (h = !0,
+              t.contain(o.moveX + o.x, o.moveY + o.y, o.zoomScale) && !h ? (h = !0,
                 t.over = !0) : t.over = !1
             })
             this.shapeSet.items = s.reverse()
             this.setStyle(10)
             Array.isArray(n) && n.forEach(function (t, e) {
-              t.contain(o.moveX, o.moveY, o.zoomScale) ? (t.over = !0,
-                o.setStyle(e)) : t.over = !1
+              t.contain(o.moveX + o.x, o.moveY + o.y, o.zoomScale, !0) ? (t.over = !0,
+                o.setStyle(e),console.log(t,_p)) : t.over = !1
             })
             this.shapeSet.trigger()
           }
@@ -737,7 +757,7 @@ function ShapeCanvas () {
             this.shapeSet.edits = []
             this.editItem = null
             r.reverse().forEach(function (t, e) {
-              t.contain(o.moveX, o.moveY, o.zoomScale) && !a ? (a = !0,
+              t.contain(o.moveX + o.x, o.moveY + o.y, o.zoomScale) && !a ? (a = !0,
                 o.endSetEdit(t, 1)) : (t.selected = !1, o.setStatus(), o.onSelect && o.onSelect(o.getData()))
             })
             this.shapeSet.items = r.reverse()
@@ -750,6 +770,7 @@ function ShapeCanvas () {
       }
     },
     pen: function (t) {
+      var _p = this.computePoint()
       if (t === 'down') {
         var e
         this.draw = !0,
@@ -770,8 +791,8 @@ function ShapeCanvas () {
         })
         o.length > 0 && (this.curve = !0),
           o.length > 2 && o[0],
-          e ? (i.line(e.tx, e.ty, this.downX / this.zoomScale, this.downY / this.zoomScale),
-            this.shapeSet.item.addChild(i)) : (i.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.downX / this.zoomScale, this.downY / this.zoomScale),
+          e ? (i.line(e.tx, e.ty, _p.x, _p.y),
+            this.shapeSet.item.addChild(i)) : (i.line(_p.x, _p.y, _p.x, _p.y),
               this.shapeSet.item.addChild(i)),
           this.shapeSet.addHistory(),
           this.shapeSet.trigger()
@@ -779,14 +800,14 @@ function ShapeCanvas () {
         if (this.curve) {
           var s = this.shapeSet.item.children
           var n = s[s.length - 1]
-          var h = 2 * n.tx - this.moveX / this.zoomScale
-          var r = 2 * n.ty - this.moveY / this.zoomScale
+          var h = 2 * n.tx - _p.tx
+          var r = 2 * n.ty - _p.ty
           n.curve(n.x, n.y, n.tx, n.ty, h, r),
             this.shapeSet.item.setBounds(),
-            this.shapeSet.temp.line(h, r, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
+            this.shapeSet.temp.line(h, r, _p.tx, _p.ty),
             this.shapeSet.trigger()
         } else {
-          this.shapeSet.temp && (this.shapeSet.temp.line(this.downX / this.zoomScale, this.downY / this.zoomScale, this.moveX / this.zoomScale, this.moveY / this.zoomScale),
+          this.shapeSet.temp && (this.shapeSet.temp.line(_p.x, _p.y, _p.tx, _p.ty),
             this.shapeSet.trigger())
         }
       } else {
@@ -802,7 +823,7 @@ function ShapeCanvas () {
           })
           if (l.length > 0 && (this.curve = !0),
             l.length > 2 && (a = l[0]),
-            c && a && Math.abs(a.x - this.downX / this.zoomScale) < this.accuracy && Math.abs(a.y - this.downY / this.zoomScale) < this.accuracy) {
+            c && a && Math.abs(a.x - _p.tx) < this.accuracy/this.zoomScale && Math.abs(a.y - _p.ty) < this.accuracy/this.zoomScale) {
             d.line(c.tx, c.ty, a.x, a.y),
               this.shapeSet.item.addChild(d)
             var A = this.shapeSet.item
@@ -824,24 +845,114 @@ function ShapeCanvas () {
       if (this.canvas.style.cursor = this.statusType === 'zoomin' ? 'zoom-in' : 'zoom-out',
         t === 'down') {
         var e = this.zoomScale
-        this.statusType === 'zoomin' ? this.zoomScale += 0.1 : this.zoomScale -= 0.1,
-          this.zoomSize(e)
+        if(this.statusType === 'zoomin') {
+          this.multiple++
+          this.multiple = this.multiple > this.multipleArr.length-1 ? this.multipleArr.length-1 : this.multiple
+        } else {
+          this.multiple--
+          this.multiple = this.multiple <0 ? 0 : this.multiple
+        }
+        this.zoomScale = this.multipleArr[this.multiple]
+        this.zoomSize(e)
       }
     },
     hand: function (t) {
-      this.transform3D = this.transform3D || {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-        this.zoomScale !== 1 && (t === 'down' ? (this.drag = !0,
-          this.handLeft = this.transform3D.x,
-          this.handTop = this.transform3D.y) : t === 'move' ? this.drag && this.handMove() : this.drag = !1)
+      if(this.zoomScale !== 1) {
+        if(t === 'down'){
+          this.drag = !0
+        } else if(t==='move') {
+          if(this.drag){
+            this.handMove()
+          }
+        } else if(t==='up') {
+          this.drag = !1
+        } else {
+          this.drag = !1
+        }
+      }
     },
     rotate: function () {
-      this.angle += 90,
-        this.angle = this.angle >= 360 ? 0 : this.angle,
-        this.setCanvas()
+      this.angle += 90
+      this.angle = this.angle >= 360 ? 0 : this.angle
+      var data = this.getData()
+      var itemData = this.shapeSet.item && this.shapeSet.item.getAttr(this.scale)
+      var tempData = this.shapeSet.temp && this.shapeSet.temp.getAttr(this.scale)
+      var editData = this.shapeSet.edits && this.shapeSet.edits.map(item => {
+        return item.getAttr(this.scale)
+      })
+      var editIndex 
+      this.shapeSet.items.forEach((item,key) => {
+        if(item.selected){
+          editIndex = key
+        }
+      })
+      this.setCanvas()
+
+      this.shapeSet.items = []
+      data.items.forEach(item => {
+        let sp = new ShapePath()
+        sp.setAttr(item, this.scale)
+        this.shapeSet.items.push(sp)
+      })
+      
+      itemData && (this.shapeSet.item = (new ShapePath()).setAttr(itemData, this.scale))
+      tempData && (this.shapeSet.temp = (new ShapePath()).setAttr(tempData, this.scale))
+      if(this.shapeSet.items[editIndex]) {
+        this.endSetEdit(this.shapeSet.items[editIndex],1)
+      }
+     
+      this.handMove()
+    },
+    rotateImage: function (can) {
+      var e = this
+      var o = can || e.img 
+      var w = 0, h = 0 ,x = 0, y = 0
+      var canvas, canvasContext
+      switch(this.angle / 90){
+        case 0 : 
+          w = o.width
+          h = o.height
+          break
+        case 1 : 
+          w = o.height
+          h = o.width
+          x = 0
+          y = -o.height
+          break
+        case 2 : 
+          w = o.width
+          h = o.height
+          x = -o.width
+          y = -o.height
+          break
+        case 3 : 
+          w = o.height
+          h = o.width
+          x = -o.width
+          y = 0
+          break
+      }
+      canvas = document.createElement('canvas')
+      canvasContext = canvas.getContext('2d')
+      canvas.width = w
+      canvas.height = h
+      canvasContext.rotate(e.angle * Math.PI / 180)
+      canvasContext.drawImage(o, x, y)
+      return canvas
+    },
+    rotateFit: function () {
+      var x=this.x, y=this.y, w = this.graph.width, h = this.graph.height
+      
+      var t = y 
+      y = x 
+      x = this.height * this.zoomScale - t - h
+      
+      this.x = x / this.zoomScale
+      this.y = y / this.zoomScale
+      this.zoomScale = 1
+      this.multiple = 0
+      this.usedX = this.moveX
+      this.usedY = this.moveY
     },
     cut: function (t) {
       this.coverView()
@@ -874,6 +985,9 @@ function ShapeCanvas () {
       var s = this.shapeSet.edits
       this.canvas.style.display = 'none'
       ShapeDraw.zoomScale = this.zoomScale
+      ShapeDraw.offsetX = this.x
+      ShapeDraw.offsetY = this.y
+      ShapeDraw.angle = this.angle
       ShapeDraw.clear(this.context)
       e.forEach(function (e) {
         ShapeDraw.draw(t.context, e)
@@ -890,6 +1004,9 @@ function ShapeCanvas () {
       var e = this.shapeSet.items
       this.canvas.style.display = 'none'
       ShapeDraw.zoomScale = this.zoomScale
+      ShapeDraw.offsetX = this.x
+      ShapeDraw.offsetY = this.y
+      ShapeDraw.angle = this.angle
       ShapeDraw.clear(this.context)
       t.context.fillStyle = '#FFFFFF' // t.bgColor
       // 绘制背景
@@ -964,7 +1081,9 @@ function ShapeCanvas () {
         downY: this.downY,
         upX: this.upX,
         upY: this.upY,
-        zoomScale: this.zoomScale
+        zoomScale: this.zoomScale,
+        x: this.x,
+        y: this.y
       })
     },
     toolhandleClick: function (t) {
@@ -984,10 +1103,31 @@ function ShapeCanvas () {
       }
     },
     computeSize: function () {
-      this.canvas.width = this.width
-      this.canvas.height = this.height
-      this.graph.width = this.width
-      this.graph.height = this.height
+      // this.canvas.width = this.width
+      // this.canvas.height = this.height
+      // this.graph.width = this.width
+      // this.graph.height = this.height
+      this.canvas.width = this.wrap.offsetWidth
+      this.canvas.height = this.wrap.offsetHeight
+      this.graph.width = this.wrap.offsetWidth
+      this.graph.height = this.wrap.offsetHeight
+    },
+    computePoint: function () {
+      var x,y,tx,ty,ux,uy
+      x = this.downX / this.zoomScale + this.x / this.zoomScale
+      y = this.downY / this.zoomScale + this.y / this.zoomScale
+      tx = this.moveX / this.zoomScale + this.x / this.zoomScale
+      ty = this.moveY / this.zoomScale + this.y / this.zoomScale
+      ux = this.upX / this.zoomScale + this.x / this.zoomScale
+      uy = this.upY / this.zoomScale + this.y / this.zoomScale
+      return {
+        x,
+        y,
+        tx,
+        ty,
+        ux,
+        uy
+      }
     },
     setImage: function (src, fun, fail) {
       var e = this
@@ -1011,8 +1151,11 @@ function ShapeCanvas () {
 
         fun && fun()
         e.zoomScale = 1
-
+        e.multiple = 0
+        e.angle = 0
+        e.setCanvas()
         e.zoomSize(1)
+        
       }
       o.onerror = function () {
         fail && fail()
@@ -1021,53 +1164,89 @@ function ShapeCanvas () {
     },
     zoomSize: function (t) {
       this.zoomScale <= 1 && (this.zoomScale = 1)
-      var e = this.downX
-      var o = this.downY
+      var e = this.downX || 0
+      var o = this.downY || 0
       var i = this.width * this.zoomScale
       var s = this.height * this.zoomScale
-      this.canvas.width = i,
-        this.canvas.height = s,
-        this.graph.width = i,
-        this.graph.height = s,
-        this.transform3D = this.transform3D || {
-          x: 0,
-          y: 0,
-          z: 0
-        }
-      var n = Math.abs(this.transform3D.x)
-      var h = Math.abs(this.transform3D.y)
-      n = isNaN(n) ? 0 : n,
-        h = isNaN(h) ? 0 : h
-      var r = Math.round(e / t)
-      var a = Math.round(o / t)
-      var c = -r * (this.zoomScale - t) - n
-      var l = -a * (this.zoomScale - t) - h
-      this.zoomScale <= 1 ? (this.transform3D.x = 0,
-        this.transform3D.y = 0) : (c = c > 0 ? 0 : c,
-          l = l > 0 ? 0 : l,
-          this.transform3D.x = c,
-          this.transform3D.y = l)
+      
       var d = this.graph.getContext('2d')
       var A = this.img
-      d.drawImage(A, 0, 0, A.width, A.height, 0, 0, i, s),
-        this.dataChange(),
-        this.setCanvas()
+      this.graph.style.display = 'none'
+
+      var _x,_y,_w,_h,_ox,_oy
+      var vW = this.angle / 90 % 2 === 1 ? this.wrap.offsetHeight : this.wrap.offsetWidth
+      var vH = this.angle / 90 % 2 === 1 ? this.wrap.offsetWidth : this.wrap.offsetHeight
+      _ox = this.x
+      _oy = this.y
+      _x = (e + _ox)/t * this.zoomScale - e 
+      _y = (o + _oy)/t * this.zoomScale - o
+      
+      _x = _x < 0 ? 0 : _x
+      _y = _y < 0 ? 0 : _y
+      _w = i -_x - vW > 0 ? vW : i-_x
+      _h = s -_y - vH > 0 ? vH : s-_y
+      
+      _w = _w < this.width ? (_x = i-this.width, this.width) : _w
+      _h = _h < this.height ? (_y = s-this.height, this.height)  : _h
+
+      var _mx = A.width * _x / i
+      var _my = A.height * _y / s
+      var _mw = A.width * _w / i
+      var _mh = A.height * _h / s
+      // this.graph.width = _w
+      // this.graph.height = _h
+      // this.canvas.width = _w
+      // this.canvas.height = _h
+      this.x = _x
+      this.y = _y
+      d.clearRect(0, 0, this.graph.width, this.graph.height)
+      d.drawImage(A, _mx, _my, _mw, _mh, 0, 0, _w, _h)
+      this.graph.style.display = ''
+      this.dataChange()
+      // this.setCanvas()
     },
     handMove: function () {
-      var t = this.moveClientX - this.downClientX
-      var e = this.moveClientY - this.downClientY
-      var o = Math.round(this.handLeft + t)
-      var i = Math.round(this.handTop + e)
-      o > 0 ? o = 0 : o + this.canvas.width < this.width && (o = this.width - this.canvas.width)
-      i > 0 ? i = 0 : i + this.canvas.height < this.height && (i = this.height - this.canvas.height)
-      this.transform3D = this.transform3D || {
-        x: 0,
-        y: 0,
-        z: 0
-      }
-      this.transform3D.x = o
-      this.transform3D.y = i
-      this.setCanvas()
+      var t = this.moveX - this.usedX
+      var e = this.moveY - this.usedY
+
+      var i = this.width * this.zoomScale
+      var s = this.height * this.zoomScale
+      
+      var d = this.graph.getContext('2d')
+      var A = this.img
+      this.graph.style.display = 'none'
+
+      var _x,_y,_w,_h,_ox,_oy
+      var vW = this.angle / 90 % 2 === 1 ? this.wrap.offsetHeight : this.wrap.offsetWidth
+      var vH = this.angle / 90 % 2 === 1 ? this.wrap.offsetWidth : this.wrap.offsetHeight
+      _ox = this.x
+      _oy = this.y
+      _x = _ox - t
+      _y = _oy - e
+      _x = _x < 0 ? 0 : _x
+      _y = _y < 0 ? 0 : _y
+      _w = i -_x - vW > 0 ? vW : i-_x
+      _h = s -_y - vH > 0 ? vH : s-_y
+      _w = _w < this.width ? (_x = i-this.width, this.width) : _w
+      _h = _h < this.height ? (_y = s-this.height, this.height)  : _h
+
+      var _mx = A.width * _x / i
+      var _my = A.height * _y / s
+      var _mw = A.width * _w / i
+      var _mh = A.height * _h / s
+      // this.graph.width = _w
+      // this.graph.height = _h
+      // this.canvas.width = _w
+      // this.canvas.height = _h
+      this.x = _x
+      this.y = _y
+      d.clearRect(0, 0, this.graph.width, this.graph.height)
+      d.drawImage(A, _mx, _my, _mw, _mh, 0, 0, _w, _h)
+
+      // d.drawImage(A, 0, 0, A.width, A.height, 0, 0, i, s)
+      this.graph.style.display = ''
+      this.dataChange()
+
     },
     endSetEdit: function (t, flag) {
       ShapeEdit.shape && (ShapeEdit.shape.selected = !1)
@@ -1076,24 +1255,46 @@ function ShapeCanvas () {
       this.oldItem = t.clone()
       t.selected = !0
       this.setStatus()
-
-      if (!flag) {
+      
+      if (!flag && this.autoInfo) {
         t.title = this.tempTitle
         t.desc = this.tempDesc
         this.drawEnd && this.drawEnd(this.getData())
         this.setInfo()
+      } else {
+        if(this.tempTitle.length>0){
+          this.saveInfo(this.tempTitle, this.tempDesc)
+        }
       }
       this.onSelect && this.onSelect(this.getData())
     },
     setCanvas: function () {
       var t = ''
-      this.transform3D && (t += 'translate3d(' + this.transform3D.x + 'px,' + this.transform3D.y + 'px,0)')
+      
+      // var e = 1
+      // this.width > this.height && this.angle / 90 % 2 === 1 && (e = this.wrap.offsetHeight / this.wrap.offsetWidth)
+      // t += ' scale(' + e + ')'
+      var angle = this.angle / 90 % 2  === 1, wW = this.wrap.offsetWidth, wH = this.wrap.offsetHeight
+      this.canvas.width = angle ? wH : wW
+      this.canvas.height = angle ? wW : wH
+      this.graph.width = angle ? wH : wW
+      this.graph.height = angle ? wW : wH
+      var top = (wH-wW) / 2
+      var left = -(wH-wW) / 2
+      if(angle){
+        t += ' translate3d('+left+'px, '+top+'px, 0)'
+      }
       t += ' rotateZ(' + this.angle + 'deg)'
-      var e = 1
-      this.width > this.height && this.angle / 90 % 2 === 1 && (e = this.height / this.width)
-      t += ' scale(' + e + ')'
+
       this.canvas.style.transform = t
       this.graph.style.transform = t
+
+      var o = this.img
+      var t = ShapeDraw.fitSize(o.width, o.height, this.canvas.width, this.canvas.height)
+      this.width = t.w
+      this.height = t.h
+      this.scale = t.w / o.width
+      // this.wrap.style.transform = t
     },
     revoke: function () {
       this.shapeSet.revoke()

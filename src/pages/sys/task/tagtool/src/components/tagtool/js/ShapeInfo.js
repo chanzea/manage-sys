@@ -130,17 +130,17 @@ const ShapeInfo = (option) => {
         y += 5
       }
 
-      this.el.style.left = x + 'px'
-      this.el.style.top = y + 'px'
-      this.arrow.style.left = ax + 'px'
-      this.arrow.style.top = ay + 'px'
+      // this.el.style.left = x + 'px'
+      // this.el.style.top = y + 'px'
+      // this.arrow.style.left = ax + 'px'
+      // this.arrow.style.top = ay + 'px'
 
       this.titleInput.value = t
       this.descInput.value = i
       this.op = op
-      setTimeout(() => {
-        this.titleInput.focus()
-      }, 100)
+      // setTimeout(() => {
+      //   this.titleInput.focus()
+      // }, 100)
     },
     hide () {
       this.el.style.display = 'none'
@@ -173,7 +173,6 @@ const ShapeInfo = (option) => {
       this.tagUl.style.width = input.offsetWidth + 'px'
       if (this.data && this.data.length > 0) {
         let result = this.data.filter(item => {
-          console.log(item)
           return item.title.indexOf(n) > -1
         })
         result.forEach(i => {
