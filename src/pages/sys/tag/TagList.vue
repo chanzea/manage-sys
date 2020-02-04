@@ -77,7 +77,19 @@ export default {
                       this.taskDownload(row)
                   }
                 }
-              }, '查看')
+              }, '标注数据'),
+              h('span', {
+                style: {
+                  color: '#2d8cf0',
+                  marginRight: '12px',
+                  cursor: 'pointer'
+                },
+                on: {
+                  click: () => {
+                      this.taskDownloadOrigin(row)
+                  }
+                }
+              }, '源数据')
             ]);
           }
         }
@@ -153,7 +165,17 @@ export default {
       //   console.log('res', res)
       // })
       window.open(`${BASEURL}/task/download?taskId=${row.id}`)
-    }
+    },
+    taskDownloadOrigin  (row) {
+      // const params = {
+      //   taskId: row.id
+      // } 
+      // console.log('params', params)
+      // taskDownload(params).then(res => {
+      //   console.log('res', res)
+      // })
+      window.open(`${BASEURL}/task/downloadOrigin?taskId=${row.id}`)
+    },
   }
 }
 </script>
