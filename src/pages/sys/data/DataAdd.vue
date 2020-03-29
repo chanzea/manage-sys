@@ -15,24 +15,39 @@
         </FormItem>
         <FormItem label="上传文件">
           <div class="file-upload">
-            <span style="margin-bottom: 10px;">支持扩展名：.zip,.jpg..</span>
-            <div class="upload-item" v-if="startUpload">
-              <Circle class="upload-circle" :size="24" :percent="percent" :stroke-color="color">
-                <Icon v-if="percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
-              </Circle>
-              <span style="font-size:12px;color: #2db7f5">文件上传中: {{ percent }}%</span>
-            </div>
+            <span style="margin-bottom: 5px;">支持扩展名：.zip,.jpg..</span>
+         
+            <template v-for=" item in uploadListMap" >
+              <div class="upload-item" :key="item.md5" v-if="item.isUploading">
+                <Circle class="upload-circle" :size="24" :percent="item.percent" :stroke-color="color">
+                  <Icon v-if="item.percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
+                </Circle>
+                <span style="font-size:12px;color: #2db7f5">文件上传中: {{ item.percent }}%</span>
+                <Icon class="icon" v-if="item.isPause" @click="continueUpload(item.md5)" type="stop"></Icon>
+                <Icon class="icon" v-else @click="pauseUpload(item.md5)" type="pause"></Icon>
+              </div>
+            </template>
+
             <div v-if="fileName.length !== 0" style="margin-bottom: 10px;display: flex;align-items: center">
               <div v-for="(item, index) in fileName" :key="index" style="margin-left: 8px;margin-right: 8px;color: #2d8cf0">
                 <Icon type="ios-paper-outline" /><span style="margin-left: 8px;color: #2d8cf0">{{item}}</span>
               </div>
               <Button size="small" type="primary" @click="deleteFile">删除</Button>
             </div>
+            <!-- <div class="upload-item" v-if="startUpload">
+              <Circle class="upload-circle" :size="24" :percent="percent" :stroke-color="color">
+                <Icon v-if="percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
+              </Circle>
+              <span style="font-size:12px;color: #2db7f5">文件上传中: {{ percent }}%</span>
+            </div>
+            
             <div v-show="isUploading" style="margin-bottom: 10px;">
               <Button size="small" type="primary" v-if="!isPause" @click="isPause=true">暂停</Button>
               <Button size="small" type="primary" v-else @click="continueUpload">继续</Button>
-            </div>
+            </div> -->
             <Upload
+              v-if="isSupportMultiple"
+              multiple
               class="upload-comp"
               type="drag"
               :before-upload="beforeUpload"
@@ -43,6 +58,7 @@
                 <p>点击或将文件拖到这里上传</p>
               </div>
             </Upload>
+            
           </div>
         </FormItem>
       </Form>
@@ -74,17 +90,19 @@ export default {
     return {
       isUploading: false, //上传中
       startUpload: false, //开始上传
+      fileId: '', //文件返回的id
+      startChunkNumber: '',
       isPause: false, //是否暂停
       pauseData: {},
       percent: 0,
+      uploadListMap:{},
+      
       loading: false,
       organizationsList: [],
-      formItem: {
-
-      },
-      fileId: '', //文件返回的id
+      isSupportMultiple: true,
+      formItem: {},
+      
       fileName: [],
-      startChunkNumber: '',
       ruleValidate: {
         folderName: [
           {
@@ -144,103 +162,155 @@ export default {
     },
     beforeUpload (file) {
       const _this = this
-      const form = new FormData();
-      _this.startUpload = false
-      _this.percent = 0 //清空进度
       browserMD5File(file, function (err, md5) {
-        fileUploadInfo({
-          fileMD5: md5,
-          fileName: file.name,
-          fileSize: file.size
-        }).then(res => {
-          console.log('不需要分片')
-          const fileSize = file.size
-          console.log('文件大小', fileSize)
-          _this.fileId = res.fileId
-          _this.formItem.fileIds = [res.fileId]
-          _this.startChunkNumber = res.startChunkNumber
-          if (res.startChunkNumber === -1) {  //表示已经上传过
-            _this.fileName.push(file.name)
-            _this.isUploading = false
-          } else {
-            console.log('需要分片')
-            if (res.chunkTotal > 1) {
-              _this.startUpload = true
-              _this.isUploading = true
-              // const chunkThreshold = 10000
-              // const chunkTotal = 140
-              // _this.chunkUpload(res.startChunkNumber, chunkThreshold, chunkTotal, file, res.fileId)
-              _this.chunkUpload(res.startChunkNumber, res.chunkThreshold, res.chunkTotal, file, res.fileId)
-              // const chunkTotal = Math.ceil(file.size / 131072) //测试用
-              // _this.chunkUpload(0, 1, 131072, chunkTotal, file, res.fileId) //测试用
-            } else {
-              const form = new FormData();
-              form.append('file', file);
-              form.append('fileId', res.fileId)
-              form.append('chunkNum', res.startChunkNumber)
-              fileUpload(form).then(res => {
-                _this.fileName.push(file.name)
-                _this.isUploading = false
-              })
-            }
-          }
-        })
+        if(err){
+          return;
+        }
+        _this.fileUploadInfo(file, md5);
       });
       return false;
     },
 
+    fileUploadInfo: function(file, md5) {
+      
+      fileUploadInfo({
+        fileMD5: md5,
+        fileName: file.name,
+        fileSize: file.size
+      }).then(res => {
+        
+        const fileSize = file.size
+        console.log('文件大小', fileSize)
+        // this.fileId = res.fileId
+        // this.formItem.fileIds = [res.fileId]
+        // this.startChunkNumber = res.startChunkNumber
+
+        let {chunkTotal, startChunkNumber, fileId, fileType, chunkThreshold } = res;
+
+        this.$set(this.uploadListMap, md5, {
+          md5,
+          startUpload: true,
+          percent: 0,
+          chunkTotal, 
+          startChunkNumber, 
+          fileId, 
+          fileType, 
+          chunkThreshold,
+          file,
+          isUploading: true
+        });
+
+        if (res.startChunkNumber === -1) {  //表示已经上传过
+          this.fileName.push(file.name)
+          this.uploadListMap[md5].isUploading = false
+          return;
+        }
+
+        if (res.chunkTotal > 1) {
+          
+          console.log('需要分片')
+          // this.startUpload = true
+          // this.isUploading = true
+
+          console.log(this.uploadListMap);
+
+          this.chunkUpload(this.uploadListMap[md5]);
+          return;
+        }
+
+        console.log('不需要分片')
+        const form = new FormData();
+        form.append('file', file);
+        form.append('fileId', res.fileId)
+        form.append('chunkNum', res.startChunkNumber)
+        fileUpload(form).then(res => {
+          this.fileName.push(file.name);
+          this.uploadListMap[md5].isUploading = false;
+        }) 
+      })
+    },
+
     // 继续上传
-    continueUpload () {
-      console.log(this.pauseData)
-      this.chunkUpload(this.pauseData.startChunkNumber, this.pauseData.chunkThreshold, this.pauseData.chunkTotal, this.pauseData.file, this.pauseData.fileId)
+    continueUpload (md5) {
+      console.log()
+      this.uploadListMap[md5].isPause = false;
+      this.chunkUpload(this.uploadListMap[md5]);
       this.isPause = false //暂停上传置为false
     },
 
+    //暂停
+    pauseUpload (md5){
+      this.uploadListMap[md5].isPause = true;
+    },
+
     // 分块上传
-    chunkUpload (startChunkNumber, chunkThreshold, chunkTotal, file, fileId) {
+    chunkUpload ({startChunkNumber, chunkThreshold, chunkTotal, file, fileId, isPause, md5}) {
+
+      //该文件暂停
+      if(isPause) {
+        this.uploadListMap[md5].startChunkNumber = startChunkNumber;
+        return;
+      }
+
+      console.trace("调用战");
+
+      console.log(file);
+
       const _this = this
       const fileSize = file.size
       let blob = null //二进制对象
       let start = (startChunkNumber - 1) * chunkThreshold;
       let end = start + chunkThreshold //
       // 如果超出文件大小
-      if (end > fileSize) {
-        blob = file.slice(start, fileSize, file.type);
-      } else {
-        blob = file.slice(start, end, file.type);
-      }
+      let sliceEndIndex = end > fileSize ? fileSize : end;
+      blob = file.slice(start, sliceEndIndex, file.type);
+
       const form = new FormData();
       form.append('file', blob);
       form.append('fileId', fileId)
       form.append('chunkNum', startChunkNumber)
+      let percent = 0;
+      percent = Number(((end / fileSize) * 100).toFixed(2)); //进度条比例
+      this.updateProcess(md5, percent);
+      
       fileUpload(form).then(res => {
         console.log('分片上传')
         if (startChunkNumber < chunkTotal) {        
-          _this.percent = Number(((end / fileSize) * 100).toFixed(2)); //进度条比例
-          console.log('当前进度', _this.percent)
-          // 表示点击暂停
-          if (_this.isPause) {
-            _this.pauseData = {
-              startChunkNumber: ++startChunkNumber,
-              chunkThreshold, chunkTotal, file, fileId
-            }
-            return
-          } else {
-            console.log('继续上传')
-            _this.chunkUpload(++startChunkNumber, chunkThreshold, chunkTotal, file, fileId)
-          }
+          
+          this.uploadListMap[md5].startChunkNumber = this.uploadListMap[md5].startChunkNumber + 1;
+          console.log(_this.uploadListMap[md5])
+          _this.chunkUpload(_this.uploadListMap[md5])    
         } else {
-          _this.percent = 100 //进度条完成
+          percent = 100 //进度条完成
           fileMerge({
             file_id: fileId
           }).then(res => {
-            _this.fileName.push(file.name)
-            _this.isUploading = false
+            _this.fileName.push(file.name);
+            this.uploadListMap[md5].isUploading = false;
           })
         }
+        this.uploadListMap[md5].percent = percent;
+  
       }).catch(err => {
         console.error('err', err)
       })
+    },
+
+    //进度条
+    updateProcess(md5, realPercent){
+      let percent = this.uploadListMap[md5].percent;
+      let _this = this;
+      let timer = setTimeout(t, 1000);
+      function t(){
+        if(_this.uploadListMap[md5].percent >=  realPercent - (realPercent - 5 - percent) / 10) {
+          timer = null;
+          clearTimeout(timer);
+          return;
+        }
+        _this.uploadListMap[md5].percent += (realPercent - 5 - percent) / 10;
+        timer = setTimeout(t, 1000);
+      }
+      
     },
 
     // 提交源数据
@@ -260,6 +330,9 @@ export default {
     },
     handleReset (name) {
       this.$refs[name].resetFields();
+    },
+    changeUploadType (status) {
+      this.isSupportMultiple = status;
     }
   }
 }
