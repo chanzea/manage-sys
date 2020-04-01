@@ -24,6 +24,7 @@
     "moment": "^2.24.0",
     "nprogress": "^0.2.0",
     "quill-image-extend-module": "^1.1.2",
+    "spark-md5": "^3.0.1",
     "vue": "^2.5.2",
     "vue-fabric": "^0.1.25",
     "vue-fullcalendar": "^1.0.9",

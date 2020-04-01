@@ -3,10 +3,10 @@
     <div class="data-add-content">
       <Form ref="formItem" :rules="ruleValidate" :model="formItem" :label-width="100">
         <FormItem label="文件夹名称" prop="folderName">
-          <Input v-model="formItem.folderName" placeholder="名称"></Input>
+          <Input v-model="formItem.folderName" placeholder="名称"/>
         </FormItem>
         <FormItem label="文件夹描述" prop="folderDesc">
-          <Input v-model="formItem.folderDesc" type="textarea" placeholder="描述"></Input>
+          <Input v-model="formItem.folderDesc" type="textarea" placeholder="描述"/>
         </FormItem>
         <FormItem label="归属组织" prop="organizationIds">
           <CheckboxGroup v-model="formItem.organizationIds">
@@ -23,8 +23,10 @@
                   <Icon v-if="item.percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
                 </Circle>
                 <span style="font-size:12px;color: #2db7f5">文件上传中: {{ item.percent }}%</span>
-                <Icon class="icon" v-if="item.isPause" @click="continueUpload(item.md5)" type="stop"></Icon>
-                <Icon class="icon" v-else @click="pauseUpload(item.md5)" type="pause"></Icon>
+                <template v-if="item.isUploading">
+                  <Icon class="icon" title="点击继续" v-if="item.isPause" @click="continueUpload(item.md5)" type="ios-play-outline"></Icon>
+                  <Icon class="icon" title="点击暂停" v-else @click="pauseUpload(item.md5)" type="ios-pause-outline"></Icon>
+                </template>
               </div>
             </template>
 
@@ -34,17 +36,6 @@
               </div>
               <Button size="small" type="primary" @click="deleteFile">删除</Button>
             </div>
-            <!-- <div class="upload-item" v-if="startUpload">
-              <Circle class="upload-circle" :size="24" :percent="percent" :stroke-color="color">
-                <Icon v-if="percent === 100" type="ios-checkmark" size="24" style="color:#5cb85c"></Icon>
-              </Circle>
-              <span style="font-size:12px;color: #2db7f5">文件上传中: {{ percent }}%</span>
-            </div>
-            
-            <div v-show="isUploading" style="margin-bottom: 10px;">
-              <Button size="small" type="primary" v-if="!isPause" @click="isPause=true">暂停</Button>
-              <Button size="small" type="primary" v-else @click="continueUpload">继续</Button>
-            </div> -->
             <Upload
               v-if="isSupportMultiple"
               multiple
@@ -63,7 +54,7 @@
         </FormItem>
       </Form>
       <div class="btn-list">
-        <Button class="btn-list-item" :loading="loading" type="primary" :disabled="!isDisabled"  @click="handleSubmit('formItem')">提交</Button>
+        <Button class="btn-list-item" :loading="loading" type="primary" :disabled="isDisabled"  @click="handleSubmit('formItem')">提交</Button>
       </div>
     </div>
   </div>
@@ -74,7 +65,7 @@ import axios from 'axios'
 import {
   BASEURL
 } from 'api/config'
-import browserMD5File from '../../../utils/md5.js'
+let handlePrepareUpload = require('../../../utils/sparkmd5Util.js');
 import {
   fileUploadInfo,
   fileUpload,
@@ -96,13 +87,12 @@ export default {
       pauseData: {},
       percent: 0,
       uploadListMap:{},
-      
       loading: false,
       organizationsList: [],
       isSupportMultiple: true,
-      formItem: {},
-      
+      formItem: {},    
       fileName: [],
+      exitType: {}, //已经存在的
       ruleValidate: {
         folderName: [
           {
@@ -130,7 +120,8 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.fileId !== ''
+      let allUploads = Object.keys(this.uploadListMap) || []; 
+      return allUploads.length == 0 || allUploads.some( (item) => this.uploadListMap[item].isUploading );
     },
     color () {
       let color = '#2db7f5';
@@ -151,24 +142,39 @@ export default {
       })
     },
     deleteFile () {
-      this.fileName = []
-      this.fileId = ''
-      this.isUploading = false //上传中
-      this.startUpload = false //开始上传
-      this.isPause = false //是否暂停
-      this.pauseData = {}
-      this.percent = 0
-      this.loading = false
+      this.fileName = [];
+      this.exitType = {};
     },
     beforeUpload (file) {
-      const _this = this
-      browserMD5File(file, function (err, md5) {
+      const _this = this;
+      console.log(file)
+      if(!this.onlyOneType(file.type)){
+        alert('这能是图片或者zip其中一种')
+        return ;
+      };
+      handlePrepareUpload(file, function (err, md5) {
         if(err){
           return;
         }
         _this.fileUploadInfo(file, md5);
       });
       return false;
+    },
+
+    onlyOneType(type){
+      if(/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(type)){
+        type = 'image';
+      } else if (type.indexOf('zip') > -1) {
+        type = 'zip'
+      } else {
+        return false
+      }
+
+      if(this.exitType.length === 0){
+        this.exitType[type] = 1;
+        return true;
+      } 
+      return Boolean(this.exitType[type]);  
     },
 
     fileUploadInfo: function(file, md5) {
@@ -181,15 +187,10 @@ export default {
         
         const fileSize = file.size
         console.log('文件大小', fileSize)
-        // this.fileId = res.fileId
-        // this.formItem.fileIds = [res.fileId]
-        // this.startChunkNumber = res.startChunkNumber
-
         let {chunkTotal, startChunkNumber, fileId, fileType, chunkThreshold } = res;
 
         this.$set(this.uploadListMap, md5, {
           md5,
-          startUpload: true,
           percent: 0,
           chunkTotal, 
           startChunkNumber, 
@@ -197,7 +198,9 @@ export default {
           fileType, 
           chunkThreshold,
           file,
-          isUploading: true
+          startUpload: true,
+          isUploading: true,
+          isPause: false, //是否暂停
         });
 
         if (res.startChunkNumber === -1) {  //表示已经上传过
@@ -207,13 +210,6 @@ export default {
         }
 
         if (res.chunkTotal > 1) {
-          
-          console.log('需要分片')
-          // this.startUpload = true
-          // this.isUploading = true
-
-          console.log(this.uploadListMap);
-
           this.chunkUpload(this.uploadListMap[md5]);
           return;
         }
@@ -232,7 +228,6 @@ export default {
 
     // 继续上传
     continueUpload (md5) {
-      console.log()
       this.uploadListMap[md5].isPause = false;
       this.chunkUpload(this.uploadListMap[md5]);
       this.isPause = false //暂停上传置为false
@@ -240,7 +235,9 @@ export default {
 
     //暂停
     pauseUpload (md5){
+      console.log(md5);
       this.uploadListMap[md5].isPause = true;
+      console.log(this.uploadListMap[md5])
     },
 
     // 分块上传
@@ -252,10 +249,6 @@ export default {
         return;
       }
 
-      console.trace("调用战");
-
-      console.log(file);
-
       const _this = this
       const fileSize = file.size
       let blob = null //二进制对象
@@ -264,21 +257,20 @@ export default {
       // 如果超出文件大小
       let sliceEndIndex = end > fileSize ? fileSize : end;
       blob = file.slice(start, sliceEndIndex, file.type);
-
+      console.time("添加form");
       const form = new FormData();
       form.append('file', blob);
       form.append('fileId', fileId)
       form.append('chunkNum', startChunkNumber)
+      console.timeEnd("添加form")
       let percent = 0;
       percent = Number(((end / fileSize) * 100).toFixed(2)); //进度条比例
-      this.updateProcess(md5, percent);
+      this.updateProcess(md5, percent);// 搞一个假进度条
       
       fileUpload(form).then(res => {
         console.log('分片上传')
         if (startChunkNumber < chunkTotal) {        
-          
           this.uploadListMap[md5].startChunkNumber = this.uploadListMap[md5].startChunkNumber + 1;
-          console.log(_this.uploadListMap[md5])
           _this.chunkUpload(_this.uploadListMap[md5])    
         } else {
           percent = 100 //进度条完成
@@ -298,6 +290,9 @@ export default {
 
     //进度条
     updateProcess(md5, realPercent){
+      if(realPercent >= 100) {
+        return;
+      }
       let percent = this.uploadListMap[md5].percent;
       let _this = this;
       let timer = setTimeout(t, 1000);
@@ -353,6 +348,12 @@ export default {
         .upload-circle {
           margin-right: 12px;
         }
+        .ivu-icon{
+          font-size: 25px !important;
+          margin-left: 10px;
+          color: rgb(45, 183, 245);
+        }
+
       }
       .upload-comp {
         & /deep/ .ivu-upload-list {
