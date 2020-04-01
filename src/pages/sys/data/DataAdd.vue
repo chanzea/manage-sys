@@ -92,7 +92,7 @@ export default {
       isSupportMultiple: true,
       formItem: {},    
       fileName: [],
-      exitType: {}, //已经存在的
+      exitType: [], //已经存在的
       ruleValidate: {
         folderName: [
           {
@@ -162,6 +162,7 @@ export default {
     },
 
     onlyOneType(type){
+      console.log(type)
       if(/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(type)){
         type = 'image';
       } else if (type.indexOf('zip') > -1) {
@@ -170,11 +171,13 @@ export default {
         return false
       }
 
+      console.log(String(this.exitType));
+
       if(this.exitType.length === 0){
-        this.exitType[type] = 1;
+        this.exitType.push(type);
         return true;
       } 
-      return Boolean(this.exitType[type]);  
+      return Boolean(this.exitType.includes(type));  
     },
 
     fileUploadInfo: function(file, md5) {

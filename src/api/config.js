@@ -1,7 +1,7 @@
 import axios from 'axios';
 // export const BASEURL = 'http://118.24.124.177:8099' //api地址
-export const BASEURL = 'http://bi.teweit.com:65525/api'; // api地址
-// export const BASEURL = 'http://119.123.100.155:65525/api'; // api地址
+// export const BASEURL = 'http://bi.teweit.com:65525/api'; // api地址
+export const BASEURL = 'http://119.123.102.155:65525/api'; // api地址
 import {
   saveMessage,
   getMessage
