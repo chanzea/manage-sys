@@ -317,7 +317,7 @@ export default {
         if (valid) {
           this.loading = true;
           const map = this.uploadListMap;
-          this.formItem.fileIds = Object.keys(this.uploadListMap).map( item => {
+          this.formItem.fileIds = Object.keys(map).map( item => {
             return map[item].fileId
           }) 
 
