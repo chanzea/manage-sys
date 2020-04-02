@@ -143,7 +143,7 @@ export default {
     },
     deleteFile () {
       this.fileName = [];
-      this.exitType = {};
+      this.exitType = [];
     },
     beforeUpload (file) {
       const _this = this;
@@ -163,7 +163,7 @@ export default {
 
     onlyOneType(type){
       console.log(type)
-      if(/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(type)){
+      if(/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(type)){
         type = 'image';
       } else if (type.indexOf('zip') > -1) {
         type = 'zip'
