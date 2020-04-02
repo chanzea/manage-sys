@@ -315,7 +315,12 @@ export default {
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
+          const map = this.uploadListMap;
+          this.formItem.fileIds = Object.keys(this.uploadListMap).map( item => {
+            return map[item].fileId
+          }) 
+
           dataSetCreate(this.formItem).then(res => {
             this.loading = false
             this.$Message.success('上传成功');
