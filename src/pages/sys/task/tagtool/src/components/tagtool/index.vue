@@ -64,7 +64,7 @@
       </div> -->
     </div>
     <div class="tool-mask"
-      v-show="loading && !isNoData">
+      v-show="loading && !isNoData" @scroll.stop.prevent="scroll">
       <loading :message="message"></loading>
     </div>
 
