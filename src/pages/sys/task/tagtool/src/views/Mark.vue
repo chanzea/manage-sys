@@ -7,7 +7,7 @@
       </div>
       <div class="task-mark-content-meta-item">
         <span class="item-label">任务模版:</span>
-        <span class="item-value">{{taskType === 'Mark' ? '标注任务' : '分割任务'}}</span>
+        <span class="item-value">{{taskType === 'Mark' ? '检测框标注' : '分割任务'}}</span>
       </div>
       <div class="task-mark-content-meta-item">
         <span class="item-label">任务描述:</span>

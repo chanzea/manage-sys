@@ -15,7 +15,7 @@
           ></Input>
         </FormItem>
         <div>
-          <FormItem label="标注任务积分:" prop="markPointType" inline="true">
+          <FormItem label="检测框标注积分:" prop="markPointType" inline="true">
             <!-- <div class="task-mark"> -->
               <span style="margin-right:12px">按</span>
               <Select class="task-mark-select" v-model="formItem.markPointType">
@@ -114,7 +114,7 @@ export default {
           id: 1,
         }, 
         MARK:{
-          label: "标注任务",
+          label: "检测框标注",
           id: 2,
         },
         REJECT_PIC: {
@@ -156,7 +156,7 @@ export default {
             trigger: 'change',
             validator(rule, value, callback) {
               if (!value) {
-                callback(new Error('请选择标注任务积分'))
+                callback(new Error('请选择检测框标注积分'))
               } else {
                 callback()
               }

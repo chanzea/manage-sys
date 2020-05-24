@@ -46,7 +46,7 @@ const taskType = [{
   label: '分类任务'
 },{
   value: 'Mark',
-  label: '标注任务'
+  label: '检测框标注'
 },{
   value: 'RejectPic',
   label: '图片剔除任务'

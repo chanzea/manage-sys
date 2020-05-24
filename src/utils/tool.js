@@ -39,7 +39,7 @@ export const TASKTYPE = {
     type: 'Classify'
   }, 
   '2': {
-    label: '标注任务',
+    label: '检测框标注',
     type: 'Mark'
   },
   '3': {

@@ -131,7 +131,8 @@ export default {
           //   return userList[id].userName
           // }).join(',') : '暂无审核人员';
           item.creator = userList[item.creatorId].userName
-          item.createdTime = new Date(dataSetList[item.dataSetId].createdTime).Format('yyyy-MM-dd hh:mm:ss')
+          item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd hh:mm:ss')
+          console.log(item)
           return item
         })
         this.total = count
