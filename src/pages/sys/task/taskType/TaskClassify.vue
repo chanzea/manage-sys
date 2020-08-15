@@ -14,24 +14,31 @@
           <span class="item-label">任务描述:</span>
           <span class="item-value"><strong>{{detail.taskRemark}}</strong></span>
         </div>
+        <div class="task-classify-content-meta-item">
+          <span class="item-label">标签集合:</span>
+          <Select v-model="selectedTag" placeholder="请选择标签">
+            <Option :value="item.value" v-for="(item, index) in tagList" :key="index">{{item.label}}</Option>
+          </Select>
+          <Button class="opt-btn" style="margin-left: 12px" size="small" type="primary" @click="isShowModal=true">添加标签</Button>
+        </div>
       </div>
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
-          <Poptip placement="right" width="800">
-            <div slot="content" class="prev-content">
-              <img class="prev-img" :src="BASEURL + item.src" alt="">
-            </div>
-            <div class="item-thumb">
+            <div class="item-thumb" @click="addTags(item.tag)">
               <img :src="BASEURL + item.src" alt="">
             </div>
-          </Poptip>
-          <!-- </div> -->
-          <div class="item-isselect">
-            <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
-            <Icon type="md-checkbox" style="color: #2d8cf0" v-else />
+          <div class="item-preview">
+            <!-- <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
+            <Icon type="md-checkbox" style="color: #2d8cf0" v-else /> -->
+            <Poptip placement="right" width="800">
+              <div slot="content" class="prev-content">
+                <img class="prev-img" :src="BASEURL + item.src" alt="">
+              </div>
+              <Button type="primary" size="small">图片预览</Button>
+            </Poptip>
           </div>
-          <span v-if="item.tag" class="item-tag">
-            <Tag color="success" size="medium">{{item.tag}}</Tag>
+          <span v-if="item.tag && item.tag.length" class="item-tag">
+            <Tag closable v-for="(tagItem, index) in item.tag" :key="index" color="success" size="medium" @on-close="deleteTag(item.tag, tagItem, index)">{{tagItem}}</Tag>
           </span>
         </div>
       </div>
@@ -46,8 +53,8 @@
         </div>
       </div>
       <div class="task-classify-content-opt" v-if="!viewOnly">
-        <Button class="opt-btn" type="primary" @click="selectAll">{{isSelectedAll ? '取消全选' : '全选'}}</Button>
-        <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button>
+        <!-- <Button class="opt-btn" type="primary" @click="selectAll">{{isSelectedAll ? '取消全选' : '全选'}}</Button>
+        <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button> -->
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
       </div>
@@ -56,7 +63,7 @@
       v-model="isShowModal"
       title="分类标注"
       @on-ok="confirm">
-      <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" @on-change="selectTag" />
+      <form-component ref="formProp" :formProp="formProp" :ruleCustom="ruleCustom" :formCustom="formCustom" />
     </Modal>
   </div>
 </template>
@@ -75,14 +82,14 @@ export default {
       isShowModal: false,
       BASEURL,
       formProp: [
-        {
-          label: '快捷',
-          type: 'select',
-          value: '',
-          options: [],
-          placeholder: '可以选择已标记过的标签',
-          key: 'tags'
-        },
+        // {
+        //   label: '快捷',
+        //   type: 'select',
+        //   value: '',
+        //   options: [],
+        //   placeholder: '可以选择已标记过的标签',
+        //   key: 'tags'
+        // },
         {
           label: '名称',
           type: 'text',
@@ -107,7 +114,9 @@ export default {
 
       },
       // 查看详情
-      viewOnly: false
+      viewOnly: false,
+      selectedTag: '',
+      tagList: []
     }
   },
   props: {
@@ -125,6 +134,7 @@ export default {
     const taskId = this.$route.query.id;
     const taskItemId = this.$route.query.taskItemId
     this.viewOnly = this.$route.query.viewOnly
+    this.tagClassifyList()
     // 当前存在 taskItemId ，返工任务
     if (taskItemId) {
       this.taskItemDetail(taskId, taskItemId)
@@ -162,7 +172,7 @@ export default {
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
-          item.tag = ''
+          item.tag = []
           return item
         }) : []
         this.isNext = !!taskItemList
@@ -170,11 +180,12 @@ export default {
     },
     // 添加标注
     confirm () {
-      this.taskItemList.forEach(item => {
-        if(this.selectedTaskItem.includes(item.id)) {
-          item.tag = this.formCustom.name
-        }
-      })
+      // this.taskItemList.forEach(item => {
+      //   if(this.selectedTaskItem.includes(item.id) && !item.tag.includes(this.formCustom.name)) {
+      //     // item.tag = this.formCustom.name
+      //     item.tag.push(this.formCustom.name)
+      //   }
+      // })
       const params = {
         taskId: this.$route.query.id,
         tagName: this.formCustom.name,
@@ -183,13 +194,18 @@ export default {
       this.formProp.forEach(item => {
         this.formCustom[item.key] = ''
       })
-      tagClassifyAdd(params)
+      tagClassifyAdd(params).then(() => {
+        this.tagClassifyList()
+      })
     },
 
-    //選擇標簽
-    selectTag (val) {
-      this.formCustom.name = val
+    addTags (tag) {
+      if (!this.selectedTag) return
+      if (!tag.includes(this.selectedTag)) {
+        tag.push(this.selectedTag)
+      }
     },
+
 
     // 全选
     selectAll () {
@@ -213,7 +229,7 @@ export default {
       this.taskItemList.forEach(item => {
         markDataList.push({
           taskItemId: item.id,
-          markData: item.tag
+          markData: item.tag.join(',')
         })
       })
       const data = {
@@ -227,6 +243,10 @@ export default {
       })
     },
 
+    deleteTag(tag, tagItem, index) {
+      tag.splice(index, 1)
+    },
+
     // 获取分类标签
     tagClassifyList () {
       const taskId = this.$route.query.id;
@@ -234,13 +254,13 @@ export default {
         taskId
       }).then(res => {
         const { list } = res
-        this.formProp[0].options = list ? list.map(item => {
+        this.tagList = list ? list.map(item => {
           item.value = item.tagName;
           item.label = item.tagName;
           return item
         }) : []
       })
-      this.isShowModal = true
+      // this.isShowModal = true
     },
 
     taskItemDetail (taskId, taskItemId) {
@@ -253,7 +273,8 @@ export default {
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
-          item.tag = item.taskData
+          // item.tag = item.taskData
+          item.tag = item.taskData ? item.taskData.split(',') : []
           return item
         }) : []
         taskItemList && taskItemList.forEach(item => {
@@ -300,6 +321,7 @@ export default {
       flex-wrap: wrap;
       margin-bottom: 20px;
       &-item {
+        width: 250px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -328,7 +350,7 @@ export default {
             display: inline-block;
           }
         }
-        .item-isselect {
+        .item-preview {
           position: absolute;
           font-size: 36px !important;
           left: -2px;
@@ -338,6 +360,10 @@ export default {
           }
         }
         .item-tag {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
           color: #666;
           font-size: 14px;
         }
