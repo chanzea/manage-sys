@@ -1,5 +1,6 @@
 <template>
   <div class="page-task-classify">
+    <spin v-if="loading" fix size="large" class="tree-spin"></spin>
     <div class="task-classify-content">
       <div class="task-classify-content-meta">
         <div class="task-classify-content-meta-item">
@@ -119,7 +120,8 @@ export default {
       selectedTag: '',
       tagList: [],
 
-      _taskItemId: ''
+      _taskItemId: '',
+      loading: false
     }
   },
   props: {
@@ -167,6 +169,7 @@ export default {
   methods: {
     preTaskItem () {
       const taskId = this.$route.query.id
+      this.loading = true
       preTaskItem({
         taskId,
         taskItemId: this._taskItemId
@@ -179,6 +182,9 @@ export default {
           return item
         }) : []
         this.isNext = !!taskItemList
+        this.loading = false
+      }, _ => {
+        this.loading = false
       })
     },
     taskItemAllotMark () {

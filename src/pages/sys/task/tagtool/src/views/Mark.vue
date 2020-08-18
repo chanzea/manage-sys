@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <spin v-if="loading" fix size="large" class="tree-spin"></spin>
     <div class="task-mark-content-meta">
       <div class="task-mark-content-meta-item">
         <span class="item-label">任务名称:</span>
@@ -82,7 +83,8 @@ export default {
       tagDataList: [],
       taskType: '',
 
-      _taskItemId: ''
+      _taskItemId: '',
+      loading: false
     }
   },
   props: {
@@ -120,6 +122,7 @@ export default {
   methods: {
     preTaskItem () {
       const taskId = this.$route.query.id
+      this.loading = true
       preTaskItem({
         taskId,
         taskItemId: this._taskItemId
@@ -143,6 +146,9 @@ export default {
               // this.upload(this.taskItemList[0].src);
           // })
         }
+        this.loading = false
+      }, () => {
+        this.loading = false
       })
     },
 
