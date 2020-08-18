@@ -18,6 +18,7 @@
     </div>
     <div class="btn-group">
       <button @click="()=>{taskItemMark()}">提交数据</button>
+        <Button class="opt-btn" type="primary" @click="preTaskItem()">上一题</Button>
       <button v-if="!isReturnItem" @click="()=>{taskItemMark(true)}">下一题</button>
       <!-- <button @click="view">黑白图片预览</button> -->
     </div>
@@ -49,7 +50,7 @@
 <script>
 import tagTool from '../components/tagtool'
 // import demoData from './demo'
-import { taskItemAllotMark, tagMarkAdd, tagMarkList, itemTaskUpload, taskItemMark, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
+import { taskItemAllotMark, tagMarkAdd, tagMarkList, itemTaskUpload, taskItemMark, tagClassifyList, tagClassifyAdd, taskItemDetail, preTaskItem } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -79,7 +80,9 @@ export default {
         // },
       ],
       tagDataList: [],
-      taskType: ''
+      taskType: '',
+
+      _taskItemId: ''
     }
   },
   props: {
@@ -115,6 +118,34 @@ export default {
   },
 
   methods: {
+    preTaskItem () {
+      const taskId = this.$route.query.id
+      preTaskItem({
+        taskId,
+        taskItemId: this._taskItemId
+      }).then(res => {
+        const {taskItemList, dataRecordList, userList} = res;
+        if(!taskItemList || taskItemList.length == 0){
+          this.isNext = false;
+          this.$Message.warning("没有下一题了");
+        }
+        this.taskItemList = taskItemList ? taskItemList.map(item => {
+          item.src =  BASEURL + dataRecordList[item.dataRecordId].fileUrl
+          this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].fileUrl;
+          return item
+        }) : []
+        this.isNext = !!taskItemList;
+        if(taskItemList.length > 0) {
+          // this.$nextTick( () => {
+              this.setImage(this.taskItemList[0].src);//设置图片
+              this.getTagMarkList();
+              this.$refs["tool"].clearShapeItems();
+              // this.upload(this.taskItemList[0].src);
+          // })
+        }
+      })
+    },
+
     taskItemAllotMark () {
       const taskId = this.$route.query.id
       this.taskItemList = [];
@@ -137,6 +168,7 @@ export default {
           this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].fileUrl;
           return item
         }) : []
+        this._taskItemId = taskItemList[0] && taskItemList[0].taskItemId
         this.isNext = !!taskItemList;
         if(taskItemList.length > 0) {
           // this.$nextTick( () => {

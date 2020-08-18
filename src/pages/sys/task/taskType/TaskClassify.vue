@@ -56,6 +56,7 @@
         <!-- <Button class="opt-btn" type="primary" @click="selectAll">{{isSelectedAll ? '取消全选' : '全选'}}</Button>
         <Button class="opt-btn" type="primary" @click="tagClassifyList" :disabled="!isSelected">批量添加标注</Button> -->
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(false)">保存</Button>
+        <Button class="opt-btn" type="primary" @click="preTaskItem()">上一题</Button>
         <Button class="opt-btn" type="primary" @click="taskItemMarklist(true)" :disabled="!isNext">下一题</Button>
       </div>
     </div>
@@ -70,7 +71,7 @@
 
 <script>
 import FormComponent from 'components/form/FormComponent.vue'
-import { taskItemAllotMark, taskItemMarklist, tagClassifyList, tagClassifyAdd, taskItemDetail } from "@/api/task";
+import { taskItemAllotMark, taskItemMarklist, tagClassifyList, tagClassifyAdd, taskItemDetail, preTaskItem } from "@/api/task";
 import { 
   BASEURL
  } from "@/api/config.js";
@@ -116,7 +117,9 @@ export default {
       // 查看详情
       viewOnly: false,
       selectedTag: '',
-      tagList: []
+      tagList: [],
+
+      _taskItemId: ''
     }
   },
   props: {
@@ -162,6 +165,22 @@ export default {
     }
   },
   methods: {
+    preTaskItem () {
+      const taskId = this.$route.query.id
+      preTaskItem({
+        taskId,
+        taskItemId: this._taskItemId
+      }).then(res => {
+        const {taskItemList, dataRecordList, userList} = res
+        this.taskItemList = taskItemList ? taskItemList.map(item => {
+          item.src = dataRecordList[item.dataRecordId].thumbnailUrl
+          item.isSelected = false
+          item.tag = []
+          return item
+        }) : []
+        this.isNext = !!taskItemList
+      })
+    },
     taskItemAllotMark () {
       const taskId = this.$route.query.id
       this.taskItemList = []
@@ -175,6 +194,7 @@ export default {
           item.tag = []
           return item
         }) : []
+        this._taskItemId = taskItemList[0] && taskItemList[0].taskItemId
         this.isNext = !!taskItemList
       })
     },
@@ -219,7 +239,7 @@ export default {
     // 提交任务
     taskItemMarklist (next) {
       const isNext = this.taskItemList.some(item => {
-        return item.tag !== ''
+        return item.tag.length
       })
       if (!isNext) {
         this.$Message.warning('请选择图片添加标注');
