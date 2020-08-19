@@ -178,7 +178,8 @@ export default {
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
-          item.tag = []
+          // item.tag = []
+          item.tag = item.taskData ? item.taskData.split(',') : []
           return item
         }) : []
         this.isNext = !!taskItemList
@@ -197,7 +198,8 @@ export default {
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src = dataRecordList[item.dataRecordId].thumbnailUrl
           item.isSelected = false
-          item.tag = []
+          // item.tag = []
+          item.tag = item.taskData ? item.taskData.split(',') : []
           return item
         }) : []
         this._taskItemId = taskItemList[0] && taskItemList[0].taskItemId
