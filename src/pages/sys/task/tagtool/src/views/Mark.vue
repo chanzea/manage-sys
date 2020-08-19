@@ -135,6 +135,7 @@ export default {
         this.taskItemList = taskItemList ? taskItemList.map(item => {
           item.src =  BASEURL + dataRecordList[item.dataRecordId].fileUrl
           this.imgUrl = BASEURL + dataRecordList[item.dataRecordId].fileUrl;
+          item.tag = item.taskData
           return item
         }) : []
         this.isNext = !!taskItemList;
