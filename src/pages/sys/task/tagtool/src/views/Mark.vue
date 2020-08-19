@@ -143,7 +143,7 @@ export default {
               this.setImage(this.taskItemList[0].src);//设置图片
               this.getTagMarkList();
               this.$refs["tool"].clearShapeItems();
-              // this.upload(this.taskItemList[0].src);
+              this.setTagData(JSON.parse(this.taskItemList[0].taskData));
           // })
         }
         this.loading = false
