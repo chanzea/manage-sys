@@ -177,6 +177,18 @@ export default {
           key: "taskStatusDis"
         },
         {
+          title: "标注积分",
+          key: "taskMarkPointTotal"
+        },
+        {
+          title: "审核积分",
+          key: "taskReviewPointTotal"
+        },
+        {
+          title: "积分总和",
+          key: "taskPointTotal"
+        },
+        {
           title: "操作",
           slot: "action",
           width: 260,

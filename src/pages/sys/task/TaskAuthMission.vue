@@ -147,6 +147,9 @@ export default {
         this.data = taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
           item.taskTypeDis = taskType[item.taskType].label
+          if (item.personLastReviewTime != null) {
+            item.personLastReviewTime = new Date(item.personLastReviewTime).Format('yyyy-MM-dd hh:mm:ss')
+          }
           return item
         })
         this.total = count;
@@ -309,7 +312,12 @@ export default {
           },{
             title: '已审核题目总数',
             key: 'taskItemHadReviewTotal'   
-          },{
+          },
+          {
+            title: '最近一次审核时间',
+            key: 'personLastReviewTime'
+          },
+          {
             title: '操作',
             key: 'action',
             width: 260,

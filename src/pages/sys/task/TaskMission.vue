@@ -99,6 +99,10 @@ export default {
           key: 'taskItemMarkTotal'
         },
         {
+          title: '最近标注时间点',
+          key: 'personLastMarkTime'
+        },
+        {
           title: '剩余数量',
           key: 'taskRemain'
         },{
@@ -163,6 +167,9 @@ export default {
         this.data = taskList ? taskList.map(item => {
           item.taskRemain = item.taskItemMarkTotal - item.taskItemHadMarkTotal;
           item.taskTypeDis = TASKTYPE[item.taskType].label
+          if (item.personLastMarkTime) {
+            item.personLastMarkTime = new Date(item.personLastMarkTime).Format('yyyy-MM-dd hh:mm:ss')
+          }
           return item
         }) : []
         this.total = count;

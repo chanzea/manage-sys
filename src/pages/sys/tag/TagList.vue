@@ -60,6 +60,14 @@ export default {
           key: 'createdTime'
         },
         {
+          title: '完成标注时间点',
+          key: 'finishMarkTime'
+        },
+        {
+          title: '完成审核时间点',
+          key: 'finishReviewTime'
+        },
+        {
           title: '下载数据',
           key: 'action',
           width: 260,
@@ -132,6 +140,12 @@ export default {
           // }).join(',') : '暂无审核人员';
           item.creator = userList[item.creatorId].userName
           item.createdTime = new Date(item.createdTime).Format('yyyy-MM-dd hh:mm:ss')
+          if (item.finishMarkTime) {
+            item.finishMarkTime = new Date(item.finishMarkTime).Format('yyyy-MM-dd hh:mm:ss')
+          }
+          if (item.finishReviewTime) {
+            item.finishReviewTime = new Date(item.finishReviewTime).Format('yyyy-MM-dd hh:mm:ss')
+          }
           console.log(item)
           return item
         })
