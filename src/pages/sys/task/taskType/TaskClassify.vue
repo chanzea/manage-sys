@@ -35,7 +35,7 @@
               <div slot="content" class="prev-content">
                 <img class="prev-img" :src="BASEURL + item.src" alt="">
               </div>
-              <Button type="primary" size="small">图片预览</Button>
+              <Button type="primary" size="small">放大</Button>
             </Poptip>
           </div>
           <span v-if="item.tag && item.tag.length" class="item-tag">
