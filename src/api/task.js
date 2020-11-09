@@ -167,3 +167,9 @@ export async function getHistoryMonitor(params) {
     const data = await api(`/monitor/historyMonitor`, 'POST', params)
     return data
 }
+
+
+export async function monitorUserDimension(params) {
+    const data = await api(`/monitor/monitorUserDimension`, 'POST', params)
+    return data
+}

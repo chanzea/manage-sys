@@ -117,6 +117,15 @@ export default {
     } else {
       this.taskItemAllotMark();
     }
+    window.addEventListener('keydown', (e) => {
+        if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+          if (e.keyCode === 37) {
+            this.preTaskItem();
+          } else if (e.keyCode === 39) {
+            this.taskItemMark(true);
+          }
+        }
+      });
   },
 
   methods: {

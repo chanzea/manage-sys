@@ -30,6 +30,7 @@ const TaskTemplate = resolve => require(['pages/sys/task/TaskTemplate'], resolve
 const Taskinfo = resolve => require(['pages/sys/task/Taskinfo'], resolve);
 const TaskType = resolve => require(['pages/sys/task/taskType/TaskType'], resolve);
 const AuthType = resolve => require(['pages/sys/task/authType/TaskType'], resolve);
+const TaskUserMonitor = resolve => require(['pages/sys/task/TaskUserMonitor'], resolve);
 
 // 标注数据管理
 const TagPage = resolve => require(['pages/sys/tag/tag'], resolve);
@@ -168,6 +169,11 @@ const routes = [
             path: 'review',
             component: AuthType,
             name: "审核分类"
+          },{
+            path: 'monitorUserDimension',
+            component: TaskUserMonitor,
+            name: '用户监控',
+            id: 38,
           },
           // { 
           //   path: 'psdrawtool',

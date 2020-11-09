@@ -39,7 +39,7 @@
             </Poptip>
           </div>
           <span v-if="item.tag && item.tag.length" class="item-tag">
-            <Tag closable v-for="(tagItem, index) in item.tag" :key="index" color="success" size="medium" @on-close="deleteTag(item.tag, tagItem, index)">{{tagItem}}</Tag>
+            <Tag closable v-for="(tagItem, index) in item.tag" :key="index" v-bind:color="stringToColor(tagItem)" size="medium" @on-close="deleteTag(item.tag, tagItem, index)">{{tagItem}}</Tag>
           </span>
         </div>
       </div>
@@ -187,6 +187,14 @@ export default {
       }, _ => {
         this.loading = false
       })
+    },
+    stringToColor(str) {
+      var color = ['primary', 'success', 'error', 'warning', 'magenta', 'red', 'volcano', 'orange',  'gold', 'yellow', 'lime', 'green', 'geekblue', 'purple'];
+      var i = this.tagList.findIndex(e => e.label == str);
+      if (i == -1) {
+        return color[0];
+      }
+      return color[i];
     },
     taskItemAllotMark () {
       const taskId = this.$route.query.id

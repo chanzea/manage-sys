@@ -50,9 +50,7 @@
     <Modal
       v-model="isShowModal"
       title="查看缩略图"
-      width="620"
-      @on-ok=""
-      @on-cancel="">
+      width="620">
       <div class="pic-list">
         <div class="pic-list-item" v-for="(item, index) in picList" :key="index">
           <Poptip placement="right" width="800">

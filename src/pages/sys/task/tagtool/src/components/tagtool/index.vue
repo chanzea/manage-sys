@@ -1,5 +1,5 @@
 <template>
-  <div class="tool-wrap">
+  <div class="tool-wrap" :style="{height:height+'px'}">
     <div class="tool-info"
       :style="infoStyle">
       <div class="tool-tab-title">
@@ -15,7 +15,7 @@
           :key="k"
           :class="{'selected':i.selected}">
           <button v-if="i.selected"
-            @click.stop="delTag()"
+            @click.stop="delTag"
             style="background-color:#ed4014">删除</button>
           <button v-if="i.selected"
             @click.stop="editTagInfo(k,1)">编辑</button>
@@ -43,28 +43,9 @@
     <div class="tool-canvas"
       :style="canvasStyle">
       <div ref="toolCanvas"></div>
-      <!-- <div class="tool-more"
-        v-show="more">
-        <ul class="tool-more-item">
-          <template v-for="(i,k) in tagData">
-            <li @click="addTagInfo(i)"
-              :key="'tag'+k"
-              v-if="i.title.trim().length>0">
-              <span>{{i.title}}</span>
-            </li>
-          </template>
-          <template v-for="(i,k) in tags">
-            <li @click="addTagInfo(i)"
-              :key="'item'+k"
-              v-if="i.title.trim().length>0">
-              <span>{{i.title}}</span>
-            </li>
-          </template>
-        </ul>
-      </div> -->
     </div>
     <div class="tool-mask"
-      v-show="loading && !isNoData" @scroll.stop.prevent="scroll">
+      v-show="loading" @scroll.stop.prevent="scroll">
       <loading :message="message"></loading>
     </div>
 
@@ -76,41 +57,20 @@ import ShapeCanvas from './js/ShapeCanvas'
 import loading from './loading'
 
 export default {
-  name: 'tagTool2',
+  name: 'tagTool',
   props: {
     height: {
       type: Number, // 工具高度
-      default: 1000
-    },
-    width: {
-      type: Number, // 工具高度
-      default: 900
+      default: 600
     },
     tagWidth: {
       type: Number, // 标签显示宽度
       default: 300
     },
-    
     tagData: {
       type: Array,
       default () {
         return []
-      }
-    },
-    reviewInfo: {
-      type: Object,
-      default () {
-        return {
-          isCheckDetail: true,
-          taskItemStatus: "",
-          taskItemReviewAdvise: ""
-        }
-      }
-    },
-    isNoData: {
-      type: Boolean,
-      default () {
-        return false
       }
     }
   },
@@ -119,52 +79,32 @@ export default {
       loading: true,
       tab: 1,
       shapes: [],
-      message: '加载中...',
-      // more: false
+      message: '加载中...'
     }
   },
   components: {
     loading
   },
   computed: {
+
     infoStyle () {
       return {
         width: this.tagWidth + 'px',
-        height: this.height + 'px'
+        height: '100%'
       }
     },
     canvasStyle () {
-      console.log("触发", this.height, this.width)
       return {
-        height: this.height + 'px',
-        width: this.width + 'px',
+        height: '100%',
         marginRight: this.tagWidth + 'px'
       }
     },
     items () {
-      return this.shapes.items || []
-    },
-    // tags () {
-    //   const res = new Map();
-    //   let items = this.shapes.items || [];
-    //   let arr = items.concat(this.tagData);
-    //   return arr.filter((a) => !res.has(a.title) && res.set(a.title, 1))
-    // }
-  },
-
-  watch:{
-    tagData(n) {
-      if (this.sc) {
-        this.sc.tagData = n
-      }
+      return this.shapes.items
     }
   },
-
   mounted () {
-    this.initCanvas();
-    if(this.isNoData){
-      this.loading = false
-    }
+    this.initCanvas()
   },
   destroy () {
     this.sc && this.sc.destroy()
@@ -174,12 +114,14 @@ export default {
       this.sc = new ShapeCanvas()
       this.sc.init({
         el: this.$refs.toolCanvas, // 工具容器,未设置默认时body
-        drawEnd: (data) => { // 绘制一个图形结束触发,编辑标注文字描述确定时触发
+        box: this.$el, // 用于全屏
+        oldHeight: this.height,
+        drawEnd: (data) => { // 绘制一个图形结束触发
           this.shapes = data
           this.$emit('on-data-change', data)
         },
         changeInfo: (data, item) => { // 增加了保存触发 
-          this.shapes = data;
+          this.shapes = data
           this.$emit('on-tag-change', item, data)
         },
         onSelect: (data) => {
@@ -195,7 +137,6 @@ export default {
         this.loading = false
       }, () => {
         this.message = '图片加载失败'
-        this.loading = false
       })
     },
     setTagData (item) {
@@ -204,10 +145,6 @@ export default {
       this.sc.setData(this.shapes, () => {
         this.loading = false
       })
-    },
-
-    updated() {
-      
     },
 
     //请空
@@ -235,22 +172,28 @@ export default {
       })
       let item = this.tagData[key]
       if (item.selected) {
-        this.sc.setTempinfo(item.title, item.desc);
+        this.sc.setTempinfo(item.title, item.desc)
         this.sc.autoInfo = false
-
       } else {
         this.sc.setTempinfo('', '')
         this.sc.autoInfo = true
       }
     },
     addTagInfo (i) {
-      this.sc.info.show(i.title, i.desc);
+      this.sc.info.show(i.title, i.desc)
     },
     delTag () {
-      this.sc.delete();
+      this.sc.delete()
     },
     view () {
       this.sc && this.sc.coverView()
+    }
+  },
+  watch:{
+    tagData(n) {
+      if (this.sc) {
+        this.sc.tagData = n
+      }
     }
   }
 }
@@ -324,6 +267,7 @@ export default {
           background-color: rgba(0, 0, 0, 0.45);
           color: rgba(255, 255, 255, 0.6);
         }
+
         &.selected {
           background-color: #000000;
           color: rgba(255, 255, 255, 0.9);
@@ -350,8 +294,8 @@ export default {
             border-bottom-width: 1px;
             border-bottom-color: rgba(0, 0, 0, 0.6);
             overflow: hidden;
-            // padding: 2px 5px 3px 5px;
-            margin-top: 5px;
+            padding: 2px 5px 3px 5px;
+            margin-top: 8px;
             border-radius: 3px;
             color: #d5d5d5;
             -webkit-appearance: none;
@@ -359,7 +303,7 @@ export default {
             transition: color 0.2s linear, background-color 0.2s linear,
               border 0.2s linear, box-shadow 0.2s linear;
             outline: 0;
-            line-height: 30px;
+            line-height: 1.5;
             & + button {
               margin-right: 0.5em;
             }
@@ -384,16 +328,16 @@ export default {
             background-color: transparent;
           }
           p {
-              color: #0dbc79;
+            color: #0dbc79;
           }
         }
         p {
-            line-height: 1;
-            font-size: 12px;
-            margin: 0;
-            padding-left: 15px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 6px;
+          line-height: 1;
+          font-size: 12px;
+          margin: 0;
+          padding-left: 15px;
+          color: rgba(255, 255, 255, 0.5);
+          margin-bottom: 6px;
         }
       }
     }
