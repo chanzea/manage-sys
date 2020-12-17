@@ -22,7 +22,7 @@
         <div class="task-reject-folder-content-list-item" v-for="(item, index) in dataRecordList" :key="index">
           <div class="item-folder">
             <div class="item-thumb" @click="getFolderPic(item)">
-              <img :src="folderSrc" alt="">
+              <img :src="folderSrc" alt="" oncontextmenu="return false;">
             </div>
             <span style="margin: 8px 0 12px; color: #666;">{{item.fileName}}</span>
             <div class="item-isselect" @click="item.isSelected = !item.isSelected">
@@ -54,9 +54,9 @@
       <div class="pic-list">
         <div class="pic-list-item" v-for="(item, index) in picList" :key="index">
           <Poptip placement="right" width="800">
-            <img class="v-lazy-img" v-lazy="BASEURL + item.thumbnailUrl" alt="">
+            <img class="v-lazy-img" v-lazy="BASEURL + item.thumbnailUrl" alt="" oncontextmenu="return false;">
             <div slot="content" class="prev-content">
-              <img class="prev-img" :src="BASEURL + item.fileUrl" alt="">
+              <img class="prev-img" :src="BASEURL + item.fileUrl" alt="" oncontextmenu="return false;">
             </div>
           </Poptip>
         </div>

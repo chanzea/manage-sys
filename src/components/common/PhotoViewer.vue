@@ -78,7 +78,7 @@
     <i-col span="24">
       <div class="photo-viewer-img vertical-center-modal">
         <img v-if="nowImg" ref="showImg" @mousedown="startMove" @touchstart="startMove" @load="onImgload "
-             :src="nowImg.url"/>
+             :src="nowImg.url" oncontextmenu="return false;"/>
         <span class="size" :class="{'show-size': showSize}">{{(this.size * 100).toFixed(0) + '%'}}</span>
       </div>
       <Icon class="chevron" @click.native="leftClick" v-show="imgs && index-1>=0" type="chevron-left"

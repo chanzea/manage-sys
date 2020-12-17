@@ -55,7 +55,7 @@
     <div class="upload-list" v-for="(item,index) in uploadList">
       <Poptip placement="top-start" width="360" trigger="hover">
         <template v-if="item.status === 'finished'">
-          <img :src="item.url">
+          <img :src="item.url" oncontextmenu="return false;">
           <div class="upload-list-cover">
             <Poptip confirm title="您确认删除？" @on-ok="handleRemove(item)" placement="right-start" transfer>
               <Icon type="ios-trash-outline"></Icon>
@@ -67,7 +67,7 @@
           <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
         </template>
         <div class="upload-list-img" slot="content">
-          <img @click="showPhotoViewer(item,index)" :src="item.url">
+          <img @click="showPhotoViewer(item,index)" :src="item.url" oncontextmenu="return false;">
         </div>
       </Poptip>
     </div>

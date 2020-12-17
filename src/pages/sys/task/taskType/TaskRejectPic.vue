@@ -24,7 +24,7 @@
           <Poptip placement="right" width="800">
             <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.thumbnailUrl + '\')'}" />
             <div slot="content" class="prev-content">
-              <img class="prev-img" :src="BASEURL + item.fileUrl" alt="">
+              <img class="prev-img" :src="BASEURL + item.fileUrl" alt="" oncontextmenu="return false;">
             </div>
           </Poptip>
           <div class="item-isselect">

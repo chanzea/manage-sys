@@ -48,7 +48,7 @@
             class="task-item-input"
             v-model="formItem.reviewScale"
             placeholder="比例"
-            :disabled="isDisabled"
+            disabled = "false"
           ></Input>%
         </FormItem>
         <FormItem label="任务模版:" prop="taskType">
@@ -100,7 +100,7 @@ export default {
         markPoint: null,
         reviewPoint: null,
         dataSetId: null,
-        reviewScale: null,
+        reviewScale: 100,
         markUserIds: [],
         reviewUserIds: [],
       },

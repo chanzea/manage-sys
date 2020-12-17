@@ -19,13 +19,13 @@
         <div class="task-classify-content-list-item"  v-for="(item, index) in taskItemList" :key="index" >
           <Poptip placement="right" width="800">
             <div slot="content" class="prev-content">
-              <img class="prev-img" :src="BASEURL + item.src" alt="">
+              <img class="prev-img" :src="BASEURL + item.src" alt="" oncontextmenu="return false;">
             </div>
             <!-- <div class="item-thumb" :style="{backgroundImage: 'url(\'' + BASEURL + item.src + '\')'}">
               <img :src="BASEURL + item.src" alt="">
             </div> -->
             <div class="item-thumb">
-              <img :src="BASEURL + item.src" alt="">
+              <img :src="BASEURL + item.src" alt="" oncontextmenu="return false;">
             </div>
           </Poptip>
           <span v-if="item.taskData" class="item-tag">

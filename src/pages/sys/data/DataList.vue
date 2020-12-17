@@ -37,7 +37,7 @@
           <div class="modal-content-list-item" :class="item.fileType === 1 ? 'not-allow' : 'allow'" :style="{
             'margin-bottom': item.fileType === 3 ? '40px' : '12px'
           }" v-for="(item, index) in fileList" :key="index" @click="listDataRecord(item.fileType, item.dataSetId, item.id)">
-            <img v-lazy="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="">
+            <img v-lazy="item.fileType === 1 ? BASEURL + item.thumbnailUrl : src[item.fileType]" alt="" oncontextmenu="return false;">
             <span class="item-filename" v-if="item.fileType === 3">{{item.fileName}}</span>
           </div>
         </div>

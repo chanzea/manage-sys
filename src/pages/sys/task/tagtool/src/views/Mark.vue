@@ -154,6 +154,7 @@ export default {
               this.getTagMarkList();
               this.$refs["tool"].clearShapeItems();
               this.setTagData(JSON.parse(this.taskItemList[0].taskData));
+              this._taskItemId = this.taskItemList[0].taskItemId;
           // })
         }
         this.loading = false

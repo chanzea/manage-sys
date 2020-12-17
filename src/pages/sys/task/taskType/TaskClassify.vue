@@ -26,14 +26,14 @@
       <div class="task-classify-content-list">
         <div class="task-classify-content-list-item" v-for="(item, index) in taskItemList" :key="index" @click="item.isSelected = !item.isSelected">
             <div class="item-thumb" @click="addTags(item.tag)">
-              <img :src="BASEURL + item.src" alt="">
+              <img :src="BASEURL + item.src" alt="" oncontextmenu="return false;">
             </div>
           <div class="item-preview">
             <!-- <Icon type="ios-checkbox-outline" style="color: #fff" v-if="!item.isSelected" />
             <Icon type="md-checkbox" style="color: #2d8cf0" v-else /> -->
             <Poptip placement="right" width="800">
               <div slot="content" class="prev-content">
-                <img class="prev-img" :src="BASEURL + item.src" alt="">
+                <img class="prev-img" :src="BASEURL + item.src" alt="" oncontextmenu="return false;">
               </div>
               <Button type="primary" size="small">放大</Button>
             </Poptip>
@@ -182,6 +182,7 @@ export default {
           item.tag = item.taskData ? item.taskData.split(',') : []
           return item
         }) : []
+        this._taskItemId = taskItemList[0] && taskItemList[0].taskItemId
         this.isNext = !!taskItemList
         this.loading = false
       }, _ => {
