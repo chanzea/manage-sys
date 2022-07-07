@@ -21,7 +21,7 @@
     "iview": "^3.5.1",
     "lockr": "^0.8.4",
     "lodash": "^4.17.4",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "nprogress": "^0.2.0",
     "quill-image-extend-module": "^1.1.2",
     "spark-md5": "^3.0.1",
